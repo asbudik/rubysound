@@ -8,7 +8,7 @@ SoundsApp.config ["$routeProvider", "$locationProvider", ($routeProvider, $locat
   $routeProvider
     .when '/',
       templateUrl: "templates/index.html",
-      controller: "SoundsCtrl"
+      controller: "SoundsCtrl as sounds"
   .otherwise
     redirectTo: "/"
 

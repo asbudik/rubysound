@@ -7,7 +7,7 @@
     "$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
       $routeProvider.when('/', {
         templateUrl: "templates/index.html",
-        controller: "SoundsCtrl"
+        controller: "SoundsCtrl as sounds"
       }).otherwise({
         redirectTo: "/"
       });
@@ -26,7 +26,7 @@
     function SoundsCtrl(scope, http) {
       this.scope = scope;
       this.http = http;
-      this.greeting = "hello world";
+      this.greeting = "hello worldsss";
     }
 
     return SoundsCtrl;

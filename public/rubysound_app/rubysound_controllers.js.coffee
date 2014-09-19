@@ -3,7 +3,7 @@ SoundsControllers = angular.module("SoundsControllers", [])
 class SoundsCtrl 
 
   constructor: (@scope, @http) ->
-    @greeting = "hello world"
+    @greeting = "hello worldsss"
 
 
 
