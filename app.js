@@ -15,6 +15,7 @@ app.use(morgan('dev'))
 
 app.set("view engine", "ejs");
 
+
 app.post('/api/searchsongs', function(req, res) {
   var searchURL = "https://api.spotify.com/v1/search?q="
   + req.body.query + "&type=artist,track"

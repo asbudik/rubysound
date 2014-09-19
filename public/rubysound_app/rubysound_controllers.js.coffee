@@ -16,6 +16,7 @@ class SoundsCtrl
       @artists = data.artists
 
   searchLiveBands: (track) ->
+    @scope.clicked = true
     @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
       console.log(data)
 

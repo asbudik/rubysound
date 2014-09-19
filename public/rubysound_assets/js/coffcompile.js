@@ -48,6 +48,7 @@
     };
 
     SoundsCtrl.prototype.searchLiveBands = function(track) {
+      this.scope.clicked = true;
       return this.http.post('api/searchlivebands', {
         track: track.artists[0].name
       }).success((function(_this) {
