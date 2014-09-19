@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="vendor/angular.min.js"></script>
+    <script src="vendor/angular.js"></script>
     <script src="vendor/angular-route.min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
@@ -12,13 +11,13 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="rubysound_assets/css/style.css">
+    <script src="rubysound_assets/js/coffcompile.js"></script>
     <title>RubySound</title>
 
   </head>
-  <body ng-app>
-    <div class="container">
-      {{1+2}}
-
+  <body ng-app="SoundsApp">
+    <div ng-view>
 
     </div>
   </body>
