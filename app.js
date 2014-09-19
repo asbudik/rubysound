@@ -16,13 +16,13 @@ app.use(morgan('dev'))
 app.set("view engine", "ejs");
 
 app.post('/api/searchsongs', function(req, res) {
-  var searchURL = 'http://api.soundcloud.com/tracks.json?client_id='
-  + process.env.SOUNDCLOUD_ID + '&q=' + req.body.query + '&limit=5'
+  var searchURL = "https://api.spotify.com/v1/search?q="
+  + req.body.query + "&type=artist,track"
 
   request(searchURL, function(error, response, body) {
     if(!error) {
       var bodyData = JSON.parse(body);
-      res.json({bodyData: bodyData})
+      res.json(bodyData)
     }
   })
 })

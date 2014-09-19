@@ -29,7 +29,6 @@
       this.Sound = Sound;
       this.greeting = "hello worldsss";
       this.tracks = [];
-      console.log(this);
     }
 
     SoundsCtrl.prototype.searchSongs = function(query) {
@@ -37,13 +36,13 @@
       this.greeting = "you";
       thisQuery = query;
       this.scope.query = {};
-      console.log(query.string);
       return this.http.post('api/searchsongs', {
         query: query.string
       }).success((function(_this) {
         return function(data) {
-          console.log(data);
-          return _this.tracks = data;
+          _this.tracks = data.tracks.items;
+          console.log(_this.tracks);
+          return _this.artists = data.artists;
         };
       })(this));
     };
