@@ -29,6 +29,14 @@
       this.greeting = "hello worldsss";
     }
 
+    SoundsCtrl.prototype.searchSongs = function(query) {
+      return this.tracks = SC.get("/tracks", {
+        q: "buskers"
+      }, function(tracks) {
+        return console.log(this.tracks);
+      });
+    };
+
     return SoundsCtrl;
 
   })();

@@ -14,6 +14,7 @@ app.use(morgan('dev'))
 app.set("view engine", "ejs");
 
 
+
 app.get('/api/users', function(req, res) {
   db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
     res.json(allUsers)
@@ -64,7 +65,7 @@ app.post('/api/users/:id/songs', function(req, res) {
 
 
 app.get('*', function(req, res) {
-  res.render('index'); // load the single view file (angular will handle the page changes on the front-end)
+  res.render('index', {soundcloud_id: process.env.SOUNDCLOUD_ID}); // load the single view file (angular will handle the page changes on the front-end)
 });
 
 app.listen(3000, function() {

@@ -3,6 +3,7 @@
   <head>
     <script src="vendor/angular.js"></script>
     <script src="vendor/angular-route.min.js"></script>
+    <script src="//connect.soundcloud.com/sdk.js"></script>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -20,5 +21,15 @@
     <div ng-view>
 
     </div>
+
+    <script>
+      SC.initialize({
+        client_id: soundcloud_id
+      });
+      // find all sounds of buskers licensed under 'creative commons share alike'
+      SC.get('/tracks', { q: 'buskers', license: 'cc-by-sa' }, function(tracks) {
+          console.log(tracks);
+        });
+      </script>
   </body>
 </html>
