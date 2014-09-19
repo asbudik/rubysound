@@ -23,17 +23,22 @@
   SoundsControllers = angular.module("SoundsControllers", []);
 
   SoundsCtrl = (function() {
-    function SoundsCtrl(scope, http) {
+    function SoundsCtrl(scope, http, Sound, Key) {
       this.scope = scope;
       this.http = http;
+      this.Sound = Sound;
+      this.Key = Key;
       this.greeting = "hello worldsss";
+      SC.initialize({
+        client_id: 'YOUR_CLIENT_ID'
+      });
     }
 
     SoundsCtrl.prototype.searchSongs = function(query) {
-      return this.tracks = SC.get("/tracks", {
-        q: "buskers"
+      return SC.get("/tracks", {
+        q: "owl city"
       }, function(tracks) {
-        return console.log(this.tracks);
+        return console.log(tracks);
       });
     };
 
@@ -41,7 +46,7 @@
 
   })();
 
-  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", SoundsCtrl]);
+  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "Sound", SoundsCtrl]);
 
 }).call(this);
 

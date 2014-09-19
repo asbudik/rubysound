@@ -21,15 +21,5 @@
     <div ng-view>
 
     </div>
-
-    <script>
-      SC.initialize({
-        client_id: soundcloud_id
-      });
-      // find all sounds of buskers licensed under 'creative commons share alike'
-      SC.get('/tracks', { q: 'buskers', license: 'cc-by-sa' }, function(tracks) {
-          console.log(tracks);
-        });
-      </script>
   </body>
 </html>
