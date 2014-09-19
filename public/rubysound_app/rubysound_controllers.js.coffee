@@ -2,14 +2,18 @@ SoundsControllers = angular.module("SoundsControllers", [])
 
 class SoundsCtrl 
   
-  constructor: (@scope, @http, @Sound, @Key) ->
+  constructor: (@scope, @http, @Sound) ->
     @greeting = "hello worldsss"
-    SC.initialize(({
-      client_id: 'YOUR_CLIENT_ID'
-    });)
+    @tracks = []
+    console.log(@)
 
   searchSongs: (query) ->
-    SC.get "/tracks", {q: "owl city"}, (tracks) ->
-      console.log tracks
+    @greeting = "you"
+    thisQuery = query
+    @scope.query = {}
+    console.log(query.string)
+    @http.post('api/searchsongs', {query: query.string}).success (data) =>
+      console.log(data)
+      @tracks = data
 
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "Sound", SoundsCtrl])

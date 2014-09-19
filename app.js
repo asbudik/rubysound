@@ -4,6 +4,8 @@ var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var db = require("./models/index.js");
 var flash = require("connect-flash");
+var request = require("request");
+app = express();
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -13,7 +15,17 @@ app.use(morgan('dev'))
 
 app.set("view engine", "ejs");
 
+app.post('/api/searchsongs', function(req, res) {
+  var searchURL = 'http://api.soundcloud.com/tracks.json?client_id='
+  + process.env.SOUNDCLOUD_ID + '&q=' + req.body.query + '&limit=5'
 
+  request(searchURL, function(error, response, body) {
+    if(!error) {
+      var bodyData = JSON.parse(body);
+      res.json({bodyData: bodyData})
+    }
+  })
+})
 
 app.get('/api/users', function(req, res) {
   db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {

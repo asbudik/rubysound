@@ -14,6 +14,7 @@ module.exports = function(grunt) {
         files: {
           '../rubysound/public/rubysound_assets/js/coffcompile.js': [
           '../rubysound/public/rubysound_app/main.js.coffee',
+          '../rubysound/public/rubysound_app/rubysound_key.js.coffee',
           '../rubysound/public/rubysound_app/rubysound_controllers.js.coffee',
           '../rubysound/public/rubysound_app/rubysound_factories.js.coffee',]
         }
