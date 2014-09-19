@@ -11,8 +11,12 @@ class SoundsCtrl
     thisQuery = query
     @scope.query = {}
     @http.post('api/searchsongs', {query: query.string}).success (data) =>
+      console.log(data)
       @tracks = data.tracks.items
-      console.log(@tracks)
       @artists = data.artists
+
+  searchLiveBands: (track) ->
+    @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
+      console.log(data)
 
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "Sound", SoundsCtrl])

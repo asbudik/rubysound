@@ -40,9 +40,19 @@
         query: query.string
       }).success((function(_this) {
         return function(data) {
+          console.log(data);
           _this.tracks = data.tracks.items;
-          console.log(_this.tracks);
           return _this.artists = data.artists;
+        };
+      })(this));
+    };
+
+    SoundsCtrl.prototype.searchLiveBands = function(track) {
+      return this.http.post('api/searchlivebands', {
+        track: track.artists[0].name
+      }).success((function(_this) {
+        return function(data) {
+          return console.log(data);
         };
       })(this));
     };

@@ -27,6 +27,18 @@ app.post('/api/searchsongs', function(req, res) {
   })
 })
 
+app.post('/api/searchlivebands', function(req, res) {
+  var bandsInTownURL = 'http://api.bandsintown.com/artists/' 
+  + req.body.track + '/events.json?api_version=2.0&app_id=RUBYSOUND'
+  
+  request(bandsInTownURL, function(error, response, body) {
+    if(!error) {
+      var bandData = JSON.parse(body)
+      res.json(bandData)
+    }
+  })
+})
+
 app.get('/api/users', function(req, res) {
   db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
     res.json(allUsers)

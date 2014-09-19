@@ -5,10 +5,12 @@
   </form>
 
   <div ng-repeat="track in sounds.tracks">
-    <img src="{{track.album.images[2].url}}">
-    {{track.artists[0].name}}
-    {{track.name}}
+    <a href ng-click="sounds.searchLiveBands(track)">
+      <div class="searchsong">
+        <img src="{{track.album.images[2].url}}">
+        {{track.artists[0].name}}
+        {{track.name}}
+      </div>
+    </a>
   </div>
-  {{sounds.greeting}}
-
 </div>
