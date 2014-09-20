@@ -22,6 +22,10 @@ module.exports = {
       },
       playthrough: {
         type: DataTypes.BOOLEAN
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        foreignKey: true
       }
     })
     .complete(done);

@@ -13,10 +13,15 @@ module.exports = {
         type: DataTypes.INTEGER,
         defaultValue: 10
       },
-      user_id: {
+      uservote: {
         type: DataTypes.INTEGER,
         allowNull: false
+      },
+      songId: {
+        type: DataTypes.INTEGER,
+        foreignKey: true
       }
+
     })
     .complete(done);
   },

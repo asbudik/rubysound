@@ -16,6 +16,10 @@ module.exports = {
       venuedate: {
         type: DataTypes.STRING,
         allowNull: false
+      },
+      songId: {
+        type: DataTypes.INTEGER,
+        foreignKey: true
       }
     })
     .complete(done);
