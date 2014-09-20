@@ -87,36 +87,47 @@ app.get('/api/users', function(req, res) {
 })
 
 app.post('/api/users', function(req, res) {
-  db.user.create(req.body).success(function(newUser) {
-    res.json(newUser)
-  })
-})
-
-app.get('/api/users/:id', function(req, res) {
-  db.user.find(req.params.id).success(function(foundUser) {
-    foundUser.getSongs().success(function(userSongs) {
-      res.json({user: foundUser, songs: userSongs})
-    })
-  })
-})
-
-app.put('/api/users/:id', function(req, res) {
-  db.user.find(req.params.id).success(function(foundUser) {
-    foundUser.updateAttributes(req.body).success(function() {
-      res.json(foundUser)
-    })
-  })
-})
-
-app.post('/api/users/:id/songs', function(req, res) {
-  db.user.find(req.params.id).success(function(foundUser) {
-    db.song.create(req.body).success(function(newSong) {
-      foundUser.addSong(newSong).success(function() {
-        res.json({user: foundUser, song: newSong})
+  db.user.createNewUser(
+    req.body,
+    function(err) {
+      res.json({message: err.message})
+    },
+    function(success) {
+      passport.serializeUser(function(user, done) {
+        console.log("Initial serialize");
+        done(null, success.user.id)
       })
-    })
-  })
-})
+      res.json({user: success.user, isAuthenticated: req.isAuthenticated(),
+      message: success.message})
+    });
+  });
+
+
+// app.get('/api/users/:id', function(req, res) {
+//   db.user.find(req.params.id).success(function(foundUser) {
+//     foundUser.getSongs().success(function(userSongs) {
+//       res.json({user: foundUser, songs: userSongs})
+//     })
+//   })
+// })
+
+// app.put('/api/users/:id', function(req, res) {
+//   db.user.find(req.params.id).success(function(foundUser) {
+//     foundUser.updateAttributes(req.body).success(function() {
+//       res.json(foundUser)
+//     })
+//   })
+// })
+
+// app.post('/api/users/:id/songs', function(req, res) {
+//   db.user.find(req.params.id).success(function(foundUser) {
+//     db.song.create(req.body).success(function(newSong) {
+//       foundUser.addSong(newSong).success(function() {
+//         res.json({user: foundUser, song: newSong})
+//       })
+//     })
+//   })
+// })
 
 // app.post('api/songs/:id/votes', function(req, res) {
 //   db.song.find(req.params.id).success(function(foundSong) {

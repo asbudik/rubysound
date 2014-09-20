@@ -1,0 +1,21 @@
+<div class="col-md-3">
+  <form ng-submit="sounds.searchSongs(query)">
+  <div class="form-group">
+    <input class="form-control" type="text" ng-model="query.string">
+  </div>
+  <div class="form-group">
+    <button class="form-control btn btn-danger">Search</button>
+  </div>
+  </form>
+  <div class="songselection">
+    <div ng-repeat="track in sounds.tracks">
+      <a href ng-hide="clicked" ng-click="sounds.searchLiveBands(track)">
+        <div class="searchsong">
+          <img src="{{track.album.images[2].url}}">
+          {{track.artists[0].name}}
+          {{track.name}}
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

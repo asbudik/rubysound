@@ -16,8 +16,7 @@ module.exports = function (sequelize, DataTypes) {
     password: {
       type: DataTypes.STRING,
       validate: {
-        notEmpty: true,
-        len: [6, 20]
+        notEmpty: true
       }
     }
   },
@@ -29,27 +28,22 @@ module.exports = function (sequelize, DataTypes) {
       },
       encryptPass: function(password) {
         var hash = bcrypt.hashSync(password, salt);
+        return hash
       },
       comparePass: function(userpass, dbpass) {
         return bcrypt.compareSync(userpass, dbpass);
       },
-      createNewUser: function(username, password, confirmation, err, success) {
-        if (password.length < 6) {
+      createNewUser: function(params, err, success) {
+        if (params.password.length < 6) {
           err({message: "password should be more than six characters"})
-        } else if (password !== confirmation) {
+        } else if (params.password !== params.confirmation) {
           err({message: "passwords do not match, please try again"})
         } else {
           User.create({
-            username: username,
-            password: User.encryptPass(password)
-          }).error(function(error) {
-            if(error.username) {
-              err({message: 'Your username should be at least six characters'})
-            } else {
-              err({message: 'An account with that username already exists'})
-            }
+            username: params.username,
+            password: User.encryptPass(params.password)
           }).success(function(user) {
-            success({message: 'Welcome to the community!'})
+            success({message: 'Welcome to the community!', user: user})
           });
           }
         },

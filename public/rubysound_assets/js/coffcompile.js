@@ -8,6 +8,12 @@
       $routeProvider.when('/', {
         templateUrl: "templates/spa.html",
         controller: "SoundsCtrl as sounds"
+      }).when('/login', {
+        templateUrl: "templates/login.html",
+        controller: "LoginCtrl as login"
+      }).when('/signup', {
+        templateUrl: "templates/signup.html",
+        controller: "LoginCtrl as sign"
       }).otherwise({
         redirectTo: "/"
       });
@@ -18,7 +24,7 @@
 }).call(this);
 
 (function() {
-  var SoundsControllers, SoundsCtrl;
+  var LoginCtrl, SoundsControllers, SoundsCtrl;
 
   SoundsControllers = angular.module("SoundsControllers", []);
 
@@ -63,6 +69,28 @@
   })();
 
   SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "Sound", SoundsCtrl]);
+
+  LoginCtrl = (function() {
+    function LoginCtrl(scope, http) {
+      this.scope = scope;
+      this.http = http;
+      this.logingreeting = "greetings";
+    }
+
+    LoginCtrl.prototype.signup = function(user) {
+      console.log(user);
+      return this.http.post('api/users', user).success((function(_this) {
+        return function(data) {
+          return console.log(data);
+        };
+      })(this));
+    };
+
+    return LoginCtrl;
+
+  })();
+
+  SoundsControllers.controller("LoginCtrl", ["$scope", "$http", LoginCtrl]);
 
 }).call(this);
 
