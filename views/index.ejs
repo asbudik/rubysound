@@ -20,11 +20,7 @@
 
 </head>
 <body>
-  <% if (isAuthenticated) { %>
-    <div class="user"> <%= user.username %></div>
-  <% } else { %>
-    <div class="user"> Guest</div>
-  <% } %>
+ 
   <div class="row">
     <div ng-app="SoundsApp" ng-view>
       <div class="col-md-6">
@@ -41,14 +37,12 @@
     var username
     var socket = io();
     $('.chatform').submit(function(){
-      username = $('.user').text()
-      console.log(username)
       socket.emit('chat message', $('#m').val());
       $('#m').val('');
       return false;
     });
     socket.on('chat message', function(msg){
-      $('#messages').append('<li><strong>' + username + ': </strong>' + msg)
+      $('#messages').append('<li><strong>' + msg.nick + ': </strong>' + msg.msg)
     });
   </script>
 </body>

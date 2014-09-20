@@ -13,7 +13,6 @@ var cookieParser =  require("cookie-parser");
 var cookieSession = require("cookie-session");
 var server =        require('http').createServer(app)
 
-var clients = []
 var currentUser = undefined
 
 app.set("view engine", "html");
@@ -53,12 +52,9 @@ passport.deserializeUser(function(id, done) {
 })
 
 io.on('connection', function(socket){
+  socket.nickname = currentUser
   socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-    clients.forEach(function(client) {
-      socket["client.id"] = client.username
-      console.log("stuff", socket["client.id"])
-    })
+    io.emit('chat message', {msg: msg, nick: socket.nickname});
   });
 });
 
@@ -100,6 +96,7 @@ app.post('/api/users', function(req, res) {
       res.json({message: err.message})
     },
     function(success) {
+      currentUser = success.user.username
         res.json({user: success.user, message: success.message})
     });
   });
@@ -110,8 +107,7 @@ app.post('/api/login', function(req, res, next) {
     if (!user) { return res.json({message: "Login or password incorrect"}) }
     req.logIn(user, function(err) {
       if (err) { return res.json({message: "Login or password incorrect"}) }
-      currentUser = {id: req.user.id, username: req.user.username}
-      clients.push({id: req.user.id, username: req.user.username})
+      currentUser = req.user.username
       return res.json(req.user)
     });
   })(req, res, next);
@@ -155,17 +151,18 @@ app.post('/api/login', function(req, res, next) {
 // })
 
 app.get('/logout', function(req, res) {
-  clients.forEach(function(client) {
-    if (req.user.id === client.id) {
-      clients.splice(clients.indexOf(client), 1)
-    }
-  })
   currentUser = undefined
   req.logout()
   res.redirect("/")
 })
 
 app.get('*', function(req, res) {
+  if (req.user) {
+    currentUser = req.user.username
+  } else {
+    currentUser = "Guest"
+  }
+
   res.render('index.ejs', {isAuthenticated: req.isAuthenticated(), user: req.user})
 });
 
