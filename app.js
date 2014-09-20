@@ -89,29 +89,25 @@ app.get('/api/users', function(req, res) {
   })
 })
 
-app.post('/api/users', function(req, res) {
+app.post('/users', function(req, res) {
   db.user.createNewUser(
-    req.body,
+    req.body.user,
     function(err) {
-      res.json({message: err.message})
+      res.redirect('/')
     },
     function(success) {
       currentUser = success.user.username
-        res.json({user: success.user, message: success.message})
+      req.login(success.user, function(err) {
+        return res.redirect('/')
+      })
     });
   });
 
-app.post('/api/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return res.json({message: "Login or password incorrect"}) }
-    if (!user) { return res.json({message: "Login or password incorrect"}) }
-    req.logIn(user, function(err) {
-      if (err) { return res.json({message: "Login or password incorrect"}) }
-      currentUser = req.user.username
-      return res.json(req.user)
-    });
-  })(req, res, next);
-});
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/', 
+  failureRedirect: '/',
+  failureFlash: true
+}));
 
 
 // app.get('/api/users/:id', function(req, res) {
