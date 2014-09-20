@@ -7,10 +7,10 @@ class SoundsCtrl
     @tracks = []
 
   searchSongs: (query) ->
-    @greeting = "you"
     thisQuery = query
     @scope.query = {}
     @http.post('api/searchsongs', {query: query.string}).success (data) =>
+      @scope.clicked = false
       console.log(data)
       @tracks = data.tracks.items
       @artists = data.artists

@@ -1,25 +1,57 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <script src="vendor/angular.js"></script>
-    <script src="vendor/angular-route.min.js"></script>
-    <script src="//connect.soundcloud.com/sdk.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+<html ng-app="SoundsApp">
+ <head>
+  <script src="vendor/angular.js"></script>
+  <script src="vendor/angular-route.min.js"></script>
+  <script src="//connect.soundcloud.com/sdk.js"></script>
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="rubysound_assets/css/style.css">
-    <script src="rubysound_assets/js/coffcompile.js"></script>
-    <title>RubySound</title>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-  </head>
-  <body ng-app="SoundsApp">
-    <div ng-view>
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="rubysound_assets/css/style.css">
+  <script src="rubysound_assets/js/coffcompile.js"></script>
+  <title>RubySound</title>
 
+</head>
+<body>
+  <div class="row">
+    <div ng-app="SoundsApp" ng-view>
+      <div class="col-md-6">
+        <% include ../public/templates/index.ejs %>
+      </div>
     </div>
-  </body>
+      <div class="col-md-3 chatbox">
+        <div class="messagecontainer">
+          <ul id="messages"></ul>
+        </div>
+        <form class="chatform" action="">
+          <div class="form-group">
+            <input class="form-control" id="m" autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <button class="form-control">Send</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    $('.chatform').submit(function(){
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+    socket.on('chat message', function(msg){
+      $('#messages').append($('<li>').text(msg));
+    });
+  </script>
+</body>
 </html>

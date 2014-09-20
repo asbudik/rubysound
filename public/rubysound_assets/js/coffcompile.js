@@ -6,7 +6,7 @@
   SoundsApp.config([
     "$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
       $routeProvider.when('/', {
-        templateUrl: "templates/index.html",
+        templateUrl: "templates/index.ejs",
         controller: "SoundsCtrl as sounds"
       }).otherwise({
         redirectTo: "/"
@@ -33,13 +33,13 @@
 
     SoundsCtrl.prototype.searchSongs = function(query) {
       var thisQuery;
-      this.greeting = "you";
       thisQuery = query;
       this.scope.query = {};
       return this.http.post('api/searchsongs', {
         query: query.string
       }).success((function(_this) {
         return function(data) {
+          _this.scope.clicked = false;
           console.log(data);
           _this.tracks = data.tracks.items;
           return _this.artists = data.artists;

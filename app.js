@@ -1,11 +1,13 @@
 var express = require('express');
-var app = express();
+var app = require('express')();
+var http = require('http').Server(app);
 var morgan = require('morgan');
 var bodyParser = require('body-parser');
 var db = require("./models/index.js");
 var flash = require("connect-flash");
 var request = require("request");
-app = express();
+var io = require('socket.io')(http);
+
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -13,7 +15,13 @@ app.use(bodyParser.json());                   // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(morgan('dev'))
 
-app.set("view engine", "ejs");
+app.set("view engine", "html");
+
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+});
 
 
 app.post('/api/searchsongs', function(req, res) {
@@ -90,9 +98,9 @@ app.post('/api/users/:id/songs', function(req, res) {
 
 
 app.get('*', function(req, res) {
-  res.render('index', {soundcloud_id: process.env.SOUNDCLOUD_ID}); // load the single view file (angular will handle the page changes on the front-end)
+  res.render('index.ejs')
 });
 
-app.listen(3000, function() {
+http.listen(3000, function() {
   console.log("SERVER LISTENING ON 3000")
 })

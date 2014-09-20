@@ -8,7 +8,7 @@ SoundsApp = angular.module("SoundsApp", [
 SoundsApp.config ["$routeProvider", "$locationProvider", ($routeProvider, $locationProvider) ->
   $routeProvider
     .when '/',
-      templateUrl: "templates/index.html",
+      templateUrl: "templates/index.ejs",
       controller: "SoundsCtrl as sounds"
   .otherwise
     redirectTo: "/"
