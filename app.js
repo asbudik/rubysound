@@ -82,7 +82,7 @@ app.post('/api/searchlivebands', function(req, res) {
 
 app.get('/api/users', function(req, res) {
   db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
-    res.json(allUsers)
+    res.json({allusers: allUsers, session: req.user})
   })
 })
 
@@ -93,14 +93,15 @@ app.post('/api/users', function(req, res) {
       res.json({message: err.message})
     },
     function(success) {
-      passport.serializeUser(function(user, done) {
-        console.log("Initial serialize");
-        done(null, success.user.id)
-      })
-      res.json({user: success.user, isAuthenticated: req.isAuthenticated(),
-      message: success.message})
+        res.json({user: success.user, message: success.message})
     });
   });
+
+app.post('/api/login',
+  passport.authenticate('local'), function (req, res) {
+    res.json(req.session)
+  }
+)
 
 
 // app.get('/api/users/:id', function(req, res) {
@@ -139,9 +140,13 @@ app.post('/api/users', function(req, res) {
 //   })
 // })
 
+app.get('/logout', function(req, res) {
+  req.logout()
+  res.redirect("/")
+})
 
 app.get('*', function(req, res) {
-  res.render('index.ejs')
+  res.render('index.ejs', {isAuthenticated: req.isAuthenticated()})
 });
 
 http.listen(3000, function() {

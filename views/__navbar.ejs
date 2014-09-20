@@ -1,6 +1,6 @@
 <div class="container">
   <div class="navbar-header">
-    <a href="../" class="navbar-brand">RubySound</a>
+    <a href="/" class="navbar-brand">RubySound</a>
     <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
@@ -16,11 +16,13 @@
         <a href="recent">Recently Played</a>
       </li>
     </ul>
-
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="login">Login</a></li>
-      <li><a href="signup">Sign Up</a></li>
-    </ul>
+    <% if (isAuthenticated !== undefined) { %>
+      <% if (isAuthenticated) { %>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="logout">Logout</a></li>
+        </ul>
+      <% } %>
+    <% } %>
 
   </div>
 </div>

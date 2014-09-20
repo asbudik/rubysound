@@ -8,12 +8,6 @@
       $routeProvider.when('/', {
         templateUrl: "templates/spa.html",
         controller: "SoundsCtrl as sounds"
-      }).when('/login', {
-        templateUrl: "templates/login.html",
-        controller: "LoginCtrl as login"
-      }).when('/signup', {
-        templateUrl: "templates/signup.html",
-        controller: "LoginCtrl as sign"
       }).otherwise({
         redirectTo: "/"
       });
@@ -24,17 +18,27 @@
 }).call(this);
 
 (function() {
-  var LoginCtrl, SoundsControllers, SoundsCtrl;
+  var SoundsControllers, SoundsCtrl;
 
   SoundsControllers = angular.module("SoundsControllers", []);
 
   SoundsCtrl = (function() {
-    function SoundsCtrl(scope, http, Sound) {
+    function SoundsCtrl(scope, http, location, Sound) {
       this.scope = scope;
       this.http = http;
+      this.location = location;
       this.Sound = Sound;
       this.greeting = "hello worldsss";
       this.tracks = [];
+      this.http.get('api/users').success((function(_this) {
+        return function(data) {
+          console.log(data);
+          _this.users = data;
+          if (data.session) {
+            return _this.scope.signup = true;
+          }
+        };
+      })(this));
     }
 
     SoundsCtrl.prototype.searchSongs = function(query) {
@@ -46,7 +50,6 @@
       }).success((function(_this) {
         return function(data) {
           _this.scope.clicked = false;
-          console.log(data);
           _this.tracks = data.tracks.items;
           return _this.artists = data.artists;
         };
@@ -64,33 +67,26 @@
       })(this));
     };
 
-    return SoundsCtrl;
-
-  })();
-
-  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "Sound", SoundsCtrl]);
-
-  LoginCtrl = (function() {
-    function LoginCtrl(scope, http) {
-      this.scope = scope;
-      this.http = http;
-      this.logingreeting = "greetings";
-    }
-
-    LoginCtrl.prototype.signup = function(user) {
-      console.log(user);
+    SoundsCtrl.prototype.signup = function(user) {
       return this.http.post('api/users', user).success((function(_this) {
         return function(data) {
-          return console.log(data);
+          console.log(data.user);
+          if (data.user) {
+            _this.scope.user = {};
+            return _this.http.post('/api/login', user).success(function(data) {
+              console.log(data);
+              return _this.scope.signup = true;
+            });
+          }
         };
       })(this));
     };
 
-    return LoginCtrl;
+    return SoundsCtrl;
 
   })();
 
-  SoundsControllers.controller("LoginCtrl", ["$scope", "$http", LoginCtrl]);
+  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "Sound", SoundsCtrl]);
 
 }).call(this);
 

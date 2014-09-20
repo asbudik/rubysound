@@ -10,12 +10,6 @@ SoundsApp.config ["$routeProvider", "$locationProvider", ($routeProvider, $locat
     .when '/',
       templateUrl: "templates/spa.html",
       controller: "SoundsCtrl as sounds"
-    .when '/login',
-      templateUrl: "templates/login.html",
-      controller: "LoginCtrl as login"
-    .when '/signup',
-      templateUrl: "templates/signup.html",
-      controller: "LoginCtrl as sign"
   .otherwise
     redirectTo: "/"
 

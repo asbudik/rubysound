@@ -34,14 +34,19 @@ module.exports = function (sequelize, DataTypes) {
         return bcrypt.compareSync(userpass, dbpass);
       },
       createNewUser: function(params, err, success) {
+        existinguser = User.find({where: {username: params.username}})
         if (params.password.length < 6) {
           err({message: "password should be more than six characters"})
         } else if (params.password !== params.confirmation) {
           err({message: "passwords do not match, please try again"})
+        } else if (params.username.length < 6) {
+          err({message: "username should be more than six characters"})
         } else {
           User.create({
             username: params.username,
             password: User.encryptPass(params.password)
+          }).error(function(error) {
+            err({message: "An account with that username already exists"})
           }).success(function(user) {
             success({message: 'Welcome to the community!', user: user})
           });

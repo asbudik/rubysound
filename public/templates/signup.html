@@ -1,17 +1,16 @@
 <div class="col-md-3">
-  <form ng-submit="sign.signup(user)">
+  <form ng-submit="sounds.signup(user)">
   <div class="form-group">
-    <input type="text" class="form-control" type="text" ng-model="user.username" placeholder="Create a username" autofocus>
+    <input type="text" class="form-control" type="text" ng-model="user.username" placeholder="Create a username" autofocus required>
   </div>
   <div class="form-group">
-    <input type="password" class="form-control" type="text" ng-model="user.password" placeholder="Create a password">
+    <input type="password" class="form-control" type="text" ng-model="user.password" placeholder="Create a password" required>
   </div>
   <div class="form-group">
-    <input type="password" class="form-control" type="text" ng-model="user.confirmation" placeholder="Verify your password">
+    <input type="password" class="form-control" type="text" ng-model="user.confirmation" placeholder="Verify your password" required>
   </div>
   <div class="form-group">
     <button class="form-control btn btn-danger">Join the revolution</button>
   </div>
   </form>
 </div>
-{{sign.logingreeting}}
