@@ -54,10 +54,7 @@ passport.deserializeUser(function(id, done) {
 
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){
-    if (currentUser === undefined || currentUser === {username: 'Guest'}) {
-      currentUser = {username: 'Guest'}
-    }
-    io.emit('chat message', currentUser.username + ": " + msg);
+    io.emit('chat message', msg);
     clients.forEach(function(client) {
       socket["client.id"] = client.username
       console.log("stuff", socket["client.id"])
@@ -160,7 +157,7 @@ app.post('/api/login', function(req, res, next) {
 app.get('/logout', function(req, res) {
   clients.forEach(function(client) {
     if (req.user.id === client.id) {
-      clients.splice(clients.indexOf(client))
+      clients.splice(clients.indexOf(client), 1)
     }
   })
   currentUser = undefined
@@ -169,7 +166,7 @@ app.get('/logout', function(req, res) {
 })
 
 app.get('*', function(req, res) {
-  res.render('index.ejs', {isAuthenticated: req.isAuthenticated()})
+  res.render('index.ejs', {isAuthenticated: req.isAuthenticated(), user: req.user})
 });
 
 http.listen(3000, function() {
