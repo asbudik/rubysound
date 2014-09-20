@@ -33,9 +33,11 @@ module.exports = function (sequelize, DataTypes) {
       comparePass: function(userpass, dbpass) {
         return bcrypt.compareSync(userpass, dbpass);
       },
-      createNewUser: function(username, password, err, success) {
+      createNewUser: function(username, password, confirmation, err, success) {
         if (password.length < 6) {
           err({message: "password should be more than six characters"})
+        } else if (password !== confirmation) {
+          err({message: "passwords do not match, please try again"})
         } else {
           User.create({
             username: username,

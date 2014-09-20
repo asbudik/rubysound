@@ -1,21 +1,53 @@
-var express = require('express');
-var app = require('express')();
-var http = require('http').Server(app);
-var morgan = require('morgan');
-var bodyParser = require('body-parser');
-var db = require("./models/index.js");
-var flash = require("connect-flash");
-var request = require("request");
-var io = require('socket.io')(http);
+var express =       require('express');
+var app =           require('express')();
+var http =          require('http').Server(app);
+var morgan =        require('morgan');
+var bodyParser =    require('body-parser');
+var db =            require("./models/index.js");
+var flash =         require("connect-flash");
+var request =       require("request");
+var io =            require('socket.io')(http);
+var passport =      require("passport");
+var passportLocal = require("passport-local");
+var cookieParser =  require("cookie-parser");
+var cookieSession = require("cookie-session");
 
+app.set("view engine", "html");
 
 app.use(express.static(__dirname + '/public'));
+
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());                   // parse application/json
+
+app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(morgan('dev'))
 
-app.set("view engine", "html");
+app.use(cookieSession({
+  secret: process.env.COOKIE_SECRET,
+  name: process.env.COOKIE_NAME,
+  maxage: 300000
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+passport.serializeUser(function(user, done) {
+  console.log("SERIALIZED");
+  done(null, user.id);
+})
+
+passport.deserializeUser(function(id, done) {
+  console.log("DESERIALIZED");
+  db.user.find({
+    where: {
+      id: id
+    }
+  }).done(function(error, user) {
+    done(error, user)
+  })
+})
+
 
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){

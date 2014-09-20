@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="SoundsApp">
+<html>
  <head>
   <script src="vendor/angular.js"></script>
   <script src="vendor/angular-route.min.js"></script>
@@ -19,24 +19,15 @@
 
 </head>
 <body>
+  <% include __navbar.ejs %>
+  
   <div class="row">
     <div ng-app="SoundsApp" ng-view>
       <div class="col-md-6">
-        <% include ../public/templates/index.ejs %>
       </div>
     </div>
       <div class="col-md-3 chatbox">
-        <div class="messagecontainer">
-          <ul id="messages"></ul>
-        </div>
-        <form class="chatform" action="">
-          <div class="form-group">
-            <input class="form-control" id="m" autocomplete="off" />
-          </div>
-          <div class="form-group">
-            <button class="form-control">Send</button>
-          </div>
-        </form>
+        <% include __chatbox.ejs %>
       </div>
     </div>
   </div>

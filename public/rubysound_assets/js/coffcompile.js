@@ -6,7 +6,7 @@
   SoundsApp.config([
     "$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
       $routeProvider.when('/', {
-        templateUrl: "templates/index.ejs",
+        templateUrl: "templates/spa.html",
         controller: "SoundsCtrl as sounds"
       }).otherwise({
         redirectTo: "/"
