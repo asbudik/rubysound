@@ -97,11 +97,16 @@ app.post('/api/users', function(req, res) {
     });
   });
 
-app.post('/api/login',
-  passport.authenticate('local'), function (req, res) {
-    res.json(req.session)
-  }
-)
+app.post('/api/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return res.json({message: "Login or password incorrect"}) }
+    if (!user) { return res.json({message: "Login or password incorrect"}) }
+    req.logIn(user, function(err) {
+      if (err) { return res.json({message: "Login or password incorrect"}) }
+      return res.json(req.user)
+    });
+  })(req, res, next);
+});
 
 
 // app.get('/api/users/:id', function(req, res) {

@@ -35,7 +35,10 @@
           console.log(data);
           _this.users = data;
           if (data.session) {
-            return _this.scope.signup = true;
+            _this.scope.signup = true;
+            _this.scope.loginshow = false;
+            _this.scope.showsearch = true;
+            return _this.scope.logoutbutton = true;
           }
         };
       })(this));
@@ -75,11 +78,41 @@
             _this.scope.user = {};
             return _this.http.post('/api/login', user).success(function(data) {
               console.log(data);
-              return _this.scope.signup = true;
+              _this.scope.signup = true;
+              _this.scope.loginshow = false;
+              _this.scope.logoutbutton = true;
+              return _this.scope.showsearch = true;
             });
           }
         };
       })(this));
+    };
+
+    SoundsCtrl.prototype.login = function(user) {
+      return this.http.post('api/login', user).success((function(_this) {
+        return function(data) {
+          if (data.message) {
+            return _this.notice = data.message;
+          } else {
+            _this.notice = "Welcome back!";
+            _this.scope.signup = true;
+            _this.scope.loginshow = false;
+            _this.scope.logoutbutton = true;
+            return _this.scope.showsearch = true;
+          }
+        };
+      })(this));
+    };
+
+    SoundsCtrl.prototype.getLogin = function() {
+      console.log('geti');
+      this.scope.loginshow = true;
+      return this.scope.signup = true;
+    };
+
+    SoundsCtrl.prototype.getSignUp = function() {
+      this.scope.loginshow = false;
+      return this.scope.signup = false;
     };
 
     return SoundsCtrl;

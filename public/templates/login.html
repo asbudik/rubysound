@@ -1,21 +1,14 @@
 <div class="col-md-3">
-  <form ng-submit="sounds.searchSongs(query)">
+  <form ng-submit="sounds.login(user)">
   <div class="form-group">
-    <input class="form-control" type="text" ng-model="query.string">
+    <input type="text" class="form-control" type="text" ng-model="user.username" placeholder="Enter your username" autofocus required>
   </div>
   <div class="form-group">
-    <button class="form-control btn btn-danger">Search</button>
+    <input type="password" class="form-control" type="text" ng-model="user.password" placeholder="Enter your password" required>
+  </div>
+  <div class="form-group">
+    <button class="form-control btn btn-danger">Sign on in</button>
   </div>
   </form>
-  <div class="songselection">
-    <div ng-repeat="track in sounds.tracks">
-      <a href ng-hide="clicked" ng-click="sounds.searchLiveBands(track)">
-        <div class="searchsong">
-          <img src="{{track.album.images[2].url}}">
-          {{track.artists[0].name}}
-          {{track.name}}
-        </div>
-      </a>
-    </div>
-  </div>
+   <a href ng-click="sounds.getSignUp()">Not a member? Sign up here</a>
 </div>

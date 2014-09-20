@@ -1,5 +1,9 @@
+<div ng-include="'templates/navbar.html'"></div>
+{{sounds.notice}}
+
 <div ng-hide="signup" class="animate-show" ng-include="'templates/signup.html'"></div>
-<div ng-show="signup" class="col-md-3 animate-show">
+<div ng-show="loginshow" class="animate-show" ng-include="'templates/login.html'"></div>
+<div ng-show="showsearch" class="col-md-3 animate-show">
   <form ng-submit="sounds.searchSongs(query)">
   <div class="form-group">
     <input class="form-control" type="text" ng-model="query.string">

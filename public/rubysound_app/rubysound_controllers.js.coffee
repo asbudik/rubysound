@@ -9,6 +9,9 @@ class SoundsCtrl
       @users = data
       if data.session
         @scope.signup = true
+        @scope.loginshow = false
+        @scope.showsearch = true
+        @scope.logoutbutton = true
 
   searchSongs: (query) ->
     thisQuery = query
@@ -31,5 +34,28 @@ class SoundsCtrl
         @http.post('/api/login', user).success (data) =>
           console.log(data)
           @scope.signup = true
+          @scope.loginshow = false
+          @scope.logoutbutton = true
+          @scope.showsearch = true
+
+  login: (user) ->
+    @http.post('api/login', user).success (data) =>
+      if data.message
+        @notice = data.message
+      else
+        @notice = "Welcome back!"
+        @scope.signup = true
+        @scope.loginshow = false
+        @scope.logoutbutton = true
+        @scope.showsearch = true
+
+  getLogin: () ->
+    console.log('geti')
+    @scope.loginshow = true
+    @scope.signup = true
+
+  getSignUp: () ->
+    @scope.loginshow = false
+    @scope.signup = false
 
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "Sound", SoundsCtrl])
