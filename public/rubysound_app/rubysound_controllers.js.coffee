@@ -21,18 +21,26 @@ class SoundsCtrl
       @tracks.soundcloud = data
       @http.post('api/spotify', {query: query.string}).success (data) =>
         @tracks.spotify = data
+
+        count = 0
+        for track in @tracks.spotify.tracks.items
+          track.streamUrl = @tracks.soundcloud[count].permalink_url
+          count += 1
+
         @scope.clicked = false
 
   searchLiveBands: (track) ->
     @scope.clicked = true
     @newSong = {}
-    @http.post("api/users/#{@user.id}/songs", {title: track.name, artist: track.artists[0].name, image: track.album.images[2].url, playthrough: false}).success (data) =>
-      console.log(data)
+    console.log(track)
+    @http.post("api/users/#{@user.id}/songs", {title: track.name, artist: track.artists[0].name, image: track.album.images[2].url, playthrough: false, url: track.streamUrl}).success (data) =>
       @songs.push(data)
-      @newSong = data.song.id
+      @newSong = data.song
       @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
         for listing in data
-          @http.post("api/songs/#{@newSong}/venues", {venuename: listing.formatted_location + " AT " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
+          @http.post("api/songs/#{@newSong.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
+        
+        @songs.push(@newSong)
 
   # signup: (user) ->
   #   @http.post('api/users', user).success (data) =>

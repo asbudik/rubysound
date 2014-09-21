@@ -57,7 +57,15 @@
           return _this.http.post('api/spotify', {
             query: query.string
           }).success(function(data) {
+            var count, track, _i, _len, _ref;
             _this.tracks.spotify = data;
+            count = 0;
+            _ref = _this.tracks.spotify.tracks.items;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              track = _ref[_i];
+              track.streamUrl = _this.tracks.soundcloud[count].permalink_url;
+              count += 1;
+            }
             return _this.scope.clicked = false;
           });
         };
@@ -67,30 +75,30 @@
     SoundsCtrl.prototype.searchLiveBands = function(track) {
       this.scope.clicked = true;
       this.newSong = {};
+      console.log(track);
       return this.http.post("api/users/" + this.user.id + "/songs", {
         title: track.name,
         artist: track.artists[0].name,
         image: track.album.images[2].url,
-        playthrough: false
+        playthrough: false,
+        url: track.streamUrl
       }).success((function(_this) {
         return function(data) {
-          console.log(data);
           _this.songs.push(data);
-          _this.newSong = data.song.id;
+          _this.newSong = data.song;
           return _this.http.post('api/searchlivebands', {
             track: track.artists[0].name
           }).success(function(data) {
-            var listing, _i, _len, _results;
-            _results = [];
+            var listing, _i, _len;
             for (_i = 0, _len = data.length; _i < _len; _i++) {
               listing = data[_i];
-              _results.push(_this.http.post("api/songs/" + _this.newSong + "/venues", {
-                venuename: listing.formatted_location + " AT " + listing.venue.name,
+              _this.http.post("api/songs/" + _this.newSong.id + "/venues", {
+                venuename: listing.formatted_location + " **AT** " + listing.venue.name,
                 venuedate: listing.formatted_datetime,
                 rsvp: listing.facebook_rsvp_url
-              }));
+              });
             }
-            return _results;
+            return _this.songs.push(_this.newSong);
           });
         };
       })(this));

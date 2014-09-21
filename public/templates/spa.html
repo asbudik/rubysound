@@ -26,4 +26,7 @@
 </div>
 <div class="col-md-3">
   <div ng-include="'templates/plangular.html'"></div>
+  <div ng-repeat="song in songs">
+    {{song.url}}
+  </div>
 </div>

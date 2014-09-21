@@ -11,7 +11,11 @@ function Song(sequelize, DataTypes){
       allowNull: false
     },
     image: DataTypes.STRING,
-    playthrough: DataTypes.BOOLEAN
+    playthrough: DataTypes.BOOLEAN,
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
   },
     {
       classMethods: {
