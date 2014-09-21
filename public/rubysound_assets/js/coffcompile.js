@@ -1,7 +1,7 @@
 (function() {
   var SoundsApp;
 
-  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "SoundsFactories", "plangular"]);
+  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "SoundsFactories", "plangular", "mediaPlayer"]);
 
   SoundsApp.config([
     "$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
@@ -35,6 +35,8 @@
       this.http.get('api/users').success((function(_this) {
         return function(data) {
           _this.users = data;
+          _this.songs = data.queue;
+          console.log("songs", _this.songs);
           if (data.session) {
             _this.user = data.session;
             _this.scope.signup = true;
@@ -83,8 +85,7 @@
 
     SoundsCtrl.prototype.searchLiveBands = function(track) {
       this.scope.clicked = true;
-      this.newSong = {};
-      console.log(track);
+      this.newQueue = {};
       return this.http.post("api/users/" + this.user.id + "/songs", {
         title: track.name,
         artist: track.artists[0].name,
@@ -94,7 +95,7 @@
       }).success((function(_this) {
         return function(data) {
           _this.songs.push(data);
-          _this.newSong = data.song;
+          _this.newQueue = data.queue;
           _this.http.post('api/searchlivebands', {
             track: track.artists[0].name
           }).success(function(data) {
@@ -102,7 +103,7 @@
             _results = [];
             for (_i = 0, _len = data.length; _i < _len; _i++) {
               listing = data[_i];
-              _results.push(_this.http.post("api/songs/" + _this.newSong.id + "/venues", {
+              _results.push(_this.http.post("api/songs/" + _this.newQueue.id + "/venues", {
                 venuename: listing.formatted_location + " **AT** " + listing.venue.name,
                 venuedate: listing.formatted_datetime,
                 rsvp: listing.facebook_rsvp_url
@@ -110,7 +111,19 @@
             }
             return _results;
           });
-          return _this.songs.push(_this.newSong);
+          _this.songs.push(_this.newQueue);
+          return console.log(_this.newQueue);
+        };
+      })(this));
+    };
+
+    SoundsCtrl.prototype.deleteQueueItem = function(queueItem) {
+      console.log('in here');
+      console.log("songs", this.songs[0]);
+      return this.http["delete"]("api/queues/" + this.songs[0].id).success((function(_this) {
+        return function(data) {
+          _this.songs.shift();
+          return true;
         };
       })(this));
     };

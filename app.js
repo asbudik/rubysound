@@ -97,7 +97,9 @@ app.post('/api/searchlivebands', function(req, res) {
 
 app.get('/api/users', function(req, res) {
   db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
-    res.json({allusers: allUsers, session: req.user})
+    db.queue.findAll({order: [['createdAt', 'ASC']]}).success(function(allQueues) {
+      res.json({allusers: allUsers, session: req.user, queue: allQueues})
+    })
   })
 })
 
@@ -126,7 +128,9 @@ app.post('/api/users/:id/songs', function(req, res) {
   db.user.find(req.params.id).success(function(foundUser) {
     db.song.create(req.body).success(function(newSong) {
       foundUser.addSong(newSong).success(function() {
-        res.json({user: foundUser, song: newSong})
+        db.queue.create(req.body).success(function(newQueue){
+          res.json({user: foundUser, song: newSong, queue: newQueue})
+        })
       })
     })
   })
@@ -146,6 +150,12 @@ app.get('/logout', function(req, res) {
   currentUser = undefined
   req.logout()
   res.redirect("/")
+})
+
+app.delete('/api/queues/:id', function(req, res) {
+  db.queue.find(req.body.id).success(function(foundQueue) {
+    res.json(foundQueue.destroy())
+  })
 })
 
 app.get('*', function(req, res) {

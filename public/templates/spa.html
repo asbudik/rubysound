@@ -28,15 +28,19 @@
     </div>
   </div>
 </div>
+
 <div class="col-md-3">
   <div ng-include="'templates/plangular.html'"></div>
   <div ng-repeat="song in sounds.songs">
     {{song.url}}
-    <div plangular="{{song.url}}" type="audio/mp3">
-      <a href="#{{ example.id }}" class="block py1 nav-item"
-        ng-click="playPause()"
-        ng-class="{ 'bg-darken-1': player.playing == track }">
-      </a>
+    <div class="playsong">
+      <div plangular="{{song.url}}" type="audio/mp3">
+        <a href="#{{ example.id }}" class="block py1 nav-item"
+          ng-click="playPause()"
+          ng-class="{ 'bg-darken-1': player.playing == track }">
+        </a>
+      </div>
     </div>
+    
   </div>
 </div>
