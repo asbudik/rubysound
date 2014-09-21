@@ -14,17 +14,3 @@
   </progress>
   <p class="h6">{{ player.currentTime | prettyTime }} - {{ player.duration | prettyTime }}</p>
 </div>
-
-<div plangular="http://soundcloud.com/jxnblk/really-wanna">
-  <a href="#{{ example.id }}" class="block py1 nav-item"
-    ng-click="playPause()"
-    ng-class="{ 'bg-darken-1': player.playing == track }">
-  </a>
-</div>
-
-<div plangular="http://soundcloud.com/jxnblk/let-go">
-  <a href="#{{ example.id }}" class="block py1 nav-item"
-    ng-click="playPause()"
-    ng-class="{ 'bg-darken-1': player.playing == track }">
-  </a>
-</div>

@@ -30,6 +30,7 @@
       this.Sound = Sound;
       this.user = "";
       this.tracks = {};
+      this.tracks.soundcloud = [];
       this.songs = [];
       this.http.get('api/users').success((function(_this) {
         return function(data) {
@@ -53,17 +54,25 @@
         query: query.string
       }).success((function(_this) {
         return function(data) {
-          _this.tracks.soundcloud = data;
+          var track, _i, _len;
+          for (_i = 0, _len = data.length; _i < _len; _i++) {
+            track = data[_i];
+            if (track.streamable === true) {
+              _this.tracks.soundcloud.push(track);
+            }
+          }
           return _this.http.post('api/spotify', {
-            query: query.string
+            query: query.string,
+            limiter: _this.tracks.soundcloud.length
           }).success(function(data) {
-            var count, track, _i, _len, _ref;
+            var count, _j, _len1, _ref;
             _this.tracks.spotify = data;
             count = 0;
             _ref = _this.tracks.spotify.tracks.items;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              track = _ref[_i];
+            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+              track = _ref[_j];
               track.streamUrl = _this.tracks.soundcloud[count].permalink_url;
+              track.soundcloudtitle = _this.tracks.soundcloud[count].title;
               count += 1;
             }
             return _this.scope.clicked = false;
@@ -86,20 +95,22 @@
         return function(data) {
           _this.songs.push(data);
           _this.newSong = data.song;
-          return _this.http.post('api/searchlivebands', {
+          _this.http.post('api/searchlivebands', {
             track: track.artists[0].name
           }).success(function(data) {
-            var listing, _i, _len;
+            var listing, _i, _len, _results;
+            _results = [];
             for (_i = 0, _len = data.length; _i < _len; _i++) {
               listing = data[_i];
-              _this.http.post("api/songs/" + _this.newSong.id + "/venues", {
+              _results.push(_this.http.post("api/songs/" + _this.newSong.id + "/venues", {
                 venuename: listing.formatted_location + " **AT** " + listing.venue.name,
                 venuedate: listing.formatted_datetime,
                 rsvp: listing.facebook_rsvp_url
-              });
+              }));
             }
-            return _this.songs.push(_this.newSong);
+            return _results;
           });
+          return _this.songs.push(_this.newSong);
         };
       })(this));
     };

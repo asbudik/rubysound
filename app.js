@@ -61,7 +61,7 @@ io.on('connection', function(socket){
 
 app.post('/api/spotify', function(req, res) {
   var searchURL = "https://api.spotify.com/v1/search?q="
-  + req.body.query + "&type=artist,track&limit=4"
+  + req.body.query + "&type=artist,track&limit=" + req.body.limiter
 
   request(searchURL, function(error, response, body) {
     if(!error) {
@@ -85,7 +85,7 @@ app.post('/api/searchlivebands', function(req, res) {
 
  app.post('/api/soundcloud', function(req, res) {
   var searchURL = 'http://api.soundcloud.com/tracks.json?client_id='
-  + process.env.SOUNDCLOUD_ID + '&q=' + req.body.query + '&limit=4'
+  + process.env.SOUNDCLOUD_ID + '&q=' + req.body.query + '&limit=10'
  
    request(searchURL, function(error, response, body) {
      if(!error) {

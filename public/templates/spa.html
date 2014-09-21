@@ -16,9 +16,13 @@
     <div ng-repeat="track in sounds.tracks.spotify.tracks.items">
       <a href ng-hide="clicked" ng-click="sounds.searchLiveBands(track)">
         <div class="searchsong">
-          <img src="{{track.album.images[2].url}}">
-          {{track.artists[0].name}}
-          {{track.name}}
+          <div class="songcover">
+            <img src="{{track.album.images[2].url}}">
+            {{track.artists[0].name}}
+          </div>
+          <div class="songsuggestions">
+            {{track.soundcloudtitle}}
+          </div>
         </div>
       </a>
     </div>
@@ -26,7 +30,13 @@
 </div>
 <div class="col-md-3">
   <div ng-include="'templates/plangular.html'"></div>
-  <div ng-repeat="song in songs">
+  <div ng-repeat="song in sounds.songs">
     {{song.url}}
+    <div plangular="{{song.url}}" type="audio/mp3">
+      <a href="#{{ example.id }}" class="block py1 nav-item"
+        ng-click="playPause()"
+        ng-class="{ 'bg-darken-1': player.playing == track }">
+      </a>
+    </div>
   </div>
 </div>

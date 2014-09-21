@@ -42,3 +42,10 @@ svg {
   width: 100%;
   position: relative;
 }
+
+.songsuggestions {
+  font-size: 12px;
+  padding: 8px;
+  border-bottom: 1px solid grey;
+  margin-bottom: 10px;
+}
