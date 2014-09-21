@@ -122,41 +122,25 @@ app.post('/login', passport.authenticate('local', {
 }));
 
 
-// app.get('/api/users/:id', function(req, res) {
-//   db.user.find(req.params.id).success(function(foundUser) {
-//     foundUser.getSongs().success(function(userSongs) {
-//       res.json({user: foundUser, songs: userSongs})
-//     })
-//   })
-// })
+app.post('/api/users/:id/songs', function(req, res) {
+  db.user.find(req.params.id).success(function(foundUser) {
+    db.song.create(req.body).success(function(newSong) {
+      foundUser.addSong(newSong).success(function() {
+        res.json({user: foundUser, song: newSong})
+      })
+    })
+  })
+})
 
-// app.put('/api/users/:id', function(req, res) {
-//   db.user.find(req.params.id).success(function(foundUser) {
-//     foundUser.updateAttributes(req.body).success(function() {
-//       res.json(foundUser)
-//     })
-//   })
-// })
-
-// app.post('/api/users/:id/songs', function(req, res) {
-//   db.user.find(req.params.id).success(function(foundUser) {
-//     db.song.create(req.body).success(function(newSong) {
-//       foundUser.addSong(newSong).success(function() {
-//         res.json({user: foundUser, song: newSong})
-//       })
-//     })
-//   })
-// })
-
-// app.post('api/songs/:id/votes', function(req, res) {
-//   db.song.find(req.params.id).success(function(foundSong) {
-//     db.vote.create(req.body).success(function(newVote) {
-//       foundSong.addVote(newVote).success(function() {
-//         res.json({song: foundSong, vote: newVote})
-//       })
-//     })
-//   })
-// })
+app.post('/api/songs/:id/venues', function(req, res) {
+  db.song.find(req.params.id).success(function(foundSong) {
+    db.venue.create(req.body).success(function(newVenue) {
+      foundSong.addVenue(newVenue).success(function() {
+        res.json({song: foundSong, venue: newVenue})
+      })
+    })
+  })
+})
 
 app.get('/logout', function(req, res) {
   currentUser = undefined

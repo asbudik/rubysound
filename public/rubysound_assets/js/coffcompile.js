@@ -1,7 +1,7 @@
 (function() {
   var SoundsApp;
 
-  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "SoundsFactories"]);
+  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "SoundsFactories", "plangular"]);
 
   SoundsApp.config([
     "$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
@@ -28,13 +28,14 @@
       this.http = http;
       this.location = location;
       this.Sound = Sound;
-      this.greeting = "hello worldsss";
+      this.user = "";
       this.tracks = {};
+      this.songs = [];
       this.http.get('api/users').success((function(_this) {
         return function(data) {
-          console.log(data);
           _this.users = data;
           if (data.session) {
+            _this.user = data.session;
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.showsearch = true;
@@ -52,13 +53,12 @@
         query: query.string
       }).success((function(_this) {
         return function(data) {
-          _this.scope.clicked = false;
           _this.tracks.soundcloud = data;
           return _this.http.post('api/spotify', {
             query: query.string
           }).success(function(data) {
             _this.tracks.spotify = data;
-            return console.log(_this.tracks);
+            return _this.scope.clicked = false;
           });
         };
       })(this));
@@ -66,45 +66,32 @@
 
     SoundsCtrl.prototype.searchLiveBands = function(track) {
       this.scope.clicked = true;
-      return this.http.post('api/searchlivebands', {
-        track: track.artists[0].name
+      this.newSong = {};
+      return this.http.post("api/users/" + this.user.id + "/songs", {
+        title: track.name,
+        artist: track.artists[0].name,
+        image: track.album.images[2].url,
+        playthrough: false
       }).success((function(_this) {
         return function(data) {
-          return console.log(data);
-        };
-      })(this));
-    };
-
-    SoundsCtrl.prototype.signup = function(user) {
-      return this.http.post('api/users', user).success((function(_this) {
-        return function(data) {
-          console.log(data.user);
-          if (data.user) {
-            _this.scope.user = {};
-            return _this.http.post('/api/login', user).success(function(data) {
-              console.log(data);
-              _this.scope.signup = true;
-              _this.scope.loginshow = false;
-              _this.scope.logoutbutton = true;
-              return _this.scope.showsearch = true;
-            });
-          }
-        };
-      })(this));
-    };
-
-    SoundsCtrl.prototype.login = function(user) {
-      return this.http.post('api/login', user).success((function(_this) {
-        return function(data) {
-          if (data.message) {
-            return _this.notice = data.message;
-          } else {
-            _this.notice = "Welcome back!";
-            _this.scope.signup = true;
-            _this.scope.loginshow = false;
-            _this.scope.logoutbutton = true;
-            return _this.scope.showsearch = true;
-          }
+          console.log(data);
+          _this.songs.push(data);
+          _this.newSong = data.song.id;
+          return _this.http.post('api/searchlivebands', {
+            track: track.artists[0].name
+          }).success(function(data) {
+            var listing, _i, _len, _results;
+            _results = [];
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              listing = data[_i];
+              _results.push(_this.http.post("api/songs/" + _this.newSong + "/venues", {
+                venuename: listing.formatted_location + " AT " + listing.venue.name,
+                venuedate: listing.formatted_datetime,
+                rsvp: listing.facebook_rsvp_url
+              }));
+            }
+            return _results;
+          });
         };
       })(this));
     };

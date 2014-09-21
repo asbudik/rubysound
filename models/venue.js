@@ -3,7 +3,8 @@ function Venue(sequelize, DataTypes){
 
   var Venue = sequelize.define('venue', {
     venuename: DataTypes.STRING,
-    venuedate: DataTypes.STRING
+    venuedate: DataTypes.STRING,
+    rsvp: DataTypes.STRING
   },
     {
       classMethods: {
