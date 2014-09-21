@@ -1,6 +1,8 @@
 .chatbox { margin: 0; padding: 0; box-sizing: border-box; }
 #messages { list-style-type: none; margin: 0; padding: 0; }
-#messages li { padding: 5px 10px; }
+#messages li { 
+  padding: 5px 10px; 
+}
 #messages li:nth-child(odd) { background: #eee; }
 
 .chatbox {
@@ -13,7 +15,9 @@
   max-height: 400px;
 }
 .messagecontainer {
-  height: 380px;
+  height: 395px;
+  width: 220px;
+  overflow: scroll;
 }
 .animate-show {
   line-height:20px;
@@ -32,4 +36,9 @@
   line-height:0;
   opacity:0;
   padding:0 10px;
+}
+
+svg {
+  width: 100%;
+  position: relative;
 }

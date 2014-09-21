@@ -1,19 +1,19 @@
 <div ng-include="'templates/navbar.html'"></div>
-{{sounds.notice}}
+<div class="col-md-offset-2 col-md-2" ng-hide="signup" ng-include="'templates/signup.html'"></div>
+<div ng-show="loginshow" class="col-md-offset-2 col-md-2 animate-show" ng-include="'templates/login.html'"></div>
 
-<div ng-hide="signup" class="animate-show" ng-include="'templates/signup.html'"></div>
-<div ng-show="loginshow" class="animate-show" ng-include="'templates/login.html'"></div>
-<div ng-show="showsearch" class="col-md-3 animate-show">
+
+<div ng-show="showsearch" class="col-md-offset-2 col-md-2 animate-show">
   <form ng-submit="sounds.searchSongs(query)">
-  <div class="form-group">
-    <input class="form-control" type="text" ng-model="query.string">
-  </div>
-  <div class="form-group">
-    <button class="form-control btn btn-danger">Search</button>
-  </div>
+    <div class="form-group">
+      <input class="form-control" placeholder="Enter an artist and track name" type="text" ng-model="query.string">
+    </div>
+    <div class="form-group">
+      <button class="form-control btn btn-danger">Search</button>
+    </div>
   </form>
   <div class="songselection">
-    <div ng-repeat="track in sounds.tracks">
+    <div ng-repeat="track in sounds.tracks.spotify.tracks.items">
       <a href ng-hide="clicked" ng-click="sounds.searchLiveBands(track)">
         <div class="searchsong">
           <img src="{{track.album.images[2].url}}">
@@ -23,4 +23,7 @@
       </a>
     </div>
   </div>
+</div>
+<div class="col-md-3">
+  <div ng-include="'templates/plangular.html'"></div>
 </div>

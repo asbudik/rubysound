@@ -13,7 +13,6 @@ var cookieParser =  require("cookie-parser");
 var cookieSession = require("cookie-session");
 var server =        require('http').createServer(app)
 
-var clients = []
 var currentUser = undefined
 
 app.set("view engine", "html");
@@ -29,7 +28,7 @@ app.use(morgan('dev'))
 app.use(cookieSession({
   secret: process.env.COOKIE_SECRET,
   name: process.env.COOKIE_NAME,
-  maxage: 300000
+  maxage: 300000000
 }));
 
 app.use(passport.initialize());
@@ -53,19 +52,16 @@ passport.deserializeUser(function(id, done) {
 })
 
 io.on('connection', function(socket){
+  socket.nickname = currentUser
   socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-    clients.forEach(function(client) {
-      socket["client.id"] = client.username
-      console.log("stuff", socket["client.id"])
-    })
+    io.emit('chat message', {msg: msg, nick: socket.nickname});
   });
 });
 
 
-app.post('/api/searchsongs', function(req, res) {
+app.post('/api/spotify', function(req, res) {
   var searchURL = "https://api.spotify.com/v1/search?q="
-  + req.body.query + "&type=artist,track"
+  + req.body.query + "&type=artist,track&limit=4"
 
   request(searchURL, function(error, response, body) {
     if(!error) {
@@ -87,85 +83,78 @@ app.post('/api/searchlivebands', function(req, res) {
   })
 })
 
+ app.post('/api/soundcloud', function(req, res) {
+  var searchURL = 'http://api.soundcloud.com/tracks.json?client_id='
+  + process.env.SOUNDCLOUD_ID + '&q=' + req.body.query + '&limit=4'
+ 
+   request(searchURL, function(error, response, body) {
+     if(!error) {
+       var bodyData = JSON.parse(body);
+      res.json(bodyData)
+     }
+   })
+ })
+
 app.get('/api/users', function(req, res) {
   db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
     res.json({allusers: allUsers, session: req.user})
   })
 })
 
-app.post('/api/users', function(req, res) {
+app.post('/users', function(req, res) {
   db.user.createNewUser(
-    req.body,
+    req.body.user,
     function(err) {
-      res.json({message: err.message})
+      res.redirect('/')
     },
     function(success) {
-        res.json({user: success.user, message: success.message})
+      currentUser = success.user.username
+      req.login(success.user, function(err) {
+        return res.redirect('/')
+      })
     });
   });
 
-app.post('/api/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    if (err) { return res.json({message: "Login or password incorrect"}) }
-    if (!user) { return res.json({message: "Login or password incorrect"}) }
-    req.logIn(user, function(err) {
-      if (err) { return res.json({message: "Login or password incorrect"}) }
-      currentUser = {id: req.user.id, username: req.user.username}
-      clients.push({id: req.user.id, username: req.user.username})
-      return res.json(req.user)
-    });
-  })(req, res, next);
-});
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/', 
+  failureRedirect: '/',
+  failureFlash: true
+}));
 
 
-// app.get('/api/users/:id', function(req, res) {
-//   db.user.find(req.params.id).success(function(foundUser) {
-//     foundUser.getSongs().success(function(userSongs) {
-//       res.json({user: foundUser, songs: userSongs})
-//     })
-//   })
-// })
+app.post('/api/users/:id/songs', function(req, res) {
+  db.user.find(req.params.id).success(function(foundUser) {
+    db.song.create(req.body).success(function(newSong) {
+      foundUser.addSong(newSong).success(function() {
+        res.json({user: foundUser, song: newSong})
+      })
+    })
+  })
+})
 
-// app.put('/api/users/:id', function(req, res) {
-//   db.user.find(req.params.id).success(function(foundUser) {
-//     foundUser.updateAttributes(req.body).success(function() {
-//       res.json(foundUser)
-//     })
-//   })
-// })
-
-// app.post('/api/users/:id/songs', function(req, res) {
-//   db.user.find(req.params.id).success(function(foundUser) {
-//     db.song.create(req.body).success(function(newSong) {
-//       foundUser.addSong(newSong).success(function() {
-//         res.json({user: foundUser, song: newSong})
-//       })
-//     })
-//   })
-// })
-
-// app.post('api/songs/:id/votes', function(req, res) {
-//   db.song.find(req.params.id).success(function(foundSong) {
-//     db.vote.create(req.body).success(function(newVote) {
-//       foundSong.addVote(newVote).success(function() {
-//         res.json({song: foundSong, vote: newVote})
-//       })
-//     })
-//   })
-// })
+app.post('/api/songs/:id/venues', function(req, res) {
+  db.song.find(req.params.id).success(function(foundSong) {
+    db.venue.create(req.body).success(function(newVenue) {
+      foundSong.addVenue(newVenue).success(function() {
+        res.json({song: foundSong, venue: newVenue})
+      })
+    })
+  })
+})
 
 app.get('/logout', function(req, res) {
-  clients.forEach(function(client) {
-    if (req.user.id === client.id) {
-      clients.splice(clients.indexOf(client), 1)
-    }
-  })
   currentUser = undefined
   req.logout()
   res.redirect("/")
 })
 
 app.get('*', function(req, res) {
+  if (req.user) {
+    currentUser = req.user.username
+  } else {
+    currentUser = "Guest"
+  }
+
   res.render('index.ejs', {isAuthenticated: req.isAuthenticated(), user: req.user})
 });
 
