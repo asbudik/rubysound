@@ -29,7 +29,7 @@
       this.location = location;
       this.Sound = Sound;
       this.greeting = "hello worldsss";
-      this.tracks = [];
+      this.tracks = {};
       this.http.get('api/users').success((function(_this) {
         return function(data) {
           console.log(data);
@@ -48,13 +48,18 @@
       var thisQuery;
       thisQuery = query;
       this.scope.query = {};
-      return this.http.post('api/searchsongs', {
+      return this.http.post('api/soundcloud', {
         query: query.string
       }).success((function(_this) {
         return function(data) {
           _this.scope.clicked = false;
-          _this.tracks = data.tracks.items;
-          return _this.artists = data.artists;
+          _this.tracks.soundcloud = data;
+          return _this.http.post('api/spotify', {
+            query: query.string
+          }).success(function(data) {
+            _this.tracks.spotify = data;
+            return console.log(_this.tracks);
+          });
         };
       })(this));
     };

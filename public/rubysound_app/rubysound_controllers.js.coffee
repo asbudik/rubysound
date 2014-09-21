@@ -3,7 +3,7 @@ class SoundsCtrl
   
   constructor: (@scope, @http, @location, @Sound) ->
     @greeting = "hello worldsss"
-    @tracks = []
+    @tracks = {}
     @http.get('api/users').success (data) =>
       console.log(data)
       @users = data
@@ -16,10 +16,13 @@ class SoundsCtrl
   searchSongs: (query) ->
     thisQuery = query
     @scope.query = {}
-    @http.post('api/searchsongs', {query: query.string}).success (data) =>
+    @http.post('api/soundcloud', {query: query.string}).success (data) =>
       @scope.clicked = false
-      @tracks = data.tracks.items
-      @artists = data.artists
+      @tracks.soundcloud = data
+      @http.post('api/spotify', {query: query.string}).success (data) =>
+        @tracks.spotify = data
+
+        console.log(@tracks)
 
   searchLiveBands: (track) ->
     @scope.clicked = true

@@ -28,7 +28,7 @@ app.use(morgan('dev'))
 app.use(cookieSession({
   secret: process.env.COOKIE_SECRET,
   name: process.env.COOKIE_NAME,
-  maxage: 300000
+  maxage: 300000000
 }));
 
 app.use(passport.initialize());
@@ -59,9 +59,9 @@ io.on('connection', function(socket){
 });
 
 
-app.post('/api/searchsongs', function(req, res) {
+app.post('/api/spotify', function(req, res) {
   var searchURL = "https://api.spotify.com/v1/search?q="
-  + req.body.query + "&type=artist,track"
+  + req.body.query + "&type=artist,track&limit=4"
 
   request(searchURL, function(error, response, body) {
     if(!error) {
@@ -82,6 +82,18 @@ app.post('/api/searchlivebands', function(req, res) {
     }
   })
 })
+
+ app.post('/api/soundcloud', function(req, res) {
+  var searchURL = 'http://api.soundcloud.com/tracks.json?client_id='
+  + process.env.SOUNDCLOUD_ID + '&q=' + req.body.query + '&limit=4'
+ 
+   request(searchURL, function(error, response, body) {
+     if(!error) {
+       var bodyData = JSON.parse(body);
+      res.json(bodyData)
+     }
+   })
+ })
 
 app.get('/api/users', function(req, res) {
   db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
