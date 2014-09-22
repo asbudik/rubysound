@@ -9,13 +9,21 @@ class SoundsCtrl
     @http.get('api/users').success (data) =>
       @users = data
       @songs = data.queue
-      console.log("songs", @songs)
       if data.session
         @user = data.session
         @scope.signup = true
         @scope.loginshow = false
         @scope.showsearch = true
         @scope.logoutbutton = true
+
+        for song in @songs
+          for vote in song[1]
+            if vote.uservote == @user.id
+              song[0].voted = true
+              console.log("voted", song[0])
+
+      else
+        @guestuser = true
 
   searchSongs: (query) ->
     thisQuery = query
@@ -60,6 +68,7 @@ class SoundsCtrl
       return true
 
   addVote: (song) ->
+    song[0].voted = true
     @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
       song[1][0].count += 1
 

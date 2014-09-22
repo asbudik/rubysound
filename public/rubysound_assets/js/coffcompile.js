@@ -34,15 +34,38 @@
       this.songs = [];
       this.http.get('api/users').success((function(_this) {
         return function(data) {
+          var song, vote, _i, _len, _ref, _results;
           _this.users = data;
           _this.songs = data.queue;
-          console.log("songs", _this.songs);
           if (data.session) {
             _this.user = data.session;
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.showsearch = true;
-            return _this.scope.logoutbutton = true;
+            _this.scope.logoutbutton = true;
+            _ref = _this.songs;
+            _results = [];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              song = _ref[_i];
+              _results.push((function() {
+                var _j, _len1, _ref1, _results1;
+                _ref1 = song[1];
+                _results1 = [];
+                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                  vote = _ref1[_j];
+                  if (vote.uservote === this.user.id) {
+                    song[0].voted = true;
+                    _results1.push(console.log("voted", song[0]));
+                  } else {
+                    _results1.push(void 0);
+                  }
+                }
+                return _results1;
+              }).call(_this));
+            }
+            return _results;
+          } else {
+            return _this.guestuser = true;
           }
         };
       })(this));
@@ -129,6 +152,7 @@
     };
 
     SoundsCtrl.prototype.addVote = function(song) {
+      song[0].voted = true;
       return this.http.post("api/queues/" + song.id + "/votes", {
         song: song,
         user: this.user.id
