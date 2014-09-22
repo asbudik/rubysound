@@ -1,14 +1,7 @@
 <div plangular>
-  <h2 class="center h6 m0"> {{ player.currentTrack.user.username || '&nbsp;'}} </h2>
-  <h2 class="center m0"> {{ player.currentTrack.title || '&nbsp;' }} </h2>
-  <div class="center table py1">
-    <div class="table-cell px2">
-      <button class="h3 button-icon" ng-click="player.playPause(player.i, player.playlistIndex)">
-        <span ng-if="!player.playing"><svg></svg></span>
-        <span ng-if="player.playing"><svg ></svg></span>
-      </button>
-    </div>
-  </div>
+  <h4 class="center h6 m0">  </h4>
+  <h4 class="center m0"> <img src="{{sounds.songs[0][0].image}}" height="150" width="150">{{ player.currentTrack.user.username || '&nbsp;'}}<br>{{ player.currentTrack.title || '&nbsp;' }} </h4>
+
   <progress value="{{ player.currentTime / player.duration || 0 }}">
     {{ player.currentTime / duration }}
   </progress>

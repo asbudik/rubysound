@@ -57,22 +57,6 @@ plangular.directive('plangular', ['$http', function ($http) {
       audio.play();
     },
 
-    pause: function() {
-      audio.pause();
-      this.playing = false;
-    },
-
-    playPause: function(i, playlistIndex) {
-      var track = this.tracks[i];
-      if (track.tracks && this.playing != track.tracks[playlistIndex]) {
-        this.play(i, playlistIndex);
-      } else if (!track.tracks && this.playing != track) {
-        this.play(i);
-      } else {
-        this.pause();
-      }
-    },
-
     next: function() {
       var playlist = this.tracks[this.i].tracks || null;
       if (playlist && this.playlistIndex < playlist.length - 1) {
@@ -124,7 +108,6 @@ plangular.directive('plangular', ['$http', function ($http) {
 
   audio.addEventListener('ended', function() {
     if (player.tracks.length > 0) player.next();
-    else player.pause();
   }, false);
 
   var index = 0;

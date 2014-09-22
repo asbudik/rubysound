@@ -38,10 +38,6 @@
   padding:0 10px;
 }
 
-svg {
-  width: 100%;
-  position: relative;
-}
 
 .songsuggestions {
   font-size: 12px;
@@ -58,7 +54,7 @@ svg {
   box-shadow: inset -1px -1px 3px ;
 }
 .queuecontainer {
-  height: 150px;
+  height: 350px;
   overflow: scroll;
 }
 .navbarclass .navtitle {
@@ -73,12 +69,25 @@ svg {
   border-radius: 2px;
   width: 90px;
 }
+.votesfloat {
+  float: right;
+  position: relative;
+  top: -50px;
+  margin-right: 10px;
+}
 .logoutbutton a{
   color: black;
   list-style-type: none;
   text-decoration: none;
 }
-
+.imagequeue {
+  width: 64px;
+  height: 64px;
+}
+.singlesong {
+  margin-top: 5px;
+  border-bottom: 1px solid grey;
+}
 .bg {
   position: relative;
   height: 222px;

@@ -31,34 +31,6 @@
       this.filter = filter;
       this.Sound = Sound;
       this.scope.showsearch = true;
-      this.bubbleSort = function(array) {
-        var holder, index, next2last, nextIndex, swapOccured;
-        next2last = array.length - 1;
-        holder = void 0;
-        swapOccured = void 0;
-        index = void 0;
-        nextIndex = void 0;
-        array.some(function() {
-          swapOccured = false;
-          index = 0;
-          while (index < next2last) {
-            nextIndex = index + 1;
-            console.log(array[index]);
-            console.log(array[nextIndex]);
-            if (array[index][1][0].count > array[nextIndex][1][0]) {
-              holder = array[nextIndex];
-              array[nextIndex] = array[index];
-              array[index] = holder;
-              swapOccured = true;
-            }
-            index += 1;
-          }
-          if (!swapOccured) {
-            return true;
-          }
-          return false;
-        });
-      };
       orderBy = this.filter('orderBy');
       this.user = "";
       this.tracks = {};
@@ -96,10 +68,12 @@
             if (a[1][0].count > b[1][0].count) {
               return -1;
             }
-            if (a[1][0].createdAt > b[1][0].createdAt) {
-              return 1;
-            }
+            console.log(a);
+            console.log(b);
             if (a[1][0].createdAt < b[1][0].createdAt) {
+              return -1;
+            }
+            if (a[1][0].createdAt > b[1][0].createdAt) {
               return 1;
             }
             return 0;
@@ -138,7 +112,6 @@
               track = _ref[_j];
               track.streamUrl = _this.tracks.soundcloud[count].permalink_url;
               track.soundcloudtitle = _this.tracks.soundcloud[count].title;
-              console.log(track.soundcloudtitle);
               count += 1;
             }
             return _this.scope.clicked = false;
@@ -148,13 +121,14 @@
     };
 
     SoundsCtrl.prototype.searchLiveBands = function(track) {
+      console.log(track);
       this.scope.clicked = true;
       this.newQueue = {};
       this.newVote = {};
       return this.http.post("api/users/" + this.user.id + "/songs", {
-        title: track.name,
+        title: track.soundcloudtitle,
         artist: track.artists[0].name,
-        image: track.album.images[2].url,
+        image: track.album.images[0].url,
         playthrough: false,
         url: track.streamUrl
       }).success((function(_this) {
@@ -182,8 +156,6 @@
     };
 
     SoundsCtrl.prototype.deleteQueueItem = function(queueItem) {
-      console.log('in here');
-      console.log("songs", this.songs[0]);
       return this.http["delete"]("api/queues/" + this.songs[0].id).success((function(_this) {
         return function(data) {
           _this.songs.shift();
@@ -201,8 +173,8 @@
       }).success((function(_this) {
         return function(data) {
           song[1][0].count += 1;
+          console.log(data.vote);
           _this.songs.push([data.song, [data.vote]]);
-          console.log(_this.songs);
           return _this.songs.sort(function(a, b) {
             if (a[1][0].count < b[1][0].count) {
               return 1;
@@ -210,10 +182,10 @@
             if (a[1][0].count > b[1][0].count) {
               return -1;
             }
-            if (a[1][0].createdAt > b[1][0].createdAt) {
+            if (a[1][0].createdAt < b[1][0].createdAt) {
               return -1;
             }
-            if (a[1][0].createdAt < b[1][0].createdAt) {
+            if (a[1][0].createdAt > b[1][0].createdAt) {
               return 1;
             }
             return 0;

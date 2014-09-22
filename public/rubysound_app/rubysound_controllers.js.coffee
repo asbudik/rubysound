@@ -5,30 +5,6 @@ class SoundsCtrl
 
     @scope.showsearch = true
 
-    @bubbleSort = (array) ->
-      next2last = array.length - 1
-      holder = undefined
-      swapOccured = undefined
-      index = undefined
-      nextIndex = undefined
-      array.some ->
-        swapOccured = false
-        index = 0
-        while index < next2last
-          nextIndex = index + 1
-          console.log(array[index])
-          console.log(array[nextIndex])
-          if array[index][1][0].count > array[nextIndex][1][0]
-            holder = array[nextIndex]
-            array[nextIndex] = array[index]
-            array[index] = holder
-            swapOccured = true
-          index += 1
-        return true  unless swapOccured
-        false
-
-      return
-
     orderBy = @filter('orderBy')
     @user = ""
     @tracks = {}
@@ -55,8 +31,10 @@ class SoundsCtrl
       @songs.sort (a, b) =>
         return 1  if a[1][0].count < b[1][0].count
         return -1  if a[1][0].count > b[1][0].count
-        return 1  if a[1][0].createdAt > b[1][0].createdAt
-        return 1 if a[1][0].createdAt < b[1][0].createdAt
+        console.log(a)
+        console.log(b)
+        return -1  if a[1][0].createdAt < b[1][0].createdAt
+        return 1 if a[1][0].createdAt > b[1][0].createdAt
         0
 
       console.log(@songs)
@@ -82,17 +60,17 @@ class SoundsCtrl
           track.streamUrl = @tracks.soundcloud[count].permalink_url
           track.soundcloudtitle = @tracks.soundcloud[count].title
 
-          console.log(track.soundcloudtitle)
           count += 1
 
 
         @scope.clicked = false
 
   searchLiveBands: (track) ->
+    console.log(track)
     @scope.clicked = true
     @newQueue = {}
     @newVote = {}
-    @http.post("api/users/#{@user.id}/songs", {title: track.name, artist: track.artists[0].name, image: track.album.images[2].url, playthrough: false, url: track.streamUrl}).success (data) =>
+    @http.post("api/users/#{@user.id}/songs", {title: track.soundcloudtitle, artist: track.artists[0].name, image: track.album.images[0].url, playthrough: false, url: track.streamUrl}).success (data) =>
       @newQueue = data.queue
       @newVote = data.vote
       @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
@@ -102,8 +80,6 @@ class SoundsCtrl
       @songs.push([@newQueue, [@newVote]])
 
   deleteQueueItem: (queueItem) ->
-    console.log('in here')
-    console.log("songs", @songs[0])
     @http.delete("api/queues/#{@songs[0].id}").success (data) =>
       @songs.shift()
       return true
@@ -113,13 +89,13 @@ class SoundsCtrl
     song
     @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
       song[1][0].count += 1
+      console.log(data.vote)
       @songs.push([data.song, [data.vote]])
-      console.log(@songs)
       @songs.sort (a, b) =>
         return 1  if a[1][0].count < b[1][0].count
         return -1  if a[1][0].count > b[1][0].count
-        return -1  if a[1][0].createdAt > b[1][0].createdAt
-        return 1 if a[1][0].createdAt < b[1][0].createdAt
+        return -1  if a[1][0].createdAt < b[1][0].createdAt
+        return 1 if a[1][0].createdAt > b[1][0].createdAt
         0
 
 

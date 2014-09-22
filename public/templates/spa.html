@@ -33,14 +33,16 @@
   <div ng-include="'templates/plangular.html'"></div>
   <div class="queuecontainer">
     <div ng-repeat="song in sounds.songs">
-      {{song[0].title}}
-      <span ng-show="sounds.guestuser || song[0].voted"><img src="rubysound_assets/img/greyguest.png" height="20" width="20"></span><span ng-hide="sounds.guestuser || song[0].voted"><a href ng-click="sounds.addVote(song)"><img src="rubysound_assets/img/vote.png" height="20" width="20"></a></span>{{song[1][0].count}}
-      <div class="playsong">
-        <div plangular="{{song[0].url}}" type="audio/mp3">
-          <a href="#{{ example.id }}" class="block py1 nav-item"
-            ng-click="playPause()"
-            ng-class="{ 'bg-darken-1': player.playing == track }">
-          </a>
+      <div class="singlesong">
+        <p><strong><img src="{{song[0].image}}" height="64" width="64"></strong>{{song[0].title}}</p>
+        <span class="votesfloat"><span ng-show="sounds.guestuser || song[0].voted"><img src="rubysound_assets/img/greyguest.png" height="20" width="20"></span><span ng-hide="sounds.guestuser || song[0].voted"><a href ng-click="sounds.addVote(song)"><img src="rubysound_assets/img/vote.png" height="20" width="20"></a></span>{{song[1][0].count}}</span>
+        <div class="playsong">
+          <div plangular="{{song[0].url}}">
+            <a href="#{{ example.id }}" class="block py1 nav-item"
+              ng-click="playPause()"
+              ng-class="{ 'bg-darken-1': player.playing == track }">
+            </a>
+          </div>
         </div>
       </div>
     </div>
