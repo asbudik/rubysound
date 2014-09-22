@@ -96,9 +96,15 @@ app.post('/api/searchlivebands', function(req, res) {
  })
 
 app.get('/api/users', function(req, res) {
-  db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
-    db.queue.findAll({order: [['createdAt', 'ASC']]}).success(function(allQueues) {
-      res.json({allusers: allUsers, session: req.user, queue: allQueues})
+  db.queue.findAll({order: [['createdAt', 'ASC']]}).success(function(allQueues) {
+    songs = []
+    allQueues.forEach(function(oneQueue) {
+      oneQueue.getVotes().success(function(queueVotes) {
+        songs.push([oneQueue, queueVotes])
+      })
+    })
+    db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
+      res.json({allusers: allUsers, session: req.user, queue: songs})
     })
   })
 })
@@ -129,7 +135,11 @@ app.post('/api/users/:id/songs', function(req, res) {
     db.song.create(req.body).success(function(newSong) {
       foundUser.addSong(newSong).success(function() {
         db.queue.create(req.body).success(function(newQueue){
-          res.json({user: foundUser, song: newSong, queue: newQueue})
+          db.vote.create().success(function(newVote) {
+            newQueue.addVote(newVote).success(function() {
+              res.json({user: foundUser, song: newSong, queue: newQueue, vote: newVote})
+            })
+          })
         })
       })
     })
@@ -137,10 +147,10 @@ app.post('/api/users/:id/songs', function(req, res) {
 })
 
 app.post('/api/songs/:id/venues', function(req, res) {
-  db.song.find(req.params.id).success(function(foundSong) {
+  db.queue.find(req.params.id).success(function(foundQueue) {
     db.venue.create(req.body).success(function(newVenue) {
-      foundSong.addVenue(newVenue).success(function() {
-        res.json({song: foundSong, venue: newVenue})
+      foundQueue.addVenue(newVenue).success(function() {
+        res.json({song: foundQueue, venue: newVenue})
       })
     })
   })

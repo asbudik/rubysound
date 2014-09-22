@@ -32,9 +32,10 @@
 <div class="col-md-3">
   <div ng-include="'templates/plangular.html'"></div>
   <div ng-repeat="song in sounds.songs">
-    {{song.url}}
+    {{song[0].url}}
+    {{song[1][0].count}}
     <div class="playsong">
-      <div plangular="{{song.url}}" type="audio/mp3">
+      <div plangular="{{song[0].url}}" type="audio/mp3">
         <a href="#{{ example.id }}" class="block py1 nav-item"
           ng-click="playPause()"
           ng-class="{ 'bg-darken-1': player.playing == track }">

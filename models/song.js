@@ -21,8 +21,6 @@ function Song(sequelize, DataTypes){
       classMethods: {
         associate: function(db) {
           Song.belongsTo(db.user);
-          Song.hasMany(db.vote);
-          Song.hasMany(db.venue);
         }
       }
     });

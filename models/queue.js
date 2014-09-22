@@ -16,7 +16,15 @@ function Queue(sequelize, DataTypes){
       type: DataTypes.STRING,
       allowNull: false
     }
-  });
+  },
+    {
+      classMethods: {
+        associate: function(db) {
+          Queue.hasMany(db.vote);
+          Queue.hasMany(db.venue);
+        }
+      }
+    });
   return Queue;
 };
 

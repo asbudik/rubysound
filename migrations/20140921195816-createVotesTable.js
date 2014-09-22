@@ -14,10 +14,9 @@ module.exports = {
         defaultValue: 10
       },
       uservote: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: DataTypes.INTEGER
       },
-      songId: {
+      queueId: {
         type: DataTypes.INTEGER,
         foreignKey: true
       }
@@ -32,3 +31,4 @@ module.exports = {
       .complete(done);
   }
 };
+

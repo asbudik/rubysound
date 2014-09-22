@@ -36,7 +36,8 @@
         return function(data) {
           _this.users = data;
           _this.songs = data.queue;
-          console.log("songs", _this.songs);
+          console.log("songs", _this.songs[0]);
+          console.log("songs", _this.songs[1]);
           if (data.session) {
             _this.user = data.session;
             _this.scope.signup = true;
@@ -86,6 +87,7 @@
     SoundsCtrl.prototype.searchLiveBands = function(track) {
       this.scope.clicked = true;
       this.newQueue = {};
+      this.newVote = {};
       return this.http.post("api/users/" + this.user.id + "/songs", {
         title: track.name,
         artist: track.artists[0].name,
@@ -94,8 +96,8 @@
         url: track.streamUrl
       }).success((function(_this) {
         return function(data) {
-          _this.songs.push(data);
           _this.newQueue = data.queue;
+          _this.newVote = data.vote;
           _this.http.post('api/searchlivebands', {
             track: track.artists[0].name
           }).success(function(data) {
@@ -111,8 +113,7 @@
             }
             return _results;
           });
-          _this.songs.push(_this.newQueue);
-          return console.log(_this.newQueue);
+          return _this.songs.push([_this.newQueue, _this.newVote]);
         };
       })(this));
     };

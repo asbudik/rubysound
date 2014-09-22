@@ -17,7 +17,6 @@ var plangular = angular.module('plangular', []),
     clientID = '0d33361983f16d2527b01fbf6408b7d7';
 
 plangular.directive('plangular', ['$http', function ($http) {
-
   var audio = document.createElement('audio');
 
   var player = {
@@ -35,7 +34,10 @@ plangular.directive('plangular', ['$http', function ($http) {
       this.tracks[index] = track;
       if (!this.playing && !this.i && index == 0) {
         this.currentTrack = this.tracks[0];
+        this.playing = track;
         this.play();
+        audio.play();
+        player.play();
       }
     },
 
@@ -87,7 +89,7 @@ plangular.directive('plangular', ['$http', function ($http) {
           this.play(this.i);
         }
       } else if (this.i >= this.tracks.length -1) {
-        this.pause();
+        // this.pause();
       }
     },
 

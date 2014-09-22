@@ -9,7 +9,8 @@ class SoundsCtrl
     @http.get('api/users').success (data) =>
       @users = data
       @songs = data.queue
-      console.log("songs", @songs)
+      console.log("songs", @songs[0])
+      console.log("songs", @songs[1])
       if data.session
         @user = data.session
         @scope.signup = true
@@ -42,15 +43,15 @@ class SoundsCtrl
   searchLiveBands: (track) ->
     @scope.clicked = true
     @newQueue = {}
+    @newVote = {}
     @http.post("api/users/#{@user.id}/songs", {title: track.name, artist: track.artists[0].name, image: track.album.images[2].url, playthrough: false, url: track.streamUrl}).success (data) =>
-      @songs.push(data)
       @newQueue = data.queue
+      @newVote = data.vote
       @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
         for listing in data
           @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
-      
-      @songs.push(@newQueue)
-      console.log(@newQueue)
+
+      @songs.push([@newQueue, @newVote])
 
   deleteQueueItem: (queueItem) ->
     console.log('in here')
