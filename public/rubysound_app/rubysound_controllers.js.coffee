@@ -59,10 +59,6 @@ class SoundsCtrl
       @songs.shift()
       return true
 
-  test: (testt) ->
-    console.log("in test", testt)
-    return true
-
 
   # signup: (user) ->
   #   @http.post('api/users', user).success (data) =>
