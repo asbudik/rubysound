@@ -23,50 +23,88 @@
   SoundsControllers = angular.module("SoundsControllers", []);
 
   SoundsCtrl = (function() {
-    function SoundsCtrl(scope, http, location, Sound) {
+    function SoundsCtrl(scope, http, location, filter, Sound) {
+      var orderBy;
       this.scope = scope;
       this.http = http;
       this.location = location;
+      this.filter = filter;
       this.Sound = Sound;
+      this.scope.showsearch = true;
+      this.bubbleSort = function(array) {
+        var holder, index, next2last, nextIndex, swapOccured;
+        next2last = array.length - 1;
+        holder = void 0;
+        swapOccured = void 0;
+        index = void 0;
+        nextIndex = void 0;
+        array.some(function() {
+          swapOccured = false;
+          index = 0;
+          while (index < next2last) {
+            nextIndex = index + 1;
+            console.log(array[index]);
+            console.log(array[nextIndex]);
+            if (array[index][1][0].count > array[nextIndex][1][0]) {
+              holder = array[nextIndex];
+              array[nextIndex] = array[index];
+              array[index] = holder;
+              swapOccured = true;
+            }
+            index += 1;
+          }
+          if (!swapOccured) {
+            return true;
+          }
+          return false;
+        });
+      };
+      orderBy = this.filter('orderBy');
       this.user = "";
       this.tracks = {};
       this.tracks.soundcloud = [];
       this.songs = [];
       this.http.get('api/users').success((function(_this) {
         return function(data) {
-          var song, vote, _i, _len, _ref, _results;
+          var song, vote, _i, _j, _len, _len1, _ref, _ref1;
           _this.users = data;
           _this.songs = data.queue;
           if (data.session) {
             _this.user = data.session;
             _this.scope.signup = true;
             _this.scope.loginshow = false;
-            _this.scope.showsearch = true;
             _this.scope.logoutbutton = true;
             _ref = _this.songs;
-            _results = [];
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               song = _ref[_i];
-              _results.push((function() {
-                var _j, _len1, _ref1, _results1;
-                _ref1 = song[1];
-                _results1 = [];
-                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                  vote = _ref1[_j];
-                  if (vote.uservote === this.user.id) {
-                    song[0].voted = true;
-                    _results1.push(console.log("voted", song[0]));
-                  } else {
-                    _results1.push(void 0);
-                  }
+              _ref1 = song[1];
+              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                vote = _ref1[_j];
+                if (vote.uservote === _this.user.id) {
+                  song[0].voted = true;
                 }
-                return _results1;
-              }).call(_this));
+              }
             }
-            return _results;
           } else {
-            return _this.guestuser = true;
+            _this.guestuser = true;
+            _this.scope.showsearch = false;
           }
+          _this.songs.sort(function(a, b) {
+            if (a[1][0].count < b[1][0].count) {
+              return 1;
+            }
+            if (a[1][0].count > b[1][0].count) {
+              return -1;
+            }
+            if (a[1][0].createdAt > b[1][0].createdAt) {
+              return 1;
+            }
+            if (a[1][0].createdAt < b[1][0].createdAt) {
+              return 1;
+            }
+            return 0;
+          });
+          return console.log(_this.songs);
         };
       })(this));
     }
@@ -75,6 +113,8 @@
       var thisQuery;
       thisQuery = query;
       this.scope.query = {};
+      this.tracks = {};
+      this.tracks.soundcloud = [];
       return this.http.post('api/soundcloud', {
         query: query.string
       }).success((function(_this) {
@@ -98,6 +138,7 @@
               track = _ref[_j];
               track.streamUrl = _this.tracks.soundcloud[count].permalink_url;
               track.soundcloudtitle = _this.tracks.soundcloud[count].title;
+              console.log(track.soundcloudtitle);
               count += 1;
             }
             return _this.scope.clicked = false;
@@ -153,12 +194,30 @@
 
     SoundsCtrl.prototype.addVote = function(song) {
       song[0].voted = true;
+      song;
       return this.http.post("api/queues/" + song.id + "/votes", {
         song: song,
         user: this.user.id
       }).success((function(_this) {
         return function(data) {
-          return song[1][0].count += 1;
+          song[1][0].count += 1;
+          _this.songs.push([data.song, [data.vote]]);
+          console.log(_this.songs);
+          return _this.songs.sort(function(a, b) {
+            if (a[1][0].count < b[1][0].count) {
+              return 1;
+            }
+            if (a[1][0].count > b[1][0].count) {
+              return -1;
+            }
+            if (a[1][0].createdAt > b[1][0].createdAt) {
+              return -1;
+            }
+            if (a[1][0].createdAt < b[1][0].createdAt) {
+              return 1;
+            }
+            return 0;
+          });
         };
       })(this));
     };
@@ -178,7 +237,7 @@
 
   })();
 
-  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "Sound", SoundsCtrl]);
+  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", "Sound", SoundsCtrl]);
 
 }).call(this);
 

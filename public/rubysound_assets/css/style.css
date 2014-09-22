@@ -57,7 +57,10 @@ svg {
   z-index: 20;
   box-shadow: inset -1px -1px 3px ;
 }
-
+.queuecontainer {
+  height: 150px;
+  overflow: scroll;
+}
 .navbarclass .navtitle {
   color: white;
 }
