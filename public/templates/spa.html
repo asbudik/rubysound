@@ -1,9 +1,10 @@
 <div ng-include="'templates/navbar.html'"></div>
-<div class="col-md-offset-2 col-md-2" ng-hide="signup" ng-include="'templates/signup.html'"></div>
-<div ng-show="loginshow" class="col-md-offset-2 col-md-2 animate-show" ng-include="'templates/login.html'"></div>
+
+<div class="col-md-offset-1 col-md-3" ng-hide="signup" ng-include="'templates/signup.html'"></div>
+<div ng-show="loginshow" class="col-md-offset-1 col-md-3 animate-show" ng-include="'templates/login.html'"></div>
 
 
-<div ng-show="showsearch" class="col-md-offset-2 col-md-2 animate-show">
+<div ng-show="showsearch" class="col-md-offset-1 col-md-3 animate-show">
   <form ng-submit="sounds.searchSongs(query)">
     <div class="form-group">
       <input class="form-control" placeholder="Enter an artist and track name" type="text" ng-model="query.string">
@@ -29,7 +30,7 @@
   </div>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-4">
   <div ng-include="'templates/plangular.html'"></div>
   <div ng-repeat="song in sounds.songs">
     {{song[0].title}}

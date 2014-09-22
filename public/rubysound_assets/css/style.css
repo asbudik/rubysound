@@ -49,3 +49,52 @@ svg {
   border-bottom: 1px solid grey;
   margin-bottom: 10px;
 }
+
+.navbarclass {
+  background-color: #D63333;
+  width: 105%;
+  position: fixed;
+  z-index: 20;
+  box-shadow: inset -1px -1px 3px ;
+}
+
+.navbarclass .navtitle {
+  color: white;
+}
+.logoutbutton {
+  float: right;
+  background-color: white;
+  margin-top: 8px;
+  margin-right: 8px;
+  box-shadow: 1px 1px black;
+  border-radius: 2px;
+  width: 90px;
+}
+.logoutbutton a{
+  color: black;
+  list-style-type: none;
+  text-decoration: none;
+}
+
+.bg {
+  position: relative;
+  height: 222px;
+  background-image: url('../img/ewan2.jpg');
+  z-index: -20;
+  padding: 0;
+  margin-bottom: 30px;
+  border-bottom: 1px solid brown;
+  box-shadow: 1px 1px 1px black;
+}
+
+a {
+  color: brown;
+  text-decoration: none;
+}
+li {
+  list-style-type: none;
+}
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {   
+border-color: rgba(204,0,0, 0.8);
+box-shadow: 0 1px 1px rgba(204,0,0, 0.075) inset, 0 0 8px rgba(204,0,0, 0.6);
+outline: 0 none;}

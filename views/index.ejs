@@ -22,16 +22,16 @@
 
 </head>
 <body>
- 
+ <div class="mediaplayer">
   <div class="row">
     <div ng-app="SoundsApp" ng-view>
 
     </div>
-      <div class="col-md-2 chatbox">
-        <% include __chatbox.ejs %>
-      </div>
+    <div class="col-md-3 chatbox">
+      <% include __chatbox.ejs %>
     </div>
   </div>
+</div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script>
