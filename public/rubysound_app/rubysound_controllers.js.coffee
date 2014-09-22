@@ -94,6 +94,8 @@ class SoundsCtrl
       @songs.sort (a, b) =>
         return 1  if a[1][0].count < b[1][0].count
         return -1  if a[1][0].count > b[1][0].count
+        console.log(a)
+        console.log(b)
         return -1  if a[1][0].createdAt < b[1][0].createdAt
         return 1 if a[1][0].createdAt > b[1][0].createdAt
         0

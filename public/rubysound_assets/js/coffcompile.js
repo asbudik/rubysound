@@ -182,6 +182,8 @@
             if (a[1][0].count > b[1][0].count) {
               return -1;
             }
+            console.log(a);
+            console.log(b);
             if (a[1][0].createdAt < b[1][0].createdAt) {
               return -1;
             }
