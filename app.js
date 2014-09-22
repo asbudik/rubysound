@@ -99,7 +99,7 @@ app.get('/api/users', function(req, res) {
   db.queue.findAll({order: [['createdAt', 'ASC']]}).success(function(allQueues) {
     songs = []
     allQueues.forEach(function(oneQueue) {
-      oneQueue.getVotes().success(function(queueVotes) {
+      oneQueue.getVotes({order: [['createdAt', 'DESC']]}).success(function(queueVotes) {
         songs.push([oneQueue, queueVotes])
       })
     })
@@ -156,6 +156,15 @@ app.post('/api/songs/:id/venues', function(req, res) {
   })
 })
 
+app.post('/api/queues/:id/votes', function(req, res) {
+  db.queue.find(req.body.song[0].id).success(function(foundQueue) {
+    db.vote.create({count: req.body.song[1][0].count += 1, uservote: req.body.user}).success(function(newVote) {
+      foundQueue.addVote(newVote).success(function() {
+        res.json({song: foundQueue, vote: newVote})
+      })
+    })
+  })
+})
 app.get('/logout', function(req, res) {
   currentUser = undefined
   req.logout()

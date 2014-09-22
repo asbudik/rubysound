@@ -33,7 +33,7 @@
   <div ng-include="'templates/plangular.html'"></div>
   <div ng-repeat="song in sounds.songs">
     {{song[0].url}}
-    {{song[1][0].count}}
+    <a ng-click="sounds.addVote(song)"><img src="rubysound_assets/img/vote.png" height="20" width="20"></a>{{song[1][0].count}}
     <div class="playsong">
       <div plangular="{{song[0].url}}" type="audio/mp3">
         <a href="#{{ example.id }}" class="block py1 nav-item"

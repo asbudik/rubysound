@@ -36,8 +36,7 @@
         return function(data) {
           _this.users = data;
           _this.songs = data.queue;
-          console.log("songs", _this.songs[0]);
-          console.log("songs", _this.songs[1]);
+          console.log("songs", _this.songs);
           if (data.session) {
             _this.user = data.session;
             _this.scope.signup = true;
@@ -113,7 +112,7 @@
             }
             return _results;
           });
-          return _this.songs.push([_this.newQueue, _this.newVote]);
+          return _this.songs.push([_this.newQueue, [_this.newVote]]);
         };
       })(this));
     };
@@ -125,6 +124,17 @@
         return function(data) {
           _this.songs.shift();
           return true;
+        };
+      })(this));
+    };
+
+    SoundsCtrl.prototype.addVote = function(song) {
+      return this.http.post("api/queues/" + song.id + "/votes", {
+        song: song,
+        user: this.user.id
+      }).success((function(_this) {
+        return function(data) {
+          return song[1][0].count += 1;
         };
       })(this));
     };
