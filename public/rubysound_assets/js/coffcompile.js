@@ -165,15 +165,17 @@
     };
 
     SoundsCtrl.prototype.addVote = function(song) {
+      var index;
       song[0].voted = true;
-      song;
+      index = this.songs.indexOf(song);
       return this.http.post("api/queues/" + song.id + "/votes", {
         song: song,
         user: this.user.id
       }).success((function(_this) {
         return function(data) {
+          _this.songs.splice(index, 1);
+          data.song.voted = true;
           song[1][0].count += 1;
-          console.log(data.vote);
           _this.songs.push([data.song, [data.vote]]);
           return _this.songs.sort(function(a, b) {
             if (a[1][0].count < b[1][0].count) {

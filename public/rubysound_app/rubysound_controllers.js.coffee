@@ -86,10 +86,11 @@ class SoundsCtrl
 
   addVote: (song) ->
     song[0].voted = true
-    song
+    index = @songs.indexOf(song)
     @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
+      @songs.splice(index,1)
+      data.song.voted = true
       song[1][0].count += 1
-      console.log(data.vote)
       @songs.push([data.song, [data.vote]])
       @songs.sort (a, b) =>
         return 1  if a[1][0].count < b[1][0].count
