@@ -1,6 +1,6 @@
 <div plangular>
   <div class="currentplayer">
-  <h4 class="center m0"><div class="currentsongtrack"> <img class="mainimage" src="{{sounds.songs[0][0].image}}" height="150" width="150"><div class="currentsong">{{ player.currentTrack.title || '&nbsp;' }}<br><span class="usernametitle">{{ player.currentTrack.user.username || '&nbsp;'}}</span></div></div></h4>
+  <h4 class="center m0"><div class="currentsongtrack"> <img class="mainimage" ng-src="{{songs[0][0].image}}" height="150" width="150"><div class="currentsong">{{ player.currentTrack.title || '&nbsp;' }}<br><span class="usernametitle">{{ player.currentTrack.user.username || '&nbsp;'}}</span></div></div></h4>
   <p class="h6">{{ player.currentTime | prettyTime }} - {{ player.duration | prettyTime }}</p>
    <progress value="{{ player.currentTime / player.duration || 0 }}"
     ng-click="player.seek($event)">

@@ -33,6 +33,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     load: function(track, index) {
       this.tracks[index] = track;
       if (!this.playing && !this.i && index == 0) {
+        $rootScope.$$childHead.songs[0][0].playing = true
         this.currentTrack = this.tracks[0];
         this.playing = track;
         this.play();
@@ -123,12 +124,15 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   }, false);
 
   audio.addEventListener('ended', function() {
-    console.log("ended:rootScope:", $rootScope);
-    console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
+    // console.log("ended:rootScope:", $rootScope);
+    // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
     if (player.tracks.length > 0) {
-      console.log("song end");
+      
       if ($rootScope.$$childHead.songs) {
+        $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         $rootScope.$$childHead.songs.shift();
+        $rootScope.$$childHead.songs[0][1][0].count = 1000000
+        $rootScope.$$childHead.songs[0][0].playing = true
       }
       player.next();
     } else {
@@ -207,8 +211,8 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       }, false);
 
       audio.addEventListener('ended', function() {
-        console.log("ended:link:this", this);
-        console.log("ended:link:scope", scope)
+        // console.log("ended:link:this", this);
+        // console.log("ended:link:scope", scope)
       }, false);
       
       scope.seek = function(e){

@@ -1,11 +1,15 @@
 SoundsControllers = angular.module("SoundsControllers", [])
+
 class SoundsCtrl 
   
   constructor: (@scope, @http, @location, @filter, @Sound) ->
+    @scope.popFromQueue = (trackToDelete) =>
+      console.log(trackToDelete)
+      @http.delete("api/queues/#{trackToDelete[0].id}").success (data) ->
+        console.log("deleted queue")
 
     @scope.showsearch = true
 
-    orderBy = @filter('orderBy')
     @user = ""
     @tracks = {}
     @tracks.soundcloud = []
@@ -125,6 +129,7 @@ class SoundsCtrl
   #       @scope.logoutbutton = true
   #       @scope.showsearch = true
 
+  
   getLogin: () ->
     console.log('geti')
     @scope.loginshow = true
@@ -133,5 +138,6 @@ class SoundsCtrl
   getSignUp: () ->
     @scope.loginshow = false
     @scope.signup = false
+      
 
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", "Sound", SoundsCtrl])

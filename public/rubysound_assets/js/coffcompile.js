@@ -24,14 +24,20 @@
 
   SoundsCtrl = (function() {
     function SoundsCtrl(scope, http, location, filter, Sound) {
-      var orderBy;
       this.scope = scope;
       this.http = http;
       this.location = location;
       this.filter = filter;
       this.Sound = Sound;
+      this.scope.popFromQueue = (function(_this) {
+        return function(trackToDelete) {
+          console.log(trackToDelete);
+          return _this.http["delete"]("api/queues/" + trackToDelete[0].id).success(function(data) {
+            return console.log("deleted queue");
+          });
+        };
+      })(this);
       this.scope.showsearch = true;
-      orderBy = this.filter('orderBy');
       this.user = "";
       this.tracks = {};
       this.tracks.soundcloud = [];

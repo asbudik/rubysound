@@ -172,7 +172,7 @@ app.get('/logout', function(req, res) {
 })
 
 app.delete('/api/queues/:id', function(req, res) {
-  db.queue.find(req.body.id).success(function(foundQueue) {
+  db.queue.find(req.params.id).success(function(foundQueue) {
     res.json(foundQueue.destroy())
   })
 })
