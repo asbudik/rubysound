@@ -19,17 +19,12 @@ var plangular = angular.module('plangular', []),
 plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootScope) {
   var audio = document.createElement('audio');
 
-  var staticTracks = [
-    {title: "Skrillex - Bangarang feat Sirah", artist: 'Skrillex', image: 'https://i.scdn.co/image/9ab61dfa896d1431af5cddcb2bb9dba471103bb0', playthrough: false, url: 'http://soundcloud.com/skrillex/skrillex-bangarang-feat-sirah'},
-    {title: 'Owl City - Fireflies (SMLE Remix)', artist: 'Owl City', image: 'https://i.scdn.co/image/fcc6b725a08a9c6dd487a161c7e8a380ddef69a6', playthrough: false, url: 'http://soundcloud.com/smlemusic/owl-city-fireflies-smle-remix'},
-    {title: 'Katy Perry - E.T. ft. Kanye West', artist: 'Katy Perry', image: 'https://i.scdn.co/image/df9d3d065b5bd2f5e629cfa475a35aaa4de9a7ab', playthrough: false, url: 'http://soundcloud.com/theinsound/katy-perry-e-t-ft-kanye-west'},
-    {title: 'Porter Robinson - Flicker', artist: 'Porter Robinson', image: 'https://i.scdn.co/image/79b491bc913d7a4abe008983f47b042a5e1b1cc8', playthrough: false, url: 'http://soundcloud.com/porter-robinson/flicker'},
-    {title: 'Luv (Sic) Part 3', artist: 'Nujabes', image: 'https://i.scdn.co/image/31762579d8fd04a756fb791ac9c3634b5828f0dd', playthrough: false, url: 'http://soundcloud.com/junseba/luv-sic-part-3'}
-  ]
+  // var staticTracks = [
+  //   {title: 'Owl City - Fireflies (SMLE Remix)', artist: 'Owl City', image: 'https://i.scdn.co/image/fcc6b725a08a9c6dd487a161c7e8a380ddef69a6', playthrough: false, url: 'http://soundcloud.com/smlemusic/owl-city-fireflies-smle-remix'}
+  // ]
 
   if ($rootScope.$$childHead.songs === []) {
-    console.log("static track", staticTracks[1])
-    $rootScope.$$childHead.getSong(staticTracks[1])
+    $rootScope.$$childHead.getSong(staticTracks[0])
   }
   var player = {
  
@@ -138,9 +133,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   audio.addEventListener('ended', function() {
 
     if ($rootScope.$$childHead.songs.length < 3) {
-      console.log("static tracks", staticTracks[1])
-      $rootScope.$$childHead.getSong(staticTracks[1])
-      $rootScope.$$childHead.getSong(staticTracks[2])
+      // $rootScope.$$childHead.getSong(staticTracks[0])
     }
     // console.log("ended:rootScope:", $rootScope);
     // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
@@ -149,15 +142,18 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       if ($rootScope.$$childHead.songs) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         $rootScope.$$childHead.songs.shift();
-        if ($rootScope.$$childHead.songs.length) {
+        if ($rootScope.$$childHead.songs.length > 0) {
           $rootScope.$$childHead.songs[0][1][0].count = 1000000
           $rootScope.$$childHead.songs[0][0].playing = true
+
+          $rootScope.$$childHead.getVenues($rootScope.$$childHead.songs[0][0].artist)
         }
       }
       player.next();
-      player.play();
+      console.log("player next")
     } else {
-     player.pause();
+      console.log("player pause")
+     // player.play();
     }
   }, false);
 

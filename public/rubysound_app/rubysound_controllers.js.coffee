@@ -4,37 +4,47 @@ class SoundsCtrl
   
   constructor: (@scope, @http, @location, @filter, @Sound) ->
     @scope.popFromQueue = (trackToDelete) =>
-      console.log(trackToDelete)
-      @http.delete("api/queues/#{trackToDelete[0].id}").success (data) ->
-        console.log("deleted queue")
+      # console.log(trackToDelete)
+      @http.delete("api/queues/#{trackToDelete[0].id}").success (data) =>
+        # console.log("deleted queue")
 
-    @scope.getSong = (track) =>
-      console.log("track", track)
-      @dummyuser = {}
-      @dummyuser.id = 1
-      @newQueue = {}
-      @newVote = {}
-      @http.post("api/users/#{@dummyuser.id}/songs", track).success (data) =>
-        @newQueue = data.queue
-        @newVote = data.vote
-        @http.post('api/searchlivebands', {track: track.artist}).success (data) =>
-          for listing in data
-            @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
 
-        @scope.songs.push([@newQueue, [@newVote]])
+    # @scope.getSong = (track) =>
+    #   # console.log("track", track)
+    #   @dummyuser = {}
+    #   @dummyuser.id = 1
+    #   @newQueue = {}
+    #   @newVote = {}
+    #   @http.post("api/users/#{@dummyuser.id}/songs", track).success (data) =>
+    #     @newQueue = data.queue
+    #     @newVote = data.vote
+    #     @http.post('api/searchlivebands', {track: track.artist}).success (data) =>
+    #       for listing in data
+    #         @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
 
+    #     @scope.songs.push([@newQueue, [@newVote]])
 
     @scope.showsearch = true
+
+    @venues = {}
+    @scope.getVenues = (queueSong) =>
+      @venues = {}
+      console.log('am i being called')
+      @http.post('api/searchlivebands', {track: queueSong}).success (data) =>
+        @venues = data
+
 
     @user = ""
     @tracks = {}
     @tracks.soundcloud = []
     @scope.songs = []
     @http.get('api/users').success (data) =>
-      @users = data
-      @scope.songs = data.queue
-      if data.session
-        @user = data.session
+      @usersData = data
+
+      @users = @usersData
+      @scope.songs = @usersData.queue
+      if @usersData.session
+        @user = @usersData.session
         @scope.signup = true
         @scope.loginshow = false
         @scope.logoutbutton = true
@@ -56,6 +66,12 @@ class SoundsCtrl
         return -1  if a[1][0].createdAt < b[1][0].createdAt
         return 1 if a[1][0].createdAt > b[1][0].createdAt
         0
+        
+      @http.post('api/searchlivebands', {track: @scope.songs[0][0].artist}).success (data) =>
+        count = 0
+        @venues = data
+        console.log("venues", @venues)
+
 
 
   searchSongs: (query) ->
@@ -93,9 +109,13 @@ class SoundsCtrl
       @newVote = data.vote
       @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
         for listing in data
-          @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
-
-      @scope.songs.push([@newQueue, [@newVote]])
+          @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.ticket_url}).success (data) =>
+        
+        @venuesArray = []
+        for singleVenue in data
+          @venuesArray.push({venuename: singleVenue.formatted_location + "**AT**" + singleVenue.venue.name, venuedate: singleVenue.formatted_datetime, rsvp: singleVenue.ticket_url})
+        
+        @scope.songs.push([@newQueue, [@newVote]])
 
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>

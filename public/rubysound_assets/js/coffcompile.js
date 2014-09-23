@@ -31,42 +31,22 @@
       this.Sound = Sound;
       this.scope.popFromQueue = (function(_this) {
         return function(trackToDelete) {
-          console.log(trackToDelete);
-          return _this.http["delete"]("api/queues/" + trackToDelete[0].id).success(function(data) {
-            return console.log("deleted queue");
-          });
-        };
-      })(this);
-      this.scope.getSong = (function(_this) {
-        return function(track) {
-          console.log("track", track);
-          _this.dummyuser = {};
-          _this.dummyuser.id = 1;
-          _this.newQueue = {};
-          _this.newVote = {};
-          return _this.http.post("api/users/" + _this.dummyuser.id + "/songs", track).success(function(data) {
-            _this.newQueue = data.queue;
-            _this.newVote = data.vote;
-            _this.http.post('api/searchlivebands', {
-              track: track.artist
-            }).success(function(data) {
-              var listing, _i, _len, _results;
-              _results = [];
-              for (_i = 0, _len = data.length; _i < _len; _i++) {
-                listing = data[_i];
-                _results.push(_this.http.post("api/songs/" + _this.newQueue.id + "/venues", {
-                  venuename: listing.formatted_location + " **AT** " + listing.venue.name,
-                  venuedate: listing.formatted_datetime,
-                  rsvp: listing.facebook_rsvp_url
-                }));
-              }
-              return _results;
-            });
-            return _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
-          });
+          return _this.http["delete"]("api/queues/" + trackToDelete[0].id).success(function(data) {});
         };
       })(this);
       this.scope.showsearch = true;
+      this.venues = {};
+      this.scope.getVenues = (function(_this) {
+        return function(queueSong) {
+          _this.venues = {};
+          console.log('am i being called');
+          return _this.http.post('api/searchlivebands', {
+            track: queueSong
+          }).success(function(data) {
+            return _this.venues = data;
+          });
+        };
+      })(this);
       this.user = "";
       this.tracks = {};
       this.tracks.soundcloud = [];
@@ -74,10 +54,11 @@
       this.http.get('api/users').success((function(_this) {
         return function(data) {
           var song, vote, _i, _j, _len, _len1, _ref, _ref1;
-          _this.users = data;
-          _this.scope.songs = data.queue;
-          if (data.session) {
-            _this.user = data.session;
+          _this.usersData = data;
+          _this.users = _this.usersData;
+          _this.scope.songs = _this.usersData.queue;
+          if (_this.usersData.session) {
+            _this.user = _this.usersData.session;
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;
@@ -96,7 +77,7 @@
             _this.guestuser = true;
             _this.scope.showsearch = false;
           }
-          return _this.scope.songs.sort(function(a, b) {
+          _this.scope.songs.sort(function(a, b) {
             if (a[1][0].count < b[1][0].count) {
               return 1;
             }
@@ -112,6 +93,14 @@
               return 1;
             }
             return 0;
+          });
+          return _this.http.post('api/searchlivebands', {
+            track: _this.scope.songs[0][0].artist
+          }).success(function(data) {
+            var count;
+            count = 0;
+            _this.venues = data;
+            return console.log("venues", _this.venues);
           });
         };
       })(this));
@@ -168,22 +157,29 @@
         return function(data) {
           _this.newQueue = data.queue;
           _this.newVote = data.vote;
-          _this.http.post('api/searchlivebands', {
+          return _this.http.post('api/searchlivebands', {
             track: track.artists[0].name
           }).success(function(data) {
-            var listing, _i, _len, _results;
-            _results = [];
+            var listing, singleVenue, _i, _j, _len, _len1;
             for (_i = 0, _len = data.length; _i < _len; _i++) {
               listing = data[_i];
-              _results.push(_this.http.post("api/songs/" + _this.newQueue.id + "/venues", {
+              _this.http.post("api/songs/" + _this.newQueue.id + "/venues", {
                 venuename: listing.formatted_location + " **AT** " + listing.venue.name,
                 venuedate: listing.formatted_datetime,
-                rsvp: listing.facebook_rsvp_url
-              }));
+                rsvp: listing.ticket_url
+              }).success(function(data) {});
             }
-            return _results;
+            _this.venuesArray = [];
+            for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
+              singleVenue = data[_j];
+              _this.venuesArray.push({
+                venuename: singleVenue.formatted_location + "**AT**" + singleVenue.venue.name,
+                venuedate: singleVenue.formatted_datetime,
+                rsvp: singleVenue.ticket_url
+              });
+            }
+            return _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
           });
-          return _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
         };
       })(this));
     };
