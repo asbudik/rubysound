@@ -229,7 +229,7 @@ a:hover {
   position: relative;
   top: -202px;
   left: 160px;
-  width: 290px;
+  width: 50%;
   height: 165px;
   overflow: scroll;
 }

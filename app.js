@@ -109,25 +109,32 @@ app.get('/api/users', function(req, res) {
   })
 })
 
-app.post('/users', function(req, res) {
-  db.user.createNewUser(
-    req.body.user,
-    function(err) {
-      res.redirect('/')
-    },
-    function(success) {
-      currentUser = success.user.username
-      req.login(success.user, function(err) {
-        return res.redirect('/')
-      })
-    });
+app.post('/api/users', function(req, res) {
+  db.user.createNewUser(req.body,
+  function(err) {
+    res.json({message: err.message})
+  },
+  function(success) {
+    passport.serializeUser(function(user, done) {
+      console.log("Initial serialize");
+      done(null, success.user.id)
+    })
+    res.json({user: success.user, isAuthenticated: req.isAuthenticated(),
+    message: success.message})
   });
+});
 
-app.post('/login', passport.authenticate('local', {
-  successRedirect: '/', 
-  failureRedirect: '/',
-  failureFlash: true
-}));
+
+app.post('/api/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+    if (err) { return res.json({message: "Login or password incorrect"}) }
+    if (!user) { return res.json({message: "Login or password incorrect"}) }
+    req.logIn(user, function(err) {
+      if (err) { return res.json({message: "Login or password incorrect"}) }
+      return res.json({user: req.user})
+    });
+  })(req, res, next);
+});
 
 
 app.post('/api/users/:id/songs', function(req, res) {

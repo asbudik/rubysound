@@ -8,7 +8,6 @@ class SoundsCtrl
       @http.delete("api/queues/#{trackToDelete[0].id}").success (data) =>
         # console.log("deleted queue")
 
-
     # @scope.getSong = (track) =>
     #   # console.log("track", track)
     #   @dummyuser = {}
@@ -48,6 +47,7 @@ class SoundsCtrl
         @scope.signup = true
         @scope.loginshow = false
         @scope.logoutbutton = true
+        @user.auth = true
 
         for song in @scope.songs
           for vote in song[1]
@@ -66,11 +66,31 @@ class SoundsCtrl
         return -1  if a[1][0].createdAt < b[1][0].createdAt
         return 1 if a[1][0].createdAt > b[1][0].createdAt
         0
-        
-      @http.post('api/searchlivebands', {track: @scope.songs[0][0].artist}).success (data) =>
-        count = 0
-        @venues = data
-        console.log("venues", @venues)
+      if @scope.songs.length > 0
+        @http.post('api/searchlivebands', {track: @scope.songs[0][0].artist}).success (data) =>
+          count = 0
+          @venues = data
+          console.log("venues", @venues)
+
+    @scope.addVote = (song) =>
+      song[0].voted = true
+      console.log("scope", @scope)
+      index = @scope.songs.indexOf(song)
+      @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
+        @scope.songs.splice(index,1)
+        data.song.voted = true
+        song[1][0].count += 1
+        @scope.songs.push([data.song, [data.vote]])
+        @scope.songs.sort (a, b) =>
+          return 1  if a[1][0].count < b[1][0].count
+          return -1  if a[1][0].count > b[1][0].count
+          console.log(a)
+          console.log(b)
+          return -1  if a[1][0].createdAt < b[1][0].createdAt
+          return 1 if a[1][0].createdAt > b[1][0].createdAt
+          0
+
+          @scope.songs[0][0].count = 1000000
 
 
 
@@ -115,53 +135,48 @@ class SoundsCtrl
         for singleVenue in data
           @venuesArray.push({venuename: singleVenue.formatted_location + "**AT**" + singleVenue.venue.name, venuedate: singleVenue.formatted_datetime, rsvp: singleVenue.ticket_url})
         
+        @scope.getVenues(track.artists[0].name)
         @scope.songs.push([@newQueue, [@newVote]])
+        console.log("THIS IS SCOPE SONGS", @scope.songs)
+        if @scope.songs.length == 1
+          @scope.songs[0][1][0].count = 1000000
+          console.log("scope votes", @scope.songs[0][1][0])
+          @scope.songs[0][0].playing = true
+          @scope.addVote(@scope.songs[0])
 
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>
       @scope.songs.shift()
       return true
 
-  addVote: (song) ->
-    song[0].voted = true
-    index = @scope.songs.indexOf(song)
-    @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
-      @scope.songs.splice(index,1)
-      data.song.voted = true
-      song[1][0].count += 1
-      @scope.songs.push([data.song, [data.vote]])
-      @scope.songs.sort (a, b) =>
-        return 1  if a[1][0].count < b[1][0].count
-        return -1  if a[1][0].count > b[1][0].count
-        console.log(a)
-        console.log(b)
-        return -1  if a[1][0].createdAt < b[1][0].createdAt
-        return 1 if a[1][0].createdAt > b[1][0].createdAt
-        0
 
+  signup: (user) ->
+    @http.post('api/users', user).success (data) =>
+      console.log("data", data)
+      if data.user
+        @scope.user = {}
+        @http.post('/api/login', user).success (data) =>
+          console.log("data", data)
+          @user = data.user
+          @user.auth = true
+          @scope.signup = true
+          @scope.loginshow = false
+          @scope.logoutbutton = true
+          @scope.showsearch = true
 
-  # signup: (user) ->
-  #   @http.post('api/users', user).success (data) =>
-  #     console.log(data.user)
-  #     if data.user
-  #       @scope.user = {}
-  #       @http.post('/api/login', user).success (data) =>
-  #         console.log(data)
-  #         @scope.signup = true
-  #         @scope.loginshow = false
-  #         @scope.logoutbutton = true
-  #         @scope.showsearch = true
-
-  # login: (user) ->
-  #   @http.post('api/login', user).success (data) =>
-  #     if data.message
-  #       @notice = data.message
-  #     else
-  #       @notice = "Welcome back!"
-  #       @scope.signup = true
-  #       @scope.loginshow = false
-  #       @scope.logoutbutton = true
-  #       @scope.showsearch = true
+  login: (user) ->
+    @http.post('api/login', user).success (data) =>
+      console.log("login data", data)
+      if data.message
+        @notice = data.message
+      else
+        @notice = "Welcome back!"
+        @user = data.user
+        @user.auth = true
+        @scope.signup = true
+        @scope.loginshow = false
+        @scope.logoutbutton = true
+        @scope.showsearch = true
 
   
   getLogin: () ->

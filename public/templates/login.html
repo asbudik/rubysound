@@ -1,9 +1,9 @@
-  <form method="POST" action="/login">
+  <form ng-submit="sounds.login(user)">
   <div class="form-group">
-    <input type="text" class="form-control" type="text" name="username" placeholder="Enter your username" autofocus required>
+    <input type="text" class="form-control" type="text" ng-model="user.username" placeholder="Enter your username" autofocus required>
   </div>
   <div class="form-group">
-    <input type="password" class="form-control" type="text" name="password" placeholder="Enter your password" required>
+    <input type="password" class="form-control" type="text" ng-model="user.password" placeholder="Enter your password" required>
   </div>
   <div class="form-group">
     <button class="form-control btn btn-danger">Sign on in</button>

@@ -144,6 +144,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         $rootScope.$$childHead.songs.shift();
         if ($rootScope.$$childHead.songs.length > 0) {
           $rootScope.$$childHead.songs[0][1][0].count = 1000000
+          $rootScope.$$childHead.addVote($rootScope.$$childHead.songs[0])
           $rootScope.$$childHead.songs[0][0].playing = true
 
           $rootScope.$$childHead.getVenues($rootScope.$$childHead.songs[0][0].artist)
@@ -153,7 +154,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       console.log("player next")
     } else {
       console.log("player pause")
-     // player.play();
+      player.pause();
     }
   }, false);
 

@@ -62,6 +62,7 @@
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;
+            _this.user.auth = true;
             _ref = _this.scope.songs;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               song = _ref[_i];
@@ -94,16 +95,53 @@
             }
             return 0;
           });
-          return _this.http.post('api/searchlivebands', {
-            track: _this.scope.songs[0][0].artist
-          }).success(function(data) {
-            var count;
-            count = 0;
-            _this.venues = data;
-            return console.log("venues", _this.venues);
-          });
+          if (_this.scope.songs.length > 0) {
+            return _this.http.post('api/searchlivebands', {
+              track: _this.scope.songs[0][0].artist
+            }).success(function(data) {
+              var count;
+              count = 0;
+              _this.venues = data;
+              return console.log("venues", _this.venues);
+            });
+          }
         };
       })(this));
+      this.scope.addVote = (function(_this) {
+        return function(song) {
+          var index;
+          song[0].voted = true;
+          console.log("scope", _this.scope);
+          index = _this.scope.songs.indexOf(song);
+          return _this.http.post("api/queues/" + song.id + "/votes", {
+            song: song,
+            user: _this.user.id
+          }).success(function(data) {
+            _this.scope.songs.splice(index, 1);
+            data.song.voted = true;
+            song[1][0].count += 1;
+            _this.scope.songs.push([data.song, [data.vote]]);
+            return _this.scope.songs.sort(function(a, b) {
+              if (a[1][0].count < b[1][0].count) {
+                return 1;
+              }
+              if (a[1][0].count > b[1][0].count) {
+                return -1;
+              }
+              console.log(a);
+              console.log(b);
+              if (a[1][0].createdAt < b[1][0].createdAt) {
+                return -1;
+              }
+              if (a[1][0].createdAt > b[1][0].createdAt) {
+                return 1;
+              }
+              0;
+              return _this.scope.songs[0][0].count = 1000000;
+            });
+          });
+        };
+      })(this);
     }
 
     SoundsCtrl.prototype.searchSongs = function(query) {
@@ -178,7 +216,15 @@
                 rsvp: singleVenue.ticket_url
               });
             }
-            return _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
+            _this.scope.getVenues(track.artists[0].name);
+            _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
+            console.log("THIS IS SCOPE SONGS", _this.scope.songs);
+            if (_this.scope.songs.length === 1) {
+              _this.scope.songs[0][1][0].count = 1000000;
+              console.log("scope votes", _this.scope.songs[0][1][0]);
+              _this.scope.songs[0][0].playing = true;
+              return _this.scope.addVote(_this.scope.songs[0]);
+            }
           });
         };
       })(this));
@@ -193,36 +239,41 @@
       })(this));
     };
 
-    SoundsCtrl.prototype.addVote = function(song) {
-      var index;
-      song[0].voted = true;
-      index = this.scope.songs.indexOf(song);
-      return this.http.post("api/queues/" + song.id + "/votes", {
-        song: song,
-        user: this.user.id
-      }).success((function(_this) {
+    SoundsCtrl.prototype.signup = function(user) {
+      return this.http.post('api/users', user).success((function(_this) {
         return function(data) {
-          _this.scope.songs.splice(index, 1);
-          data.song.voted = true;
-          song[1][0].count += 1;
-          _this.scope.songs.push([data.song, [data.vote]]);
-          return _this.scope.songs.sort(function(a, b) {
-            if (a[1][0].count < b[1][0].count) {
-              return 1;
-            }
-            if (a[1][0].count > b[1][0].count) {
-              return -1;
-            }
-            console.log(a);
-            console.log(b);
-            if (a[1][0].createdAt < b[1][0].createdAt) {
-              return -1;
-            }
-            if (a[1][0].createdAt > b[1][0].createdAt) {
-              return 1;
-            }
-            return 0;
-          });
+          console.log("data", data);
+          if (data.user) {
+            _this.scope.user = {};
+            return _this.http.post('/api/login', user).success(function(data) {
+              console.log("data", data);
+              _this.user = data.user;
+              _this.user.auth = true;
+              _this.scope.signup = true;
+              _this.scope.loginshow = false;
+              _this.scope.logoutbutton = true;
+              return _this.scope.showsearch = true;
+            });
+          }
+        };
+      })(this));
+    };
+
+    SoundsCtrl.prototype.login = function(user) {
+      return this.http.post('api/login', user).success((function(_this) {
+        return function(data) {
+          console.log("login data", data);
+          if (data.message) {
+            return _this.notice = data.message;
+          } else {
+            _this.notice = "Welcome back!";
+            _this.user = data.user;
+            _this.user.auth = true;
+            _this.scope.signup = true;
+            _this.scope.loginshow = false;
+            _this.scope.logoutbutton = true;
+            return _this.scope.showsearch = true;
+          }
         };
       })(this));
     };
