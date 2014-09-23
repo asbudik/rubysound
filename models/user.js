@@ -18,6 +18,12 @@ module.exports = function (sequelize, DataTypes) {
       validate: {
         notEmpty: true
       }
+    },
+    contributions: {
+      type: DataTypes.INTEGER
+    },
+    image: {
+      type: DataTypes.STRING
     }
   },
 
@@ -44,7 +50,9 @@ module.exports = function (sequelize, DataTypes) {
         } else {
           User.create({
             username: params.username,
-            password: User.encryptPass(params.password)
+            password: User.encryptPass(params.password),
+            contributions: params.contributions,
+            image: params.image
           }).error(function(error) {
             err({message: "An account with that username already exists"})
           }).success(function(user) {

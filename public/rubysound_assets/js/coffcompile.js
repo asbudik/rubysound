@@ -42,7 +42,8 @@
           return _this.http.post('api/searchlivebands', {
             track: queueSong
           }).success(function(data) {
-            return _this.venues = data;
+            _this.venues = data;
+            return console.log(data);
           });
         };
       })(this);
@@ -54,7 +55,8 @@
         return function(data) {
           var song, vote, _i, _j, _len, _len1, _ref, _ref1;
           _this.usersData = data;
-          _this.users = _this.usersData;
+          _this.users = _this.usersData.allusers;
+          console.log(_this.users);
           _this.scope.songs = _this.usersData.queue;
           if (_this.usersData.session) {
             _this.user = _this.usersData.session;
@@ -147,6 +149,7 @@
 
     SoundsCtrl.prototype.searchSongs = function(query) {
       var thisQuery;
+      this.loading = true;
       thisQuery = query;
       this.scope.query = {};
       this.tracks = {};
@@ -167,7 +170,9 @@
             limiter: _this.tracks.soundcloud.length
           }).success(function(data) {
             var count, _j, _len1, _ref;
+            _this.loading = false;
             _this.tracks.spotify = data;
+            console.log(_this.tracks.spotify);
             count = 0;
             _ref = _this.tracks.spotify.tracks.items;
             for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
@@ -196,6 +201,7 @@
         return function(data) {
           _this.newQueue = data.queue;
           _this.newVote = data.vote;
+          _this.users = data.allusers;
           return _this.http.post('api/searchlivebands', {
             track: track.artists[0].name
           }).success(function(data) {
@@ -223,7 +229,8 @@
               _this.scope.songs[0][1][0].count = 1000000;
               console.log("scope votes", _this.scope.songs[0][1][0]);
               _this.scope.songs[0][0].playing = true;
-              return _this.scope.addVote(_this.scope.songs[0]);
+              _this.scope.addVote(_this.scope.songs[0]);
+              return _this.scope.getVenues(track.artists[0].name);
             }
           });
         };
@@ -240,6 +247,8 @@
     };
 
     SoundsCtrl.prototype.signup = function(user) {
+      user.contributions = 0;
+      user.image = 'http://png-5.findicons.com/files/icons/1580/devine_icons_part_2/512/cd_music.png';
       return this.http.post('api/users', user).success((function(_this) {
         return function(data) {
           console.log("data", data);
@@ -252,7 +261,8 @@
               _this.scope.signup = true;
               _this.scope.loginshow = false;
               _this.scope.logoutbutton = true;
-              return _this.scope.showsearch = true;
+              _this.scope.showsearch = true;
+              return _this.users.push(data.user);
             });
           }
         };

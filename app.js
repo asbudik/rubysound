@@ -50,17 +50,6 @@ passport.deserializeUser(function(id, done) {
   })
 })
 
-io.on('connection', function(socket){
-  socket.nickname = currentUser
-  socket.on('chat message', function(msg){
-    io.emit('chat message', {msg: msg, nick: socket.nickname});
-  });
-
-  socket.on('login', function(user) {
-    socket.nickname = user
-  })
-});
-
 
 app.post('/api/spotify', function(req, res) {
   var searchURL = "https://api.spotify.com/v1/search?q="
@@ -106,7 +95,7 @@ app.get('/api/users', function(req, res) {
           songs.push([oneQueue, queueVotes])
       })
     })
-    db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
+    db.user.findAll({order: [['contributions', 'DESC']]}).success(function(allUsers) {
       res.json({allusers: allUsers, session: req.user, queue: songs})
     })
   })
@@ -142,15 +131,19 @@ app.post('/api/login', function(req, res, next) {
 
 
 app.post('/api/users/:id/songs', function(req, res) {
-  db.user.find(req.params.id).success(function(foundUser) {
-    db.song.create(req.body).success(function(newSong) {
-      if (foundUser !== undefined) {
-        foundUser.addSong(newSong).success(function() {})
-      }
-      db.queue.create(req.body).success(function(newQueue){
-        db.vote.create().success(function(newVote) {
-          newQueue.addVote(newVote).success(function() {
-            res.json({user: foundUser || undefined, song: newSong, queue: newQueue, vote: newVote})
+  db.user.find(req.params.id).success(function(oneUser) {
+    oneUser.updateAttributes({contributions: oneUser.contributions += 1, image: req.body.image}).success(function(foundUser) {
+      db.song.create(req.body).success(function(newSong) {
+        if (foundUser !== undefined) {
+          foundUser.addSong(newSong).success(function() {})
+        }
+        db.user.findAll({order: [['contributions', 'DESC']]}).success(function(allUsers) {
+          db.queue.create(req.body).success(function(newQueue){
+            db.vote.create().success(function(newVote) {
+              newQueue.addVote(newVote).success(function() {
+                res.json({user: foundUser || undefined, song: newSong, queue: newQueue, vote: newVote, allusers: allUsers})
+              })
+            })
           })
         })
       })

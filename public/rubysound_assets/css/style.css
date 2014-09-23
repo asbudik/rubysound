@@ -55,6 +55,9 @@ body {
   border: 2px solid black;
   margin-right: 10px;
   background-color: white;
+  max-height: 498px;
+  overflow: scroll;
+  box-shadow: 1px 1px 2px black;
 }
 
 .loginbar {
@@ -133,13 +136,18 @@ body {
 .navbarclass .navtitle {
   color: white;
 }
+.loading {
+  margin-left: 100px;
+}
 .logouttext {
   position: relative;
-  top: -3px;
+  top: -5px;
   letter-spacing: -1px;
 }
 .logoutbutton {
+  font-weight: bolder;
   float: right;
+  letter-spacing: 2px;
   background-color: white;
   margin-top: 8px;
   margin-right: 8px;
@@ -196,6 +204,31 @@ body {
   margin-left: 5px;
   display: inline-block;
 }
+.colusername {
+  font-size: 15px;
+  letter-spacing: -.5px;
+  font-weight: bold;
+}
+.usercontainer {
+  margin-top: 5px;
+  padding: 5px;
+  overflow: scroll;
+}
+.singleuser {
+  margin-bottom: 5px;
+  border-bottom: 1px solid grey;
+  padding-bottom: 6px;
+  padding-top: 5px;
+}
+.colcon {
+  float: right;
+  color: brown;
+}
+.conimage {
+  float: right;
+  position: relative;
+  top: -8px;
+}
 .theplayer {
   border-radius: 5px 0px 0px 5px;
   border: 2px solid black;
@@ -206,6 +239,16 @@ body {
   box-shadow: 1px 1px 2px black;
   background-color: white;
   }
+
+.usertile {
+  border-radius: 0px 5px 5px 0px;
+  border: 2px solid black;
+  height: 500px;
+  padding: 0;
+  margin: 0;
+  box-shadow: 1px 1px 2px black;
+  background-color: white;
+}
 .bg {
   position: relative;
   height: 222px;

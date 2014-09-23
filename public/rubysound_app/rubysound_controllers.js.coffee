@@ -31,6 +31,7 @@ class SoundsCtrl
       console.log('am i being called')
       @http.post('api/searchlivebands', {track: queueSong}).success (data) =>
         @venues = data
+        console.log(data)
 
 
     @user = ""
@@ -40,7 +41,8 @@ class SoundsCtrl
     @http.get('api/users').success (data) =>
       @usersData = data
 
-      @users = @usersData
+      @users = @usersData.allusers
+      console.log(@users)
       @scope.songs = @usersData.queue
       if @usersData.session
         @user = @usersData.session
@@ -98,6 +100,7 @@ class SoundsCtrl
 
 
   searchSongs: (query) ->
+    @loading = true
     thisQuery = query
     @scope.query = {}
     @tracks = {}
@@ -111,7 +114,9 @@ class SoundsCtrl
 
 
       @http.post('api/spotify', {query: query.string, limiter: @tracks.soundcloud.length}).success (data) =>
+        @loading = false
         @tracks.spotify = data
+        console.log(@tracks.spotify)
 
         count = 0
         for track in @tracks.spotify.tracks.items
@@ -130,6 +135,7 @@ class SoundsCtrl
     @http.post("api/users/#{@user.id}/songs", {title: track.soundcloudtitle, artist: track.artists[0].name, image: track.album.images[0].url, playthrough: false, url: track.streamUrl}).success (data) =>
       @newQueue = data.queue
       @newVote = data.vote
+      @users = data.allusers
       @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
         for listing in data
           @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.ticket_url}).success (data) =>
@@ -147,6 +153,8 @@ class SoundsCtrl
           @scope.songs[0][0].playing = true
           @scope.addVote(@scope.songs[0])
 
+          @scope.getVenues(track.artists[0].name)
+
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>
       @scope.songs.shift()
@@ -154,6 +162,8 @@ class SoundsCtrl
 
 
   signup: (user) ->
+    user.contributions = 0
+    user.image = 'http://png-5.findicons.com/files/icons/1580/devine_icons_part_2/512/cd_music.png'
     @http.post('api/users', user).success (data) =>
       console.log("data", data)
       if data.user
@@ -166,6 +176,7 @@ class SoundsCtrl
           @scope.loginshow = false
           @scope.logoutbutton = true
           @scope.showsearch = true
+          @users.push(data.user)
 
   login: (user) ->
     @http.post('api/login', user).success (data) =>

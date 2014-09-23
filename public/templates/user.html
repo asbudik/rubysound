@@ -1,0 +1,7 @@
+<div class="usercontainer">
+<div ng-repeat="user in sounds.users | orderBy: '-contributions'">
+  <div class="singleuser">
+  <img src="{{user.image}}" height="30" width="30"> <span class="colusername">{{user.username}} </span><img class="conimage" src="rubysound_assets/img/vectorheads.png" height="30" width="30"><span class="colcon">{{user.contributions}}</span>
+  </div>
+</div>
+</div>

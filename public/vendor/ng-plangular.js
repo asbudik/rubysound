@@ -14,7 +14,7 @@
 'use strict';
 
 var plangular = angular.module('plangular', []),
-    clientID = '0d33361983f16d2527b01fbf6408b7d7';
+    clientID = 'a193506e4d1a399fbb796fd18bfd3a3b';
 
 plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootScope) {
   var audio = document.createElement('audio');
@@ -151,8 +151,8 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           $rootScope.$$childHead.getVenues($rootScope.$$childHead.songs[0][0].artist)
         }
       }
-      player.next();
       console.log("player next")
+      player.next();
     } else {
       console.log("player pause")
       player.pause();
