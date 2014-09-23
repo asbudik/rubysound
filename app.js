@@ -12,7 +12,6 @@ var passportLocal = require("passport-local");
 var cookieParser =  require("cookie-parser");
 var cookieSession = require("cookie-session");
 var server =        require('http').createServer(app)
-
 var currentUser = undefined
 
 app.set("view engine", "html");
@@ -56,6 +55,10 @@ io.on('connection', function(socket){
   socket.on('chat message', function(msg){
     io.emit('chat message', {msg: msg, nick: socket.nickname});
   });
+
+  socket.on('login', function(user) {
+    socket.nickname = user
+  })
 });
 
 
@@ -132,6 +135,7 @@ app.post('/api/login', function(req, res, next) {
     req.logIn(user, function(err) {
       if (err) { return res.json({message: "Login or password incorrect"}) }
       return res.json({user: req.user})
+
     });
   })(req, res, next);
 });

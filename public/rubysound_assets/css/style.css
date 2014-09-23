@@ -26,7 +26,14 @@ body {
   width: 343px;
   overflow: scroll;
 }
-
+.nowplaying {
+  float: right;
+  font-size: 13px;
+  position: relative;
+  top: -36px;
+  margin-right: 3px;
+  color: #46d246;
+}
 .venuedate {
   font-size: 12px;
   letter-spacing: -.5px;
@@ -236,7 +243,7 @@ a:hover {
 li {
   list-style-type: none;
 }
-textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {   
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, button:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {   
 border-color: rgba(204,0,0, 0.8);
 box-shadow: 0 1px 1px rgba(204,0,0, 0.075) inset, 0 0 8px rgba(204,0,0, 0.6);
 outline: 0 none;}

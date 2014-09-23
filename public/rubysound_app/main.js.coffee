@@ -2,7 +2,6 @@
 SoundsApp = angular.module("SoundsApp", [
   "ngRoute",
   "SoundsControllers",
-  "SoundsFactories",
   "plangular",
   "mediaPlayer"
 ])

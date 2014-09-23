@@ -1,7 +1,7 @@
 (function() {
   var SoundsApp;
 
-  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "SoundsFactories", "plangular", "mediaPlayer"]);
+  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "plangular", "mediaPlayer"]);
 
   SoundsApp.config([
     "$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
@@ -23,12 +23,11 @@
   SoundsControllers = angular.module("SoundsControllers", []);
 
   SoundsCtrl = (function() {
-    function SoundsCtrl(scope, http, location, filter, Sound) {
+    function SoundsCtrl(scope, http, location, filter) {
       this.scope = scope;
       this.http = http;
       this.location = location;
       this.filter = filter;
-      this.Sound = Sound;
       this.scope.popFromQueue = (function(_this) {
         return function(trackToDelete) {
           return _this.http["delete"]("api/queues/" + trackToDelete[0].id).success(function(data) {});
@@ -111,7 +110,7 @@
         return function(song) {
           var index;
           song[0].voted = true;
-          console.log("scope", _this.scope);
+          console.log("scope", song);
           index = _this.scope.songs.indexOf(song);
           return _this.http.post("api/queues/" + song.id + "/votes", {
             song: song,
@@ -121,7 +120,7 @@
             data.song.voted = true;
             song[1][0].count += 1;
             _this.scope.songs.push([data.song, [data.vote]]);
-            return _this.scope.songs.sort(function(a, b) {
+            _this.scope.songs.sort(function(a, b) {
               if (a[1][0].count < b[1][0].count) {
                 return 1;
               }
@@ -136,9 +135,11 @@
               if (a[1][0].createdAt > b[1][0].createdAt) {
                 return 1;
               }
-              0;
-              return _this.scope.songs[0][0].count = 1000000;
+              return 0;
             });
+            _this.scope.songs[0][0].playing = true;
+            _this.scope.songs[0][0].count = 1000000;
+            return console.log(_this.scope.songs[0]);
           });
         };
       })(this);
@@ -292,25 +293,6 @@
 
   })();
 
-  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", "Sound", SoundsCtrl]);
-
-}).call(this);
-
-(function() {
-  var Sound, SoundsFactories;
-
-  SoundsFactories = angular.module("SoundsFactories", []);
-
-  Sound = (function() {
-    function Sound(http) {
-      this.http = http;
-      console.log("hello world");
-    }
-
-    return Sound;
-
-  })();
-
-  SoundsFactories.factory("Sound", ["$http", Sound]);
+  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", SoundsCtrl]);
 
 }).call(this);
