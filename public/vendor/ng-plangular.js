@@ -16,7 +16,7 @@
 var plangular = angular.module('plangular', []),
     clientID = '0d33361983f16d2527b01fbf6408b7d7';
 
-plangular.directive('plangular', ['$http', function ($http) {
+plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootScope) {
   var audio = document.createElement('audio');
 
   var player = {
@@ -123,9 +123,14 @@ plangular.directive('plangular', ['$http', function ($http) {
   }, false);
 
   audio.addEventListener('ended', function() {
+    console.log("ended:rootScope:", $rootScope);
+    console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
     if (player.tracks.length > 0) {
+      console.log("song end");
+      if ($rootScope.$$childHead.songs) {
+        $rootScope.$$childHead.songs.shift();
+      }
       player.next();
-      console.log("song end")
     } else {
      player.pause();
     }
@@ -199,6 +204,11 @@ plangular.directive('plangular', ['$http', function ($http) {
             scope.duration = player.duration;
           });  
         };
+      }, false);
+
+      audio.addEventListener('ended', function() {
+        console.log("ended:link:this", this);
+        console.log("ended:link:scope", scope)
       }, false);
       
       scope.seek = function(e){

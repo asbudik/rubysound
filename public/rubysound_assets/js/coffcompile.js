@@ -35,18 +35,18 @@
       this.user = "";
       this.tracks = {};
       this.tracks.soundcloud = [];
-      this.songs = [];
+      this.scope.songs = [];
       this.http.get('api/users').success((function(_this) {
         return function(data) {
           var song, vote, _i, _j, _len, _len1, _ref, _ref1;
           _this.users = data;
-          _this.songs = data.queue;
+          _this.scope.songs = data.queue;
           if (data.session) {
             _this.user = data.session;
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;
-            _ref = _this.songs;
+            _ref = _this.scope.songs;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               song = _ref[_i];
               _ref1 = song[1];
@@ -61,7 +61,7 @@
             _this.guestuser = true;
             _this.scope.showsearch = false;
           }
-          _this.songs.sort(function(a, b) {
+          _this.scope.songs.sort(function(a, b) {
             if (a[1][0].count < b[1][0].count) {
               return 1;
             }
@@ -78,7 +78,7 @@
             }
             return 0;
           });
-          return console.log(_this.songs);
+          return console.log(_this.scope.songs);
         };
       })(this));
     }
@@ -150,15 +150,15 @@
             }
             return _results;
           });
-          return _this.songs.push([_this.newQueue, [_this.newVote]]);
+          return _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
         };
       })(this));
     };
 
     SoundsCtrl.prototype.deleteQueueItem = function(queueItem) {
-      return this.http["delete"]("api/queues/" + this.songs[0].id).success((function(_this) {
+      return this.http["delete"]("api/queues/" + this.scope.songs[0].id).success((function(_this) {
         return function(data) {
-          _this.songs.shift();
+          _this.scope.songs.shift();
           return true;
         };
       })(this));
@@ -167,17 +167,17 @@
     SoundsCtrl.prototype.addVote = function(song) {
       var index;
       song[0].voted = true;
-      index = this.songs.indexOf(song);
+      index = this.scope.songs.indexOf(song);
       return this.http.post("api/queues/" + song.id + "/votes", {
         song: song,
         user: this.user.id
       }).success((function(_this) {
         return function(data) {
-          _this.songs.splice(index, 1);
+          _this.scope.songs.splice(index, 1);
           data.song.voted = true;
           song[1][0].count += 1;
-          _this.songs.push([data.song, [data.vote]]);
-          return _this.songs.sort(function(a, b) {
+          _this.scope.songs.push([data.song, [data.vote]]);
+          return _this.scope.songs.sort(function(a, b) {
             if (a[1][0].count < b[1][0].count) {
               return 1;
             }

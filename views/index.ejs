@@ -43,7 +43,7 @@
       return false;
     });
     socket.on('chat message', function(msg){
-      $('#messages').append('<li><strong>' + msg.nick + ': </strong>' + msg.msg)
+      $('#messages').append("<li><strong class='usernamechat'>" + msg.nick + "</strong>: " + msg.msg)
     });
   </script>
 </body>

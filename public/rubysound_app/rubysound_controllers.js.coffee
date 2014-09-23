@@ -9,17 +9,17 @@ class SoundsCtrl
     @user = ""
     @tracks = {}
     @tracks.soundcloud = []
-    @songs = []
+    @scope.songs = []
     @http.get('api/users').success (data) =>
       @users = data
-      @songs = data.queue
+      @scope.songs = data.queue
       if data.session
         @user = data.session
         @scope.signup = true
         @scope.loginshow = false
         @scope.logoutbutton = true
 
-        for song in @songs
+        for song in @scope.songs
           for vote in song[1]
             if vote.uservote == @user.id
               song[0].voted = true
@@ -28,7 +28,7 @@ class SoundsCtrl
         @guestuser = true
         @scope.showsearch = false
       
-      @songs.sort (a, b) =>
+      @scope.songs.sort (a, b) =>
         return 1  if a[1][0].count < b[1][0].count
         return -1  if a[1][0].count > b[1][0].count
         console.log(a)
@@ -37,7 +37,7 @@ class SoundsCtrl
         return 1 if a[1][0].createdAt > b[1][0].createdAt
         0
 
-      console.log(@songs)
+      console.log(@scope.songs)
 
   searchSongs: (query) ->
     thisQuery = query
@@ -77,22 +77,22 @@ class SoundsCtrl
         for listing in data
           @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
 
-      @songs.push([@newQueue, [@newVote]])
+      @scope.songs.push([@newQueue, [@newVote]])
 
   deleteQueueItem: (queueItem) ->
-    @http.delete("api/queues/#{@songs[0].id}").success (data) =>
-      @songs.shift()
+    @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>
+      @scope.songs.shift()
       return true
 
   addVote: (song) ->
     song[0].voted = true
-    index = @songs.indexOf(song)
+    index = @scope.songs.indexOf(song)
     @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
-      @songs.splice(index,1)
+      @scope.songs.splice(index,1)
       data.song.voted = true
       song[1][0].count += 1
-      @songs.push([data.song, [data.vote]])
-      @songs.sort (a, b) =>
+      @scope.songs.push([data.song, [data.vote]])
+      @scope.songs.sort (a, b) =>
         return 1  if a[1][0].count < b[1][0].count
         return -1  if a[1][0].count > b[1][0].count
         console.log(a)

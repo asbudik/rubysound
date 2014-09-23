@@ -3,7 +3,8 @@
 #messages li { 
   padding: 5px 10px; 
 }
-#messages li:nth-child(odd) { background: #eee; }
+#messages li:nth-child(odd) strong{ color: #b20000; }
+#messages li:nth-child(odd) { background-color: #eFeFeF; }
 body {
   background-color: black;
   background-image: url('../img/dark.png');
@@ -22,13 +23,29 @@ body {
 }
 .messagecontainer {
   height: 395px;
-  width: 220px;
+  width: 343px;
   overflow: scroll;
 }
 .searchbar {
   border-radius: 5px;
   border: 2px solid black;
   margin-right: 10px;
+  background-color: white;
+}
+
+.loginbar {
+  border-radius: 5px;
+  border: 2px solid black;
+  margin-right: 10px;
+  background-color: white;
+}
+.signupbar {
+  padding-top: 10px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  border: 2px solid black;
+  margin-right: 10px;
+  background-color: white;
 }
 .animate-show {
   line-height:20px;
@@ -72,6 +89,7 @@ body {
   padding: 0;
   color: #e0e0e0;
   border-top: 2px solid black;
+  box-shadow: inset 1px 1px 5px black, inset -1px -1px 5px black;
 }
 .queueimage {
   border: 1px solid #cccccc;
@@ -89,6 +107,11 @@ body {
 .navbarclass .navtitle {
   color: white;
 }
+.logouttext {
+  position: relative;
+  top: -3px;
+  letter-spacing: -1px;
+}
 .logoutbutton {
   float: right;
   background-color: white;
@@ -97,6 +120,7 @@ body {
   box-shadow: 1px 1px black;
   border-radius: 2px;
   width: 90px;
+  height: 30px;
 }
 .votesfloat {
   float: right;
@@ -128,8 +152,8 @@ body {
 .singlesong {
   margin-top: 5px;
   margin: 5px;
-  padding-bottom: 5px;
-  padding-top: 5px;
+  padding-bottom: 4px;
+  padding-top: 4px;
   text-shadow: 1px 1px 1px black;
   border-bottom: 1px solid #999999;
   box-shadow: 1px 1px 3px grey, -1px -1px 3px grey;

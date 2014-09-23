@@ -100,7 +100,7 @@ app.get('/api/users', function(req, res) {
     songs = []
     allQueues.forEach(function(oneQueue) {
       oneQueue.getVotes({order: [['createdAt', 'DESC']]}).success(function(queueVotes) {
-        songs.push([oneQueue, queueVotes])
+          songs.push([oneQueue, queueVotes])
       })
     })
     db.user.findAll({order: [['createdAt', 'DESC']]}).success(function(allUsers) {
