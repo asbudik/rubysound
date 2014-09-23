@@ -133,12 +133,13 @@ app.post('/login', passport.authenticate('local', {
 app.post('/api/users/:id/songs', function(req, res) {
   db.user.find(req.params.id).success(function(foundUser) {
     db.song.create(req.body).success(function(newSong) {
-      foundUser.addSong(newSong).success(function() {
-        db.queue.create(req.body).success(function(newQueue){
-          db.vote.create().success(function(newVote) {
-            newQueue.addVote(newVote).success(function() {
-              res.json({user: foundUser, song: newSong, queue: newQueue, vote: newVote})
-            })
+      if (foundUser !== undefined) {
+        foundUser.addSong(newSong).success(function() {})
+      }
+      db.queue.create(req.body).success(function(newQueue){
+        db.vote.create().success(function(newVote) {
+          newQueue.addVote(newVote).success(function() {
+            res.json({user: foundUser || undefined, song: newSong, queue: newQueue, vote: newVote})
           })
         })
       })

@@ -37,6 +37,35 @@
           });
         };
       })(this);
+      this.scope.getSong = (function(_this) {
+        return function(track) {
+          console.log("track", track);
+          _this.dummyuser = {};
+          _this.dummyuser.id = 1;
+          _this.newQueue = {};
+          _this.newVote = {};
+          return _this.http.post("api/users/" + _this.dummyuser.id + "/songs", track).success(function(data) {
+            _this.newQueue = data.queue;
+            _this.newVote = data.vote;
+            _this.http.post('api/searchlivebands', {
+              track: track.artist
+            }).success(function(data) {
+              var listing, _i, _len, _results;
+              _results = [];
+              for (_i = 0, _len = data.length; _i < _len; _i++) {
+                listing = data[_i];
+                _results.push(_this.http.post("api/songs/" + _this.newQueue.id + "/venues", {
+                  venuename: listing.formatted_location + " **AT** " + listing.venue.name,
+                  venuedate: listing.formatted_datetime,
+                  rsvp: listing.facebook_rsvp_url
+                }));
+              }
+              return _results;
+            });
+            return _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
+          });
+        };
+      })(this);
       this.scope.showsearch = true;
       this.user = "";
       this.tracks = {};
@@ -67,7 +96,7 @@
             _this.guestuser = true;
             _this.scope.showsearch = false;
           }
-          _this.scope.songs.sort(function(a, b) {
+          return _this.scope.songs.sort(function(a, b) {
             if (a[1][0].count < b[1][0].count) {
               return 1;
             }
@@ -84,7 +113,6 @@
             }
             return 0;
           });
-          return console.log(_this.scope.songs);
         };
       })(this));
     }
@@ -127,7 +155,6 @@
     };
 
     SoundsCtrl.prototype.searchLiveBands = function(track) {
-      console.log(track);
       this.scope.clicked = true;
       this.newQueue = {};
       this.newVote = {};

@@ -8,6 +8,22 @@ class SoundsCtrl
       @http.delete("api/queues/#{trackToDelete[0].id}").success (data) ->
         console.log("deleted queue")
 
+    @scope.getSong = (track) =>
+      console.log("track", track)
+      @dummyuser = {}
+      @dummyuser.id = 1
+      @newQueue = {}
+      @newVote = {}
+      @http.post("api/users/#{@dummyuser.id}/songs", track).success (data) =>
+        @newQueue = data.queue
+        @newVote = data.vote
+        @http.post('api/searchlivebands', {track: track.artist}).success (data) =>
+          for listing in data
+            @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.facebook_rsvp_url})
+
+        @scope.songs.push([@newQueue, [@newVote]])
+
+
     @scope.showsearch = true
 
     @user = ""
@@ -41,7 +57,6 @@ class SoundsCtrl
         return 1 if a[1][0].createdAt > b[1][0].createdAt
         0
 
-      console.log(@scope.songs)
 
   searchSongs: (query) ->
     thisQuery = query
@@ -70,7 +85,6 @@ class SoundsCtrl
         @scope.clicked = false
 
   searchLiveBands: (track) ->
-    console.log(track)
     @scope.clicked = true
     @newQueue = {}
     @newVote = {}
@@ -138,6 +152,5 @@ class SoundsCtrl
   getSignUp: () ->
     @scope.loginshow = false
     @scope.signup = false
-      
 
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", "Sound", SoundsCtrl])
