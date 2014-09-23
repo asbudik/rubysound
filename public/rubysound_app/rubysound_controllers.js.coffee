@@ -135,7 +135,7 @@ class SoundsCtrl
         for singleVenue in data
           @venuesArray.push({venuename: singleVenue.formatted_location + "**AT**" + singleVenue.venue.name, venuedate: singleVenue.formatted_datetime, rsvp: singleVenue.ticket_url})
         
-        @scope.getVenues(track.artists[0].name)
+        # @scope.getVenues(track.artists[0].name)
         @scope.songs.push([@newQueue, [@newVote]])
         console.log("THIS IS SCOPE SONGS", @scope.songs)
         if @scope.songs.length == 1

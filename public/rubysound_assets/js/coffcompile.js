@@ -216,7 +216,6 @@
                 rsvp: singleVenue.ticket_url
               });
             }
-            _this.scope.getVenues(track.artists[0].name);
             _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
             console.log("THIS IS SCOPE SONGS", _this.scope.songs);
             if (_this.scope.songs.length === 1) {

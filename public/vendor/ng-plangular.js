@@ -143,9 +143,10 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         $rootScope.$$childHead.songs.shift();
         if ($rootScope.$$childHead.songs.length > 0) {
-          $rootScope.$$childHead.songs[0][1][0].count = 1000000
-          $rootScope.$$childHead.addVote($rootScope.$$childHead.songs[0])
           $rootScope.$$childHead.songs[0][0].playing = true
+          $rootScope.$$childHead.songs[0][1][0].count = 1000000
+          $rootScope.$$childHead.songs[0][0].playing = true
+          $rootScope.$$childHead.addVote($rootScope.$$childHead.songs[0])
 
           $rootScope.$$childHead.getVenues($rootScope.$$childHead.songs[0][0].artist)
         }
