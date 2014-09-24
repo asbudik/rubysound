@@ -195,6 +195,6 @@ app.get('*', function(req, res) {
   res.render('index.ejs', {isAuthenticated: req.isAuthenticated(), user: req.user})
 });
 
-http.listen(3000, function() {
+http.listen(process.env.PORT || 3000), function() {
   console.log("SERVER LISTENING ON 3000")
 })
