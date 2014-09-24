@@ -237,13 +237,13 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         scope.track = player.data[src];
         addKeys(scope.track);
       } else {
-        console.log("BEFORE DUPE")
+        // console.log("BEFORE DUPE")
         if ($rootScope.$$childHead.noDupeSongs === true) {
-          console.log("AFTER DUPE")
-          console.log("WHY")
+          // console.log("AFTER DUPE")
+          // console.log("WHY")
           // var count = 0
           $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
-            console.log("INSIDE JSON", data)
+            // console.log("INSIDE JSON", data)
             // if (count === 0) {
             // console.log("COUNT IS", count)
             // count += 1
@@ -252,7 +252,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
             scope.track = data;
             addKeys(scope.track);
             player.data[src] = data;
-            console.log("SCOPE IN REQUEST", scope)
+            // console.log("SCOPE IN REQUEST", scope)
             player.load(data, $rootScope.index);
             $rootScope.$$childHead.noDupeSongs = false
           });
