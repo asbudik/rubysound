@@ -7,12 +7,14 @@
   </progress>
   </div>
   <div class="currentplayer">
-  <h4 class="center m0"><div class="currentsongtrack"> <img class="mainimage" ng-src="{{songs[0][0].image}}" height="150" width="150"><div class="currentsong">{{ player.currentTrack.title || '&nbsp;' }}<br><span class="usernametitle">{{ player.currentTrack.user.username || '&nbsp;'}}</span></div></div></h4>
+  <h4 class="center m0"><div class="currentsongtrack"><span ng-hide="hideImage"><img class="mainimage" ng-src="{{songs[0][0].image}}" height="150" width="150"></span><span ng-show="hideImage"><img src="rubysound_assets/img/staticheads.jpg" height="150" width="150"></span><div class="currentsong">{{ player.currentTrack.title || '&nbsp;' }}<br><span class="usernametitle">{{ player.currentTrack.user.username || '&nbsp;'}}</span></div></div></h4>
   <div class="venuecontainer">
+  <div ng-hide="hideImage">
   <div ng-repeat="venue in sounds.venues">
     <span class="venuedate">{{venue.formatted_datetime}}</span><br>
     <a class="rsvplink" href="{{venue.ticket_url}}"><span class="venuename">{{venue.formatted_location}} <strong>at</strong> {{venue.venue.name}}</span></span></a>
     
+  </div>
   </div>
   </div>
   

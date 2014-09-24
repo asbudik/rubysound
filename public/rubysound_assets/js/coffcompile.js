@@ -47,6 +47,7 @@
           });
         };
       })(this);
+      this.scope.hideImage = false;
       this.user = "";
       this.tracks = {};
       this.tracks.soundcloud = [];
@@ -97,6 +98,7 @@
             return 0;
           });
           if (_this.scope.songs.length > 0) {
+            _this.scope.hideImage = false;
             return _this.http.post('api/searchlivebands', {
               track: _this.scope.songs[0][0].artist
             }).success(function(data) {
@@ -105,6 +107,8 @@
               _this.venues = data;
               return console.log("venues", _this.venues);
             });
+          } else {
+            return _this.scope.hideImage = true;
           }
         };
       })(this));
