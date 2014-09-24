@@ -42,7 +42,7 @@ class SoundsCtrl
       @usersData = data
 
       @users = @usersData.allusers
-      console.log(@users)
+      console.log("users", @users)
       @scope.songs = @usersData.queue
       if @usersData.session
         @user = @usersData.session

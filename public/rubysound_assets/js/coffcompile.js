@@ -56,7 +56,7 @@
           var song, vote, _i, _j, _len, _len1, _ref, _ref1;
           _this.usersData = data;
           _this.users = _this.usersData.allusers;
-          console.log(_this.users);
+          console.log("users", _this.users);
           _this.scope.songs = _this.usersData.queue;
           if (_this.usersData.session) {
             _this.user = _this.usersData.session;
