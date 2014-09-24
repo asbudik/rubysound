@@ -239,12 +239,14 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         // console.log("!src")
         // console.log('no source')
         //console.log('no src');
-      } else if (player.data[src]) {
-        console.log("PLAYER DATA", player)
-        // console.log("playerdata", player.data)
-        scope.track = player.data[src];
-        addKeys(scope.track);
-      } else {
+      } 
+      // else if (player.data[src]) {
+      //   console.log("PLAYER DATA", player)
+      //   // console.log("playerdata", player.data)
+      //   scope.track = player.data[src];
+      //   addKeys(scope.track);
+      // } 
+      else {
         // console.log("BEFORE DUPE")
         // if ($rootScope.$$childHead.noDupeSongs === true) {
           // console.log("AFTER DUPE")
