@@ -7,7 +7,7 @@
   </progress>
   </div>
   <div class="currentplayer">
-  <h4 class="center m0"><div class="currentsongtrack"> <img class="mainimage" ng-src="{{songs[0][0].image}}" height="150" width="150"><div class="currentsong">{{ player.currentTrack.title || '&nbsp;' }}<br><span class="usernametitle">{{ player.currentTrack.user.username || '&nbsp;'}}</span></div></div></h4>
+  <h4 class="center m0"><div class="currentsongtrack"> <img class="mainimage" src="{{songs[0][0].image}}" height="150" width="150"><div class="currentsong">{{ player.currentTrack.title || '&nbsp;' }}<br><span class="usernametitle">{{ player.currentTrack.user.username || '&nbsp;'}}</span></div></div></h4>
   <div class="venuecontainer">
   <div ng-repeat="venue in sounds.venues">
     <span class="venuedate">{{venue.formatted_datetime}}</span><br>

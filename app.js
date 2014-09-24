@@ -137,6 +137,7 @@ app.post('/api/users/:id/songs', function(req, res) {
     oneUser.updateAttributes({contributions: oneUser.contributions += 1, image: req.body.image}).success(function(foundUser) {
       db.song.create(req.body).success(function(newSong) {
         if (foundUser !== undefined) {
+
           foundUser.addSong(newSong).success(function() {})
         }
         db.user.findAll({order: [['contributions', 'DESC']]}).success(function(allUsers) {
@@ -152,7 +153,6 @@ app.post('/api/users/:id/songs', function(req, res) {
     })
   })
 })
-
 
 app.post('/api/songs/:id/venues', function(req, res) {
   db.queue.find(req.params.id).success(function(foundQueue) {

@@ -202,37 +202,15 @@
           _this.newQueue = data.queue;
           _this.newVote = data.vote;
           _this.users = data.allusers;
-          return _this.http.post('api/searchlivebands', {
-            track: track.artists[0].name
-          }).success(function(data) {
-            var listing, singleVenue, _i, _j, _len, _len1;
-            for (_i = 0, _len = data.length; _i < _len; _i++) {
-              listing = data[_i];
-              _this.http.post("api/songs/" + _this.newQueue.id + "/venues", {
-                venuename: listing.formatted_location + " **AT** " + listing.venue.name,
-                venuedate: listing.formatted_datetime,
-                rsvp: listing.ticket_url
-              }).success(function(data) {});
-            }
-            _this.venuesArray = [];
-            for (_j = 0, _len1 = data.length; _j < _len1; _j++) {
-              singleVenue = data[_j];
-              _this.venuesArray.push({
-                venuename: singleVenue.formatted_location + "**AT**" + singleVenue.venue.name,
-                venuedate: singleVenue.formatted_datetime,
-                rsvp: singleVenue.ticket_url
-              });
-            }
-            _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
-            console.log("THIS IS SCOPE SONGS", _this.scope.songs);
-            if (_this.scope.songs.length === 1) {
-              _this.scope.songs[0][1][0].count = 1000000;
-              console.log("scope votes", _this.scope.songs[0][1][0]);
-              _this.scope.songs[0][0].playing = true;
-              _this.scope.addVote(_this.scope.songs[0]);
-              return _this.scope.getVenues(track.artists[0].name);
-            }
-          });
+          _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
+          console.log("THIS IS SCOPE SONGS", _this.scope.songs);
+          if (_this.scope.songs.length === 1) {
+            _this.scope.songs[0][1][0].count = 1000000;
+            console.log("scope votes", _this.scope.songs[0][1][0]);
+            _this.scope.songs[0][0].playing = true;
+            _this.scope.addVote(_this.scope.songs[0]);
+            return _this.scope.getVenues(track.artists[0].name);
+          }
         };
       })(this));
     };

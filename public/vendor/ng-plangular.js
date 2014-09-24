@@ -20,12 +20,14 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   var audio = document.createElement('audio');
 
   // var staticTracks = [
-  //   {title: 'Owl City - Fireflies (SMLE Remix)', artist: 'Owl City', image: 'https://i.scdn.co/image/fcc6b725a08a9c6dd487a161c7e8a380ddef69a6', playthrough: false, url: 'http://soundcloud.com/smlemusic/owl-city-fireflies-smle-remix'}
+  //   {title: 'Owl City - Fireflies (SMLE Remix)', artist: 'Owl City', image: 'https://i.scdn.co/image/fcc6b725a08a9c6dd487a161c7e8a380ddef69a6', playthrough: false, url: 'http://soundcloud.com/smlemusic/owl-city-fireflies-smle-remix'},
+  //   {title: 'Luv (Sic) Part 3', artist: 'Nujabes', image: 'https://i.scdn.co/image/31762579d8fd04a756fb791ac9c3634b5828f0dd', playthrough: false, url: 'http://soundcloud.com/junseba/luv-sic-part-3'}
+
   // ]
 
-  if ($rootScope.$$childHead.songs === []) {
-    $rootScope.$$childHead.getSong(staticTracks[0])
-  }
+  // if ($rootScope.$$childHead.songs === []) {
+  //   $rootScope.$$childHead.getSong(staticTracks[0])
+  // }
 
   console.log("SCOPE INDEX")
 
@@ -94,6 +96,8 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         // console.log("PLAYLIST LESS THAN")
         this.playlistIndex++;
         this.play(this.i, this.playlistIndex);
+        console.log("THIS I", this.i)
+        console.log("THIS TRACKS LENGTH", this.tracks.length)
       } else if (this.i < this.tracks.length - 1) {
         this.i++;
         // Handle advancing to new playlist
@@ -106,6 +110,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           this.play(this.i, this.playlistIndex);
         } else {
           console.log("THIS PLAY", this.i)
+          console.log("THIS TRACKS LENGTH", this.tracks.length)
           this.play(this.i);
         }
       } else if (this.i >= this.tracks.length -1) {
@@ -149,15 +154,11 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
 
   audio.addEventListener('ended', function() {
     // console.log("ENDEDENDED")
-
-    if ($rootScope.$$childHead.songs.length < 3) {
-      // $rootScope.$$childHead.getSong(staticTracks[0])
-    }
     // console.log("ended:rootScope:", $rootScope);
     // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
     if ($rootScope.$$childHead.songs.length) {
       $rootScope.index += 1
-      console.log("INCREMENT ROOTSCOPE", $rootScope.index)
+      // console.log("INCREMENT ROOTSCOPE", $rootScope.index)
       if ($rootScope.$$childHead.songs) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         $rootScope.$$childHead.songs.shift();
@@ -175,6 +176,11 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           $rootScope.$$childHead.addVote($rootScope.$$childHead.songs[0])
 
           $rootScope.$$childHead.getVenues($rootScope.$$childHead.songs[0][0].artist)
+
+          // if ($rootScope.$$childHead.songs.length < 3) {
+          //   $rootScope.$$childHead.getSong(staticTracks[0])
+          //   $rootScope.$$childHead.getSong(staticTracks[1])
+          // }
         }
       }
       // console.log("player next")
@@ -230,7 +236,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           scope.track = data;
           addKeys(scope.track);
           player.data[src] = data;
-          console.log("SCOPE IN REQUEST", scope)
+          // console.log("SCOPE IN REQUEST", scope)
           player.load(data, $rootScope.index);
         });
       }
