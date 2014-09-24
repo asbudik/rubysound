@@ -96,7 +96,6 @@ app.get('/api/users', function(req, res) {
       })
     })
     db.user.findAll({order: [['contributions', 'DESC']]}).success(function(allUsers) {
-      // allUsers.forEach(function(oneUser) {})
       res.json({allusers: allUsers, session: req.user, queue: songs})
     })
   })

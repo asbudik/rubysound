@@ -138,10 +138,19 @@ body {
 .navbarclass .navtitle {
   color: white;
 }
+.navtitle {
+  font-family: 'Lobster', cursive;
+  font-size: 37px;
+  letter-spacing: 3px;
+  position: relative;
+  top: -3px;
+
+}
 .loading {
   margin-left: 100px;
 }
 .logouttext {
+  font-family: 'Nunito', sans-serif;
   position: relative;
   top: -5px;
   letter-spacing: -1px;
@@ -208,7 +217,7 @@ body {
 }
 .colusername {
   font-size: 15px;
-  letter-spacing: -.5px;
+  letter-spacing: 1px;
   font-weight: bold;
 }
 .usercontainer {
@@ -217,6 +226,7 @@ body {
   overflow: scroll;
 }
 .singleuser {
+  font-family: 'Nunito', sans-serif;
   margin-bottom: 5px;
   border-bottom: 1px solid grey;
   padding-bottom: 6px;
@@ -224,7 +234,7 @@ body {
 }
 .colcon {
   float: right;
-  color: brown;
+  color: red;
 }
 .conimage {
   float: right;
