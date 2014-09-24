@@ -10,8 +10,10 @@
     "dialect": "postgres"
   },
   "production": {
-    "database": "rubysound_production",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "username": "lhwbxecakpolpk",
+    "password": "9Gy_ZewerwDc9LvNwaM3GeZZr9",
+    "host": "ec2-54-235-250-41.compute-1.amazonaws.com",
+    "database": "d7fdpf0pdfafcb"
   }
 }
