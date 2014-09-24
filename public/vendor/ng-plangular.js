@@ -29,7 +29,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   //   $rootScope.$$childHead.getSong(staticTracks[0])
   // }
 
-  console.log("SCOPE INDEX")
+  // console.log("SCOPE INDEX")
 
   var player = {
  
@@ -53,8 +53,8 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         console.log("THIS CURRENT TRACK", this.currentTrack)
         this.playing = track;
         this.play();
-        // audio.play();
-        // player.play();
+        audio.play();
+        player.play();
       }
     },
 
@@ -75,8 +75,13 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     },
 
     pause: function() {
-      audio.pause();
+      $rootScope.index = 0
+      console.log("PAUSE THIS TRACKS", this.tracks)
+      this.tracks = []
+      this.i = 0;
       this.playing = false;
+      console.log("INSIDE PAUSE THIS", this)
+      audio.pause();
     },
 
     playPause: function(i, playlistIndex) {
@@ -91,7 +96,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     },
 
     next: function() {
-      console.log("NEXT ROOTSCOPE", $rootScope)
+      // console.log("NEXT ROOTSCOPE", $rootScope)
       var playlist = this.tracks[this.i].tracks || null;
       if (playlist && this.playlistIndex < playlist.length - 1) {
         // console.log("PLAYLIST LESS THAN")
@@ -110,17 +115,19 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           this.playlistIndex = 0;
           this.play(this.i, this.playlistIndex);
         } else {
-          console.log("THIS PLAY", this.i)
-          console.log("THIS TRACKS LENGTH", this.tracks.length)
+          console.log("THIS PLAY I", this.i)
+          console.log("THIS TRACKS LENGTH IN ELSE", this.tracks.length)
           this.play(this.i);
         }
       } else if (this.i >= this.tracks.length -1) {
         console.log("THIS PAUSE")
         this.currentTrack = false
-        // this.currentTime = 0
-        // this.duration = 0
+        this.currentTime = 0
+        this.duration = 0
         // this.i = 0
         this.pause();
+        console.log("THIS PAUSE", this)
+        console.log("THIS TRACKS PAUSE", this.tracks)
       }
     },
 
@@ -188,7 +195,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           $rootScope.$$childHead.hideImage = true
         }
       }
-      console.log("player next")
+      // console.log("player next")
       player.next();
     } else {
       console.log("player pause")
@@ -198,9 +205,9 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   var count = 0
   if (!$rootScope.index) {
     $rootScope.index = 0
-    console.log("ROOTSCOPE", $rootScope)
+    // console.log("ROOTSCOPE", $rootScope)
   }
-  console.log("ROOTSCOPE OUTSIDE OF IF STATEMENT", $rootScope)
+  // console.log("ROOTSCOPE OUTSIDE OF IF STATEMENT", $rootScope)
 
   return {
 
@@ -233,17 +240,18 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         // console.log('no source')
         //console.log('no src');
       } else if (player.data[src]) {
+        console.log("PLAYER DATA", player)
         // console.log("playerdata", player.data)
         scope.track = player.data[src];
         addKeys(scope.track);
       } else {
         // console.log("BEFORE DUPE")
-        if ($rootScope.$$childHead.noDupeSongs === true) {
+        // if ($rootScope.$$childHead.noDupeSongs === true) {
           // console.log("AFTER DUPE")
           // console.log("WHY")
           // var count = 0
           $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
-            // console.log("INSIDE JSON", data)
+            console.log("INSIDE JSON", data)
             // if (count === 0) {
             // console.log("COUNT IS", count)
             // count += 1
@@ -256,7 +264,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
             player.load(data, $rootScope.index);
             $rootScope.$$childHead.noDupeSongs = false
           });
-        }
+        // }
       }
 
       scope.play = function(playlistIndex) {

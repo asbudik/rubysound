@@ -33,10 +33,10 @@ class SoundsCtrl
     @venues = {}
     @scope.getVenues = (queueSong) =>
       @venues = {}
-      console.log('am i being called')
+      # console.log('am i being called')
       @http.post('api/searchlivebands', {track: queueSong}).success (data) =>
         @venues = data
-        console.log(data)
+        # console.log(data)
 
     @scope.hideImage = false
     @scope.noDupeSongs = true
@@ -49,7 +49,7 @@ class SoundsCtrl
       @usersData = data
 
       @users = @usersData.allusers
-      console.log("users", @users)
+      # console.log("users", @users)
       @scope.songs = @usersData.queue
       if @usersData.session
         @user = @usersData.session
@@ -80,14 +80,14 @@ class SoundsCtrl
         @http.post('api/searchlivebands', {track: @scope.songs[0][0].artist}).success (data) =>
           count = 0
           @venues = data
-          console.log("venues", @venues)
+          # console.log("venues", @venues)
 
       else
         @scope.hideImage = true
 
     @scope.addVote = (song) =>
       song[0].voted = true
-      console.log("scope", song)
+      # console.log("scope", song)
 
       index = @scope.songs.indexOf(song)
       @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
@@ -119,7 +119,7 @@ class SoundsCtrl
     @tracks = {}
     @tracks.soundcloud = []
     @http.post('api/soundcloud', {query: query.string}).success (data) =>
-      console.log("DATA", data)
+      # console.log("DATA", data)
       if data.length > 0
         @error = false
         for track in data
@@ -131,7 +131,7 @@ class SoundsCtrl
         @http.post('api/spotify', {query: query.string, limiter: @tracks.soundcloud.length}).success (data) =>
           @loading = false
           @tracks.spotify = data
-          console.log(@tracks.spotify)
+          # console.log(@tracks.spotify)
 
           count = 0
           for track in @tracks.spotify.tracks.items
@@ -173,7 +173,7 @@ class SoundsCtrl
         @scope.songs[0][0].playing = true
         @scope.addVote(@scope.songs[0])
 
-        # @scope.getVenues(track.artists[0].name)
+        @scope.getVenues(track.artists[0].name)
 
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>
@@ -188,7 +188,7 @@ class SoundsCtrl
       if data.user
         @scope.user = {}
         @http.post('/api/login', user).success (data) =>
-          console.log("data", data)
+          # console.log("data", data)
           @user = data.user
           @user.auth = true
           @scope.signup = true
@@ -201,11 +201,11 @@ class SoundsCtrl
       else
         @error = true
         @notice = data
-        console.log(@notice)
+        # console.log(@notice)
 
   login: (user) ->
     @http.post('api/login', user).success (data) =>
-      console.log("login data", data)
+      # console.log("login data", data)
       if data.message
         @error = true
         @notice = data
@@ -220,7 +220,7 @@ class SoundsCtrl
 
   
   getLogin: () ->
-    console.log('geti')
+    # console.log('geti')
     @scope.loginshow = true
     @scope.signup = true
     @error = false

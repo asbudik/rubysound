@@ -38,12 +38,10 @@
       this.scope.getVenues = (function(_this) {
         return function(queueSong) {
           _this.venues = {};
-          console.log('am i being called');
           return _this.http.post('api/searchlivebands', {
             track: queueSong
           }).success(function(data) {
-            _this.venues = data;
-            return console.log(data);
+            return _this.venues = data;
           });
         };
       })(this);
@@ -59,7 +57,6 @@
           var song, vote, _i, _j, _len, _len1, _ref, _ref1;
           _this.usersData = data;
           _this.users = _this.usersData.allusers;
-          console.log("users", _this.users);
           _this.scope.songs = _this.usersData.queue;
           if (_this.usersData.session) {
             _this.user = _this.usersData.session;
@@ -106,8 +103,7 @@
             }).success(function(data) {
               var count;
               count = 0;
-              _this.venues = data;
-              return console.log("venues", _this.venues);
+              return _this.venues = data;
             });
           } else {
             return _this.scope.hideImage = true;
@@ -118,7 +114,6 @@
         return function(song) {
           var index;
           song[0].voted = true;
-          console.log("scope", song);
           index = _this.scope.songs.indexOf(song);
           return _this.http.post("api/queues/" + song.id + "/votes", {
             song: song,
@@ -167,7 +162,6 @@
       }).success((function(_this) {
         return function(data) {
           var track, _i, _len;
-          console.log("DATA", data);
           if (data.length > 0) {
             _this.error = false;
             for (_i = 0, _len = data.length; _i < _len; _i++) {
@@ -183,7 +177,6 @@
               var count, _j, _len1, _ref, _results;
               _this.loading = false;
               _this.tracks.spotify = data;
-              console.log(_this.tracks.spotify);
               count = 0;
               _ref = _this.tracks.spotify.tracks.items;
               _results = [];
@@ -224,7 +217,8 @@
           if (_this.scope.songs.length === 1) {
             _this.scope.songs[0][1][0].count = 1000000;
             _this.scope.songs[0][0].playing = true;
-            return _this.scope.addVote(_this.scope.songs[0]);
+            _this.scope.addVote(_this.scope.songs[0]);
+            return _this.scope.getVenues(track.artists[0].name);
           }
         };
       })(this));
@@ -247,7 +241,6 @@
           if (data.user) {
             _this.scope.user = {};
             return _this.http.post('/api/login', user).success(function(data) {
-              console.log("data", data);
               _this.user = data.user;
               _this.user.auth = true;
               _this.scope.signup = true;
@@ -259,8 +252,7 @@
             });
           } else {
             _this.error = true;
-            _this.notice = data;
-            return console.log(_this.notice);
+            return _this.notice = data;
           }
         };
       })(this));
@@ -269,7 +261,6 @@
     SoundsCtrl.prototype.login = function(user) {
       return this.http.post('api/login', user).success((function(_this) {
         return function(data) {
-          console.log("login data", data);
           if (data.message) {
             _this.error = true;
             return _this.notice = data;
@@ -287,7 +278,6 @@
     };
 
     SoundsCtrl.prototype.getLogin = function() {
-      console.log('geti');
       this.scope.loginshow = true;
       this.scope.signup = true;
       return this.error = false;
@@ -304,5 +294,10 @@
   })();
 
   SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", SoundsCtrl]);
+
+}).call(this);
+
+(function() {
+
 
 }).call(this);
