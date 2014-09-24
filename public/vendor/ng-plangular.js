@@ -26,6 +26,9 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   if ($rootScope.$$childHead.songs === []) {
     $rootScope.$$childHead.getSong(staticTracks[0])
   }
+
+  console.log("SCOPE INDEX")
+
   var player = {
  
     currentTrack: false,
@@ -38,7 +41,9 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     duration: 0,
 
     load: function(track, index) {
-      this.tracks[index] = track;
+      // console.log("THIS IS INDEX", index)
+      // this.tracks[index] = track;
+      this.tracks.push(track)
       console.log("LOADTHIS", this)
       if (!this.playing && !this.i && index == 0) {
         $rootScope.$$childHead.songs[0][0].playing = true
@@ -83,19 +88,19 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     },
 
     next: function() {
-      console.log("NEXT THIS", this.tracks)
+      console.log("NEXT ROOTSCOPE", $rootScope)
       var playlist = this.tracks[this.i].tracks || null;
       if (playlist && this.playlistIndex < playlist.length - 1) {
-        console.log("PLAYLIST LESS THAN")
+        // console.log("PLAYLIST LESS THAN")
         this.playlistIndex++;
         this.play(this.i, this.playlistIndex);
       } else if (this.i < this.tracks.length - 1) {
         this.i++;
         // Handle advancing to new playlist
         // console.log("this", this)
-        console.log("THIS TRACKS BEFORE", this.tracks)
+        // console.log("THIS TRACKS BEFORE", this)
         if (this.tracks[this.i].tracks) {
-          console.log("THIS TRACKS", this.tracks)
+          // console.log("THIS TRACKS", this.tracks)
           var playlist = this.tracks[this.i].tracks || null;
           this.playlistIndex = 0;
           this.play(this.i, this.playlistIndex);
@@ -109,7 +114,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         this.currentTime = 0
         this.duration = 0
         this.i = 0
-        // this.pause();
+        this.pause();
       }
     },
 
@@ -151,7 +156,8 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     // console.log("ended:rootScope:", $rootScope);
     // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
     if ($rootScope.$$childHead.songs.length) {
-      
+      $rootScope.index += 1
+      console.log("INCREMENT ROOTSCOPE", $rootScope.index)
       if ($rootScope.$$childHead.songs) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         $rootScope.$$childHead.songs.shift();
@@ -179,7 +185,11 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     }
   }, false);
 
-  var index = 0;
+  if (!$rootScope.index) {
+    $rootScope.index = 0
+    console.log("ROOTSCOPE", $rootScope)
+  }
+  console.log("ROOTSCOPE OUTSIDE OF IF STATEMENT", $rootScope)
 
   return {
 
@@ -196,8 +206,8 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       scope.currentTime = 0;
       scope.duration = 0;
       if (src) {
-        scope.index = index;
-        index++;
+        // console.log("SCOPE INDEX IS", scope.index)
+        // console.log("SCOPE INDEX INCREMEMNT", scope.index)
       }
 
       function addKeys(track) {
@@ -207,25 +217,26 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       }
 
       if (!src) {
-        console.log("!src")
-        console.log('no source')
+        // console.log("!src")
+        // console.log('no source')
         //console.log('no src');
       } else if (player.data[src]) {
-        console.log("playerdata", player.data)
+        // console.log("playerdata", player.data)
         scope.track = player.data[src];
         addKeys(scope.track);
       } else {
         $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
-          console.log("HTTP SOUNDCLOUD")
+          // console.log("HTTP SOUNDCLOUD")
           scope.track = data;
           addKeys(scope.track);
           player.data[src] = data;
-          player.load(data, scope.index);
+          console.log("SCOPE IN REQUEST", scope)
+          player.load(data, $rootScope.index);
         });
       }
 
       scope.play = function(playlistIndex) {
-        player.play(scope.index, playlistIndex);
+        player.play($rootScope.index, playlistIndex);
       };
 
       scope.pause = function() {
@@ -233,7 +244,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       };
 
       scope.playPause = function(playlistIndex) {
-        player.playPause(scope.index, playlistIndex);
+        player.playPause($rootScope.index, playlistIndex);
       };
 
       scope.next = function() {

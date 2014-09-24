@@ -71,6 +71,8 @@ app.post('/api/searchlivebands', function(req, res) {
     if(!error) {
       var bandData = JSON.parse(body)
       res.json(bandData)
+    } else {
+      res.json({msg: "Sorry, an error has occured"})
     }
   })
 })

@@ -227,6 +227,7 @@ body {
 }
 .singleuser {
   font-family: 'Nunito', sans-serif;
+  color: brown;
   margin-bottom: 5px;
   border-bottom: 1px solid grey;
   padding-bottom: 6px;
