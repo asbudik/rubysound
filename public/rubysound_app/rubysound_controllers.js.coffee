@@ -39,6 +39,7 @@ class SoundsCtrl
         console.log(data)
 
     @scope.hideImage = false
+    @scope.noDupeSongs = true
     @user = ""
     @tracks = {}
     @tracks.soundcloud = []
@@ -89,18 +90,20 @@ class SoundsCtrl
 
       index = @scope.songs.indexOf(song)
       @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
-        @scope.songs.splice(index,1)
         data.song.voted = true
         song[1][0].count += 1
-        @scope.songs.push([data.song, [data.vote]])
-        @scope.songs.sort (a, b) =>
-          return 1  if a[1][0].count < b[1][0].count
-          return -1  if a[1][0].count > b[1][0].count
-          console.log(a)
-          console.log(b)
-          return -1  if a[1][0].createdAt < b[1][0].createdAt
-          return 1 if a[1][0].createdAt > b[1][0].createdAt
-          0
+
+        if @scope.songs.length > 1
+          @scope.songs.splice(index,1)
+          @scope.songs.push([data.song, [data.vote]])
+          @scope.songs.sort (a, b) =>
+            return 1  if a[1][0].count < b[1][0].count
+            return -1  if a[1][0].count > b[1][0].count
+            console.log(a)
+            console.log(b)
+            return -1  if a[1][0].createdAt < b[1][0].createdAt
+            return 1 if a[1][0].createdAt > b[1][0].createdAt
+            0
           
         @scope.songs[0][0].playing = true
         @scope.songs[0][0].count = 1000000
@@ -144,7 +147,7 @@ class SoundsCtrl
     @http.post("api/users/#{@user.id}/songs", {title: track.soundcloudtitle, artist: track.artists[0].name, image: track.album.images[0].url, playthrough: false, url: track.streamUrl}).success (data) =>
       @newQueue = data.queue
       @newVote = data.vote
-      @users = data.allusers
+      # @users = data.allusers
       # @http.post('api/searchlivebands', {track: track.artists[0].name}).success (data) =>
         # for listing in data
         #   @http.post("api/songs/#{@newQueue.id}/venues", {venuename: listing.formatted_location + " **AT** " + listing.venue.name, venuedate: listing.formatted_datetime, rsvp: listing.ticket_url}).success (data) =>
@@ -155,14 +158,16 @@ class SoundsCtrl
         
         # @scope.getVenues(track.artists[0].name)
       @scope.songs.push([@newQueue, [@newVote]])
-      console.log("THIS IS SCOPE SONGS", @scope.songs)
+      @scope.noDupeSongs = true
+
+      # console.log("THIS IS SCOPE SONGS", @scope.songs)
       if @scope.songs.length == 1
         @scope.songs[0][1][0].count = 1000000
-        console.log("scope votes", @scope.songs[0][1][0])
+        # console.log("scope votes", @scope.songs[0][1][0])
         @scope.songs[0][0].playing = true
         @scope.addVote(@scope.songs[0])
 
-        @scope.getVenues(track.artists[0].name)
+        # @scope.getVenues(track.artists[0].name)
 
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>

@@ -50,10 +50,11 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       if (!this.playing && !this.i && index == 0) {
         $rootScope.$$childHead.songs[0][0].playing = true
         this.currentTrack = this.tracks[0];
+        console.log("THIS CURRENT TRACK", this.currentTrack)
         this.playing = track;
         this.play();
-        audio.play();
-        player.play();
+        // audio.play();
+        // player.play();
       }
     },
 
@@ -116,9 +117,9 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       } else if (this.i >= this.tracks.length -1) {
         console.log("THIS PAUSE")
         this.currentTrack = false
-        this.currentTime = 0
-        this.duration = 0
-        this.i = 0
+        // this.currentTime = 0
+        // this.duration = 0
+        // this.i = 0
         this.pause();
       }
     },
@@ -162,6 +163,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
       if ($rootScope.$$childHead.songs) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         $rootScope.$$childHead.songs.shift();
+
         // console.log("this index", player)
         if ($rootScope.$$childHead.songs.length > 0) {
           $rootScope.$$childHead.songs[0][0].playing = true
@@ -182,16 +184,18 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           //   $rootScope.$$childHead.getSong(staticTracks[1])
           // }
         }
+        if ($rootScope.$$childHead.songs.length === 0) {
+          $rootScope.$$childHead.hideImage = true
+        }
       }
-      $rootScope.$$childHead.hideImage = true
-      // console.log("player next")
+      console.log("player next")
       player.next();
     } else {
-      // console.log("player pause")
+      console.log("player pause")
       player.pause();
     }
   }, false);
-
+  var count = 0
   if (!$rootScope.index) {
     $rootScope.index = 0
     console.log("ROOTSCOPE", $rootScope)
@@ -222,8 +226,9 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           scope[key] = track[key];
         }
       }
-
+    
       if (!src) {
+        console.log("NO SOURCE")
         // console.log("!src")
         // console.log('no source')
         //console.log('no src');
@@ -232,15 +237,26 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         scope.track = player.data[src];
         addKeys(scope.track);
       } else {
-        $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
-          $rootScope.$$childHead.hideImage = false
-          // console.log("HTTP SOUNDCLOUD")
-          scope.track = data;
-          addKeys(scope.track);
-          player.data[src] = data;
-          // console.log("SCOPE IN REQUEST", scope)
-          player.load(data, $rootScope.index);
-        });
+        console.log("BEFORE DUPE")
+        if ($rootScope.$$childHead.noDupeSongs === true) {
+          console.log("AFTER DUPE")
+          console.log("WHY")
+          // var count = 0
+          $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
+            console.log("INSIDE JSON", data)
+            // if (count === 0) {
+            // console.log("COUNT IS", count)
+            // count += 1
+            $rootScope.$$childHead.hideImage = false
+            // console.log("HTTP SOUNDCLOUD")
+            scope.track = data;
+            addKeys(scope.track);
+            player.data[src] = data;
+            console.log("SCOPE IN REQUEST", scope)
+            player.load(data, $rootScope.index);
+            $rootScope.$$childHead.noDupeSongs = false
+          });
+        }
       }
 
       scope.play = function(playlistIndex) {

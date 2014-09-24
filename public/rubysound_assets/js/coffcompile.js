@@ -48,6 +48,7 @@
         };
       })(this);
       this.scope.hideImage = false;
+      this.scope.noDupeSongs = true;
       this.user = "";
       this.tracks = {};
       this.tracks.soundcloud = [];
@@ -122,27 +123,29 @@
             song: song,
             user: _this.user.id
           }).success(function(data) {
-            _this.scope.songs.splice(index, 1);
             data.song.voted = true;
             song[1][0].count += 1;
-            _this.scope.songs.push([data.song, [data.vote]]);
-            _this.scope.songs.sort(function(a, b) {
-              if (a[1][0].count < b[1][0].count) {
-                return 1;
-              }
-              if (a[1][0].count > b[1][0].count) {
-                return -1;
-              }
-              console.log(a);
-              console.log(b);
-              if (a[1][0].createdAt < b[1][0].createdAt) {
-                return -1;
-              }
-              if (a[1][0].createdAt > b[1][0].createdAt) {
-                return 1;
-              }
-              return 0;
-            });
+            if (_this.scope.songs.length > 1) {
+              _this.scope.songs.splice(index, 1);
+              _this.scope.songs.push([data.song, [data.vote]]);
+              _this.scope.songs.sort(function(a, b) {
+                if (a[1][0].count < b[1][0].count) {
+                  return 1;
+                }
+                if (a[1][0].count > b[1][0].count) {
+                  return -1;
+                }
+                console.log(a);
+                console.log(b);
+                if (a[1][0].createdAt < b[1][0].createdAt) {
+                  return -1;
+                }
+                if (a[1][0].createdAt > b[1][0].createdAt) {
+                  return 1;
+                }
+                return 0;
+              });
+            }
             _this.scope.songs[0][0].playing = true;
             _this.scope.songs[0][0].count = 1000000;
             return console.log(_this.scope.songs[0]);
@@ -205,15 +208,12 @@
         return function(data) {
           _this.newQueue = data.queue;
           _this.newVote = data.vote;
-          _this.users = data.allusers;
           _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
-          console.log("THIS IS SCOPE SONGS", _this.scope.songs);
+          _this.scope.noDupeSongs = true;
           if (_this.scope.songs.length === 1) {
             _this.scope.songs[0][1][0].count = 1000000;
-            console.log("scope votes", _this.scope.songs[0][1][0]);
             _this.scope.songs[0][0].playing = true;
-            _this.scope.addVote(_this.scope.songs[0]);
-            return _this.scope.getVenues(track.artists[0].name);
+            return _this.scope.addVote(_this.scope.songs[0]);
           }
         };
       })(this));
