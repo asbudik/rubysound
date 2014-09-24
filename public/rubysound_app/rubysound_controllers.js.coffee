@@ -38,7 +38,7 @@ class SoundsCtrl
         @venues = data
         console.log(data)
 
-
+    @scope.hideImage = false
     @user = ""
     @tracks = {}
     @tracks.soundcloud = []
@@ -74,10 +74,14 @@ class SoundsCtrl
         return 1 if a[1][0].createdAt > b[1][0].createdAt
         0
       if @scope.songs.length > 0
+        @scope.hideImage = false
         @http.post('api/searchlivebands', {track: @scope.songs[0][0].artist}).success (data) =>
           count = 0
           @venues = data
           console.log("venues", @venues)
+
+      else
+        @scope.hideImage = true
 
     @scope.addVote = (song) =>
       song[0].voted = true

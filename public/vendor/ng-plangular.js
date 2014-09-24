@@ -183,6 +183,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           // }
         }
       }
+      $rootScope.$$childHead.hideImage = true
       // console.log("player next")
       player.next();
     } else {
@@ -232,6 +233,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         addKeys(scope.track);
       } else {
         $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
+          $rootScope.$$childHead.hideImage = false
           // console.log("HTTP SOUNDCLOUD")
           scope.track = data;
           addKeys(scope.track);
