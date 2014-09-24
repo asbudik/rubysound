@@ -33,18 +33,6 @@
   </div>
 </div>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    var username
-    var socket = io();
-    $('.chatform').submit(function(){
-      socket.emit('chat message', $('#m').val());
-      $('#m').val('');
-      return false;
-    });
-    socket.on('chat message', function(msg){
-      $('#messages').append("<li><strong class='usernamechat'>" + msg.nick + "</strong>: " + msg.msg)
-    });
-  </script>
+
 </body>
 </html>
