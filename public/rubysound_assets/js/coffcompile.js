@@ -50,6 +50,7 @@
       this.scope.hideImage = false;
       this.scope.noDupeSongs = true;
       this.user = "";
+      this.error = false;
       this.tracks = {};
       this.tracks.soundcloud = [];
       this.scope.songs = [];
@@ -166,30 +167,40 @@
       }).success((function(_this) {
         return function(data) {
           var track, _i, _len;
-          for (_i = 0, _len = data.length; _i < _len; _i++) {
-            track = data[_i];
-            if (track.streamable === true) {
-              _this.tracks.soundcloud.push(track);
+          console.log("DATA", data);
+          if (data.length > 0) {
+            _this.error = false;
+            for (_i = 0, _len = data.length; _i < _len; _i++) {
+              track = data[_i];
+              if (track.streamable === true) {
+                _this.tracks.soundcloud.push(track);
+              }
             }
-          }
-          return _this.http.post('api/spotify', {
-            query: query.string,
-            limiter: _this.tracks.soundcloud.length
-          }).success(function(data) {
-            var count, _j, _len1, _ref;
+            _this.http.post('api/spotify', {
+              query: query.string,
+              limiter: _this.tracks.soundcloud.length
+            }).success(function(data) {
+              var count, _j, _len1, _ref, _results;
+              _this.loading = false;
+              _this.tracks.spotify = data;
+              console.log(_this.tracks.spotify);
+              count = 0;
+              _ref = _this.tracks.spotify.tracks.items;
+              _results = [];
+              for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
+                track = _ref[_j];
+                track.streamUrl = _this.tracks.soundcloud[count].permalink_url;
+                track.soundcloudtitle = _this.tracks.soundcloud[count].title;
+                _results.push(count += 1);
+              }
+              return _results;
+            });
+          } else {
+            _this.error = true;
             _this.loading = false;
-            _this.tracks.spotify = data;
-            console.log(_this.tracks.spotify);
-            count = 0;
-            _ref = _this.tracks.spotify.tracks.items;
-            for (_j = 0, _len1 = _ref.length; _j < _len1; _j++) {
-              track = _ref[_j];
-              track.streamUrl = _this.tracks.soundcloud[count].permalink_url;
-              track.soundcloudtitle = _this.tracks.soundcloud[count].title;
-              count += 1;
-            }
-            return _this.scope.clicked = false;
-          });
+            _this.notice = "no results found";
+          }
+          return _this.scope.clicked = false;
         };
       })(this));
     };
@@ -233,7 +244,6 @@
       user.image = 'http://png-5.findicons.com/files/icons/1580/devine_icons_part_2/512/cd_music.png';
       return this.http.post('api/users', user).success((function(_this) {
         return function(data) {
-          console.log("data", data);
           if (data.user) {
             _this.scope.user = {};
             return _this.http.post('/api/login', user).success(function(data) {
@@ -244,8 +254,13 @@
               _this.scope.loginshow = false;
               _this.scope.logoutbutton = true;
               _this.scope.showsearch = true;
-              return _this.users.push(data.user);
+              _this.users.push(data.user);
+              return _this.error = false;
             });
+          } else {
+            _this.error = true;
+            _this.notice = data;
+            return console.log(_this.notice);
           }
         };
       })(this));
@@ -256,15 +271,16 @@
         return function(data) {
           console.log("login data", data);
           if (data.message) {
-            return _this.notice = data.message;
+            _this.error = true;
+            return _this.notice = data;
           } else {
-            _this.notice = "Welcome back!";
             _this.user = data.user;
             _this.user.auth = true;
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;
-            return _this.scope.showsearch = true;
+            _this.scope.showsearch = true;
+            return _this.error = false;
           }
         };
       })(this));
@@ -273,12 +289,14 @@
     SoundsCtrl.prototype.getLogin = function() {
       console.log('geti');
       this.scope.loginshow = true;
-      return this.scope.signup = true;
+      this.scope.signup = true;
+      return this.error = false;
     };
 
     SoundsCtrl.prototype.getSignUp = function() {
       this.scope.loginshow = false;
-      return this.scope.signup = false;
+      this.scope.signup = false;
+      return this.error = false;
     };
 
     return SoundsCtrl;

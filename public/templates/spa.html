@@ -25,6 +25,7 @@
       </a>
     </div>
   </div>
+  <div ng-show="sounds.error" class="errormsg">{{sounds.notice}}</div>
   <div class="loading"><img ng-show="sounds.loading" src="rubysound_assets/img/712.GIF"></div>
 </div>
 <div class="signupbar col-md-offset-1 col-md-3" ng-hide="signup" ng-include="'templates/signup.html'"></div>
@@ -36,7 +37,7 @@
     <div ng-repeat="song in songs">
       <div class="singlesong">
           <div class="queuesongtitlebox"><strong><img class="queueimage" src="{{song[0].image}}" height="39" width="39"></strong><div class="queuesongtitle">{{song[0].title}}</div></div>
-          <span ng-hide="song[0].playing" class="votesfloat"><span ng-show="sounds.guestuser || song[0].voted"><img src="rubysound_assets/img/greyguest.png" height="20" width="20"></span><span ng-hide="sounds.guestuser || song[0].voted"><a href ng-click="addVote(song)"><img src="rubysound_assets/img/vote.png" height="20" width="20"></a></span>{{song[1][0].count}}</span><span class="nowplaying" ng-show="song[0].playing">Now <br>Playing</span></div></span>
+          <span ng-hide="song[0].playing" class="votesfloat"><span ng-show="sounds.guestuser || song[0].voted"><img src="rubysound_assets/img/greyguest.png" height="20" width="20"></span><span ng-hide="sounds.guestuser || song[0].voted"><a href ng-click="addVote(song)"><img src="rubysound_assets/img/green-plus-hi.png" height="20" width="20"></a></span>{{song[1][0].count}}</span><span class="nowplaying" ng-show="song[0].playing">Now <br>Playing</span></div></span>
           <div class="playsong">
             <div plangular="{{song[0].url}}">
               <a href="#{{ example.id }}" class="block py1 nav-item"

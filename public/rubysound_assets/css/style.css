@@ -190,10 +190,22 @@ body {
   max-height: 38px;
   overflow: scroll;
 }
-.usernametitle {
-  font-size: 12px;
+
+progress {
+   width: 150px;
+}
+@-webkit-keyframes animate-stripes {
+   100% { background-position: -100px 0px; }
 }
 
+@keyframes animate-stripes {
+   100% { background-position: -100px 0px; }
+}
+.errormsg {
+  color: #ff4c4c;
+  font-family: 'Nunito', sans-serif;
+  padding-bottom: 10px;
+}
 .singlesong {
   margin-top: 5px;
   margin: 5px;

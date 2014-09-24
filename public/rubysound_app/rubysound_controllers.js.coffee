@@ -41,6 +41,7 @@ class SoundsCtrl
     @scope.hideImage = false
     @scope.noDupeSongs = true
     @user = ""
+    @error = false
     @tracks = {}
     @tracks.soundcloud = []
     @scope.songs = []
@@ -118,27 +119,32 @@ class SoundsCtrl
     @tracks = {}
     @tracks.soundcloud = []
     @http.post('api/soundcloud', {query: query.string}).success (data) =>
+      console.log("DATA", data)
+      if data.length > 0
+        @error = false
+        for track in data
+          if track.streamable == true
+            @tracks.soundcloud.push(track)
 
-      for track in data
-        if track.streamable == true
-          @tracks.soundcloud.push(track)
 
 
+        @http.post('api/spotify', {query: query.string, limiter: @tracks.soundcloud.length}).success (data) =>
+          @loading = false
+          @tracks.spotify = data
+          console.log(@tracks.spotify)
 
-      @http.post('api/spotify', {query: query.string, limiter: @tracks.soundcloud.length}).success (data) =>
+          count = 0
+          for track in @tracks.spotify.tracks.items
+            track.streamUrl = @tracks.soundcloud[count].permalink_url
+            track.soundcloudtitle = @tracks.soundcloud[count].title
+
+            count += 1
+
+      else
+        @error = true
         @loading = false
-        @tracks.spotify = data
-        console.log(@tracks.spotify)
-
-        count = 0
-        for track in @tracks.spotify.tracks.items
-          track.streamUrl = @tracks.soundcloud[count].permalink_url
-          track.soundcloudtitle = @tracks.soundcloud[count].title
-
-          count += 1
-
-
-        @scope.clicked = false
+        @notice = "no results found"
+      @scope.clicked = false
 
   searchLiveBands: (track) ->
     @scope.clicked = true
@@ -179,7 +185,6 @@ class SoundsCtrl
     user.contributions = 0
     user.image = 'http://png-5.findicons.com/files/icons/1580/devine_icons_part_2/512/cd_music.png'
     @http.post('api/users', user).success (data) =>
-      console.log("data", data)
       if data.user
         @scope.user = {}
         @http.post('/api/login', user).success (data) =>
@@ -191,29 +196,38 @@ class SoundsCtrl
           @scope.logoutbutton = true
           @scope.showsearch = true
           @users.push(data.user)
+          @error = false
+
+      else
+        @error = true
+        @notice = data
+        console.log(@notice)
 
   login: (user) ->
     @http.post('api/login', user).success (data) =>
       console.log("login data", data)
       if data.message
-        @notice = data.message
+        @error = true
+        @notice = data
       else
-        @notice = "Welcome back!"
         @user = data.user
         @user.auth = true
         @scope.signup = true
         @scope.loginshow = false
         @scope.logoutbutton = true
         @scope.showsearch = true
+        @error = false
 
   
   getLogin: () ->
     console.log('geti')
     @scope.loginshow = true
     @scope.signup = true
+    @error = false
 
   getSignUp: () ->
     @scope.loginshow = false
     @scope.signup = false
+    @error = false
 
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", SoundsCtrl])
