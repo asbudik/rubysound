@@ -14,6 +14,7 @@
     "username": "lhwbxecakpolpk",
     "password": "9Gy_ZewerwDc9LvNwaM3GeZZr9",
     "host": "ec2-54-235-250-41.compute-1.amazonaws.com",
+    "port": "5432",
     "database": "d7fdpf0pdfafcb"
   }
 }
