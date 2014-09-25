@@ -230,4 +230,5 @@ class SoundsCtrl
     @scope.signup = false
     @error = false
 
+
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", SoundsCtrl])

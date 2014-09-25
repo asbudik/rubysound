@@ -11,7 +11,8 @@ var passport =      require("passport");
 var passportLocal = require("passport-local");
 var cookieParser =  require("cookie-parser");
 var cookieSession = require("cookie-session");
-var server =        require('http').createServer(app)
+var server =        require('http').createServer(app);
+// var io =            require('socket.io')
 var currentUser = undefined
 
 app.set("view engine", "html");
@@ -49,6 +50,18 @@ passport.deserializeUser(function(id, done) {
     done(error, user)
   })
 })
+
+
+// io.sockets.on('connection', function (socket) {
+//     socket.on('echo', function (data) {
+//         socket.emit('echo', data);
+//     });
+ 
+//     socket.on('echo-ack', function (data, callback) {
+//         callback(data);
+//     });
+// });
+
 
 
 app.post('/api/spotify', function(req, res) {

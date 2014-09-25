@@ -296,8 +296,3 @@
   SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", SoundsCtrl]);
 
 }).call(this);
-
-(function() {
-
-
-}).call(this);
