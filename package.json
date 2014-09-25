@@ -33,7 +33,6 @@
     "pg": "^3.4.4",
     "request": "^2.44.0",
     "sequelize": "^1.7.10",
-    "sequelize-cli": "^0.2.5",
-    "socket.io": "^1.1.0"
+    "sequelize-cli": "^0.2.5"
   }
 }
