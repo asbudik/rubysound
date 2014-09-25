@@ -150,7 +150,7 @@ app.post('/api/login', function(req, res, next) {
 app.post('/api/users/:id/songs', function(req, res) {
   db.user.find(req.params.id).success(function(oneUser) {
     oneUser.updateAttributes({contributions: oneUser.contributions += 1, image: req.body.image}).success(function(foundUser) {
-      db.song.create(req.body).success(function(newSong) {
+      db.song.create({title: req.body.title, artist: req.body.artist, image: req.body.image, req.body.playthrough}).success(function(newSong) {
         if (foundUser !== undefined) {
 
           foundUser.addSong(newSong).success(function() {})
