@@ -34,8 +34,9 @@ class SoundsCtrl
     @scope.getVenues = (queueSong) =>
       @venues = {}
       # console.log('am i being called')
-      @http.post('api/searchlivebands', {track: queueSong}).success (data) =>
-        @venues = data
+      if queueSong
+        @http.post('api/searchlivebands', {track: queueSong}).success (data) =>
+          @venues = data
         # console.log(data)
 
     @scope.hideImage = false
@@ -57,11 +58,11 @@ class SoundsCtrl
         @scope.loginshow = false
         @scope.logoutbutton = true
         @user.auth = true
-
-        for song in @scope.songs
-          for vote in song[1]
-            if vote.uservote == @user.id
-              song[0].voted = true
+        if @scope.songs != []
+          for song in @scope.songs
+            for vote in song[1]
+              if vote.uservote == @user.id
+                song[0].voted = true
 
       else
         @guestuser = true

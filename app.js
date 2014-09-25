@@ -105,13 +105,15 @@ app.post('/api/searchlivebands', function(req, res) {
 app.get('/api/users', function(req, res) {
   db.queue.findAll({order: [['createdAt', 'ASC']]}).success(function(allQueues) {
     songs = []
-    allQueues.forEach(function(oneQueue) {
-      oneQueue.getVotes({order: [['createdAt', 'DESC']]}).success(function(queueVotes) {
-          songs.push([oneQueue, queueVotes])
+    if (allQueues) {
+      allQueues.forEach(function(oneQueue) {
+        oneQueue.getVotes({order: [['createdAt', 'DESC']]}).success(function(queueVotes) {
+            songs.push([oneQueue, queueVotes])
+        })
       })
-    })
+    }
     db.user.findAll({order: [['contributions', 'DESC']]}).success(function(allUsers) {
-      res.json({allusers: allUsers, session: req.user, queue: songs})
+      res.json({allusers: allUsers || [], session: req.user || undefined, queue: songs})
     })
   })
 })
