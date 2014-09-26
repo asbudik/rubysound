@@ -20,5 +20,5 @@ When landing on the page, guests are able to fall in love with the current track
 * Sequelize
 
 ### This application can be found here:
-[http://asbpostapic.herokuapp.com
-](http://asbpostapic.herokuapp.com)
+[http://rubysound.herokuapp.com
+](http://rubysound.herokuapp.com)
