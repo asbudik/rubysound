@@ -38,11 +38,13 @@
       this.scope.getVenues = (function(_this) {
         return function(queueSong) {
           _this.venues = {};
-          return _this.http.post('api/searchlivebands', {
-            track: queueSong
-          }).success(function(data) {
-            return _this.venues = data;
-          });
+          if (queueSong) {
+            return _this.http.post('api/searchlivebands', {
+              track: queueSong
+            }).success(function(data) {
+              return _this.venues = data;
+            });
+          }
         };
       })(this);
       this.scope.hideImage = false;
@@ -64,14 +66,16 @@
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;
             _this.user.auth = true;
-            _ref = _this.scope.songs;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              song = _ref[_i];
-              _ref1 = song[1];
-              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                vote = _ref1[_j];
-                if (vote.uservote === _this.user.id) {
-                  song[0].voted = true;
+            if (_this.scope.songs !== []) {
+              _ref = _this.scope.songs;
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                song = _ref[_i];
+                _ref1 = song[1];
+                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                  vote = _ref1[_j];
+                  if (vote.uservote === _this.user.id) {
+                    song[0].voted = true;
+                  }
                 }
               }
             }
@@ -121,9 +125,8 @@
           }).success(function(data) {
             data.song.voted = true;
             song[1][0].count += 1;
+            song[1][0].createdAt = data.vote.createdAt;
             if (_this.scope.songs.length > 1) {
-              _this.scope.songs.splice(index, 1);
-              _this.scope.songs.push([data.song, [data.vote]]);
               _this.scope.songs.sort(function(a, b) {
                 if (a[1][0].count < b[1][0].count) {
                   return 1;
@@ -144,7 +147,7 @@
             }
             _this.scope.songs[0][0].playing = true;
             _this.scope.songs[0][0].count = 1000000;
-            return console.log(_this.scope.songs[0]);
+            return console.log(_this.scope.songs);
           });
         };
       })(this);

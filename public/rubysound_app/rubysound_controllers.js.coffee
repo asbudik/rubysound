@@ -94,10 +94,11 @@ class SoundsCtrl
       @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
         data.song.voted = true
         song[1][0].count += 1
+        song[1][0].createdAt = data.vote.createdAt
 
         if @scope.songs.length > 1
-          @scope.songs.splice(index,1)
-          @scope.songs.push([data.song, [data.vote]])
+          # @scope.songs.splice(index,1)
+          # @scope.songs.push([data.song, [data.vote]])
           @scope.songs.sort (a, b) =>
             return 1  if a[1][0].count < b[1][0].count
             return -1  if a[1][0].count > b[1][0].count
@@ -109,7 +110,7 @@ class SoundsCtrl
           
         @scope.songs[0][0].playing = true
         @scope.songs[0][0].count = 1000000
-        console.log(@scope.songs[0])
+        console.log(@scope.songs)
 
 
 

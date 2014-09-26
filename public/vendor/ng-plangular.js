@@ -18,7 +18,8 @@ var plangular = angular.module('plangular', []),
 
 plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootScope) {
   var audio = document.createElement('audio');
-
+$rootScope.count = 0
+$rootScope.increment = 0
   // var staticTracks = [
   //   {title: 'Owl City - Fireflies (SMLE Remix)', artist: 'Owl City', image: 'https://i.scdn.co/image/fcc6b725a08a9c6dd487a161c7e8a380ddef69a6', playthrough: false, url: 'http://soundcloud.com/smlemusic/owl-city-fireflies-smle-remix'},
   //   {title: 'Luv (Sic) Part 3', artist: 'Nujabes', image: 'https://i.scdn.co/image/31762579d8fd04a756fb791ac9c3634b5828f0dd', playthrough: false, url: 'http://soundcloud.com/junseba/luv-sic-part-3'}
@@ -165,11 +166,16 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
     // console.log("ended:rootScope:", $rootScope);
     // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
     if ($rootScope.$$childHead.songs.length) {
+      $rootScope.increment -= 1
       $rootScope.index += 1
       // console.log("INCREMENT ROOTSCOPE", $rootScope.index)
       if ($rootScope.$$childHead.songs) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
+        console.log("THIS DATA NEXT", player.data)
+        console.log("SONGS URL", $rootScope.$$childHead.songs[0][0].url)
+        // delete player.data[$rootScope.$$childHead.songs[0][0].url]
         $rootScope.$$childHead.songs.shift();
+        console.log("PLAYER DATA", player.data)
 
         // console.log("this index", player)
         if ($rootScope.$$childHead.songs.length > 0) {
@@ -216,8 +222,21 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
 
     link: function (scope, elem, attrs) {
 
-      var src = attrs.plangular;
-      var params = { url: src, client_id: clientID, callback: 'JSON_CALLBACK' }
+      if (!$rootScope.count) {
+        $rootScope.count = 0
+        // $rootScope.increment = 0
+      }
+      console.log("$rootscope", $rootScope.$$childHead)
+      if ($rootScope.$$childHead) {
+        if ($rootScope.$$childHead.songs.length > 0 && $rootScope.count > 0) {
+          console.log("ROOTSCOPE CHILD SONGS", $rootScope.$$childHead.songs)
+          console.log("ROOTSCOPE COUNT", $rootScope.increment)
+          var src = $rootScope.$$childHead.songs[$rootScope.increment][0].url;
+          var params = { url: src, client_id: clientID, callback: 'JSON_CALLBACK' }
+          $rootScope.increment += 1
+        }
+      $rootScope.count += 1
+      }
 
       scope.player = player;
       scope.audio = audio;
@@ -252,6 +271,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           // console.log("AFTER DUPE")
           // console.log("WHY")
           // var count = 0
+          
           $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
             console.log("INSIDE JSON", data)
             // if (count === 0) {
@@ -259,6 +279,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
             // count += 1
             $rootScope.$$childHead.hideImage = false
             // console.log("HTTP SOUNDCLOUD")
+            // delete player.data[$rootScope.$$childHead.songs[0][0].url]
             scope.track = data;
             addKeys(scope.track);
             player.data[src] = data;
