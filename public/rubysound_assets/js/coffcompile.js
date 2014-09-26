@@ -293,7 +293,8 @@
               _this.scope.logoutbutton = true;
               _this.scope.showsearch = true;
               _this.users.push(data.user);
-              return _this.error = false;
+              _this.error = false;
+              return _this.guestuser = false;
             });
           } else {
             _this.error = true;
@@ -316,7 +317,8 @@
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;
             _this.scope.showsearch = true;
-            return _this.error = false;
+            _this.error = false;
+            return _this.guestuser = false;
           }
         };
       })(this));

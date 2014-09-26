@@ -195,6 +195,7 @@ class SoundsCtrl
           @scope.showsearch = true
           @users.push(data.user)
           @error = false
+          @guestuser = false
 
       else
         @error = true
@@ -215,6 +216,7 @@ class SoundsCtrl
         @scope.logoutbutton = true
         @scope.showsearch = true
         @error = false
+        @guestuser = false
 
   
   getLogin: () ->
