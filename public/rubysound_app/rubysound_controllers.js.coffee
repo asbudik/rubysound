@@ -171,6 +171,7 @@ class SoundsCtrl
     for user in @users
       if user.id == @user.id
         user.contributions += 1
+        user.image = track.album.images[0].url
 
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>

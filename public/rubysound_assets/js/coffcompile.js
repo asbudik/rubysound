@@ -260,7 +260,8 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         user = _ref[_i];
         if (user.id === this.user.id) {
-          _results.push(user.contributions += 1);
+          user.contributions += 1;
+          _results.push(user.image = track.album.images[0].url);
         } else {
           _results.push(void 0);
         }
