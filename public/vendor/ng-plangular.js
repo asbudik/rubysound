@@ -48,6 +48,8 @@ $rootScope.tracks = []
     load: function(track, index) {
       // console.log("THIS IS INDEX", index)
       // this.tracks[index] = track;
+      track.count = 10
+      track.createdAt = Date.now()
       $rootScope.tracks.push(track)
       console.log("LOADTHIS", this)
       if (!this.playing && !this.i && index == 0) {
@@ -64,6 +66,7 @@ $rootScope.tracks = []
     play: function(index, playlistIndex) {
       this.i = index || 0;
       var track = $rootScope.tracks[this.i];
+      track.count = 1000000
       if (track.tracks) {
         this.playlistIndex = playlistIndex || 0;
         this.playing = track.tracks[this.playlistIndex];
@@ -166,6 +169,7 @@ $rootScope.tracks = []
   }, false);
 
   audio.addEventListener('ended', function() {
+    console.log("TRACKS!!!", $rootScope.tracks)
     // console.log("ENDEDENDED")
     // console.log("ended:rootScope:", $rootScope);
     // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)

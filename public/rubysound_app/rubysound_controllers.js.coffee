@@ -2,7 +2,7 @@ SoundsControllers = angular.module("SoundsControllers", [])
 
 class SoundsCtrl 
   
-  constructor: (@scope, @http, @location, @filter) ->
+  constructor: (@scope, @http, @location, @filter, @rootScope) ->
 
     @scope.popFromQueue = (trackToDelete) =>
       # console.log(trackToDelete)
@@ -97,8 +97,20 @@ class SoundsCtrl
         song[1][0].createdAt = data.vote.createdAt
 
         if @scope.songs.length > 1
+          @rootScope.tracks[index].count += 1
           # @scope.songs.splice(index,1)
           # @scope.songs.push([data.song, [data.vote]])
+          @rootScope.tracks.sort (a, b) =>
+            return 1  if a.count < b.count
+            return -1  if a.count > b.count
+            console.log(a)
+            console.log(b)
+            return -1  if a.createdAt < b.createdAt
+            return 1 if a.createdAt > b.createdAt
+            0
+
+          console.log("@rootscope tracks", @rootScope.tracks)
+
           @scope.songs.sort (a, b) =>
             return 1  if a[1][0].count < b[1][0].count
             return -1  if a[1][0].count > b[1][0].count
@@ -233,4 +245,4 @@ class SoundsCtrl
     @error = false
 
 
-SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", SoundsCtrl])
+SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", "$rootScope", SoundsCtrl])

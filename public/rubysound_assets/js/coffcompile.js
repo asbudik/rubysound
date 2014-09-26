@@ -23,11 +23,12 @@
   SoundsControllers = angular.module("SoundsControllers", []);
 
   SoundsCtrl = (function() {
-    function SoundsCtrl(scope, http, location, filter) {
+    function SoundsCtrl(scope, http, location, filter, rootScope) {
       this.scope = scope;
       this.http = http;
       this.location = location;
       this.filter = filter;
+      this.rootScope = rootScope;
       this.scope.popFromQueue = (function(_this) {
         return function(trackToDelete) {
           return _this.http["delete"]("api/queues/" + trackToDelete[0].id).success(function(data) {});
@@ -127,6 +128,25 @@
             song[1][0].count += 1;
             song[1][0].createdAt = data.vote.createdAt;
             if (_this.scope.songs.length > 1) {
+              _this.rootScope.tracks[index].count += 1;
+              _this.rootScope.tracks.sort(function(a, b) {
+                if (a.count < b.count) {
+                  return 1;
+                }
+                if (a.count > b.count) {
+                  return -1;
+                }
+                console.log(a);
+                console.log(b);
+                if (a.createdAt < b.createdAt) {
+                  return -1;
+                }
+                if (a.createdAt > b.createdAt) {
+                  return 1;
+                }
+                return 0;
+              });
+              console.log("@rootscope tracks", _this.rootScope.tracks);
               _this.scope.songs.sort(function(a, b) {
                 if (a[1][0].count < b[1][0].count) {
                   return 1;
@@ -296,6 +316,6 @@
 
   })();
 
-  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", SoundsCtrl]);
+  SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", "$rootScope", SoundsCtrl]);
 
 }).call(this);
