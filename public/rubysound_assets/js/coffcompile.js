@@ -57,23 +57,32 @@
       this.scope.songs = [];
       this.http.get('api/users').success((function(_this) {
         return function(data) {
-          var song, vote, _i, _j, _len, _len1, _ref, _ref1;
+          var song, user, vote, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
           _this.usersData = data;
           _this.users = _this.usersData.allusers;
           _this.scope.songs = _this.usersData.queue;
           if (_this.usersData.session) {
             _this.user = _this.usersData.session;
+            _ref = _this.users;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              user = _ref[_i];
+              if (user.id === _this.user.id) {
+                user.auth = true;
+              } else {
+                user.auth = false;
+              }
+            }
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;
             _this.user.auth = true;
             if (_this.scope.songs !== []) {
-              _ref = _this.scope.songs;
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                song = _ref[_i];
-                _ref1 = song[1];
-                for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                  vote = _ref1[_j];
+              _ref1 = _this.scope.songs;
+              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                song = _ref1[_j];
+                _ref2 = song[1];
+                for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+                  vote = _ref2[_k];
                   if (vote.uservote === _this.user.id) {
                     song[0].voted = true;
                   }
@@ -222,10 +231,11 @@
     };
 
     SoundsCtrl.prototype.searchLiveBands = function(track) {
+      var user, _i, _len, _ref, _results;
       this.scope.clicked = true;
       this.newQueue = {};
       this.newVote = {};
-      return this.http.post("api/users/" + this.user.id + "/songs", {
+      this.http.post("api/users/" + this.user.id + "/songs", {
         title: track.soundcloudtitle,
         artist: track.artists[0].name,
         image: track.album.images[0].url,
@@ -245,6 +255,17 @@
           }
         };
       })(this));
+      _ref = this.users;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        user = _ref[_i];
+        if (user.id === this.user.id) {
+          _results.push(user.contributions += 1);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     SoundsCtrl.prototype.deleteQueueItem = function(queueItem) {

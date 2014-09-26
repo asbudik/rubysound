@@ -54,6 +54,12 @@ class SoundsCtrl
       @scope.songs = @usersData.queue
       if @usersData.session
         @user = @usersData.session
+        for user in @users
+          if user.id == @user.id
+            user.auth = true
+          else
+            user.auth = false
+
         @scope.signup = true
         @scope.loginshow = false
         @scope.logoutbutton = true
@@ -188,6 +194,10 @@ class SoundsCtrl
         @scope.addVote(@scope.songs[0])
 
         @scope.getVenues(track.artists[0].name)
+
+    for user in @users
+      if user.id == @user.id
+        user.contributions += 1
 
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>
