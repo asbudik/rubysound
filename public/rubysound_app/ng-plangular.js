@@ -22,17 +22,7 @@ $rootScope.count = 0
 $rootScope.increment = 0
 
 $rootScope.tracks = []
-  // var staticTracks = [
-  //   {title: 'Owl City - Fireflies (SMLE Remix)', artist: 'Owl City', image: 'https://i.scdn.co/image/fcc6b725a08a9c6dd487a161c7e8a380ddef69a6', playthrough: false, url: 'http://soundcloud.com/smlemusic/owl-city-fireflies-smle-remix'},
-  //   {title: 'Luv (Sic) Part 3', artist: 'Nujabes', image: 'https://i.scdn.co/image/31762579d8fd04a756fb791ac9c3634b5828f0dd', playthrough: false, url: 'http://soundcloud.com/junseba/luv-sic-part-3'}
 
-  // ]
-
-  // if ($rootScope.$$childHead.songs === []) {
-  //   $rootScope.$$childHead.getSong(staticTracks[0])
-  // }
-
-  // console.log("SCOPE INDEX")
 
   var player = {
  
@@ -51,11 +41,11 @@ $rootScope.tracks = []
       track.count = 10
       track.createdAt = Date.now()
       $rootScope.tracks.push(track)
-      console.log("LOADTHIS", this)
+      // console.log("LOADTHIS", this)
       if (!this.playing && !this.i && index == 0) {
         $rootScope.$$childHead.songs[0][0].playing = true
         this.currentTrack = $rootScope.tracks[0];
-        console.log("THIS CURRENT TRACK", this.currentTrack)
+        // console.log("THIS CURRENT TRACK", this.currentTrack)
         this.playing = track;
         this.play();
         audio.play();
@@ -89,7 +79,7 @@ $rootScope.tracks = []
       this.duration = 0
       // this.i = 0;
       this.playing = false;
-      console.log("INSIDE PAUSE THIS", this)
+      // console.log("INSIDE PAUSE THIS", this)
       audio.pause();
     },
 
@@ -111,27 +101,27 @@ $rootScope.tracks = []
         // console.log("PLAYLIST LESS THAN")
         // this.playlistIndex++;
         this.play(this.i, this.playlistIndex);
-        console.log("THIS I", this.i)
+        // console.log("THIS I", this.i)
         // console.log("THIS TRACKS LENGTH", this.tracks.length)
       } else if (this.i <= $rootScope.tracks.length - 1) {
         // this.i++;
         // Handle advancing to new playlist
         // console.log("this", this)
-        console.log("THIS TRACKS BEFORE", this)
+        // console.log("THIS TRACKS BEFORE", this)
         if ($rootScope.tracks[this.i].tracks) {
           // console.log("THIS TRACKS", this.tracks)
           var playlist = $rootScope.tracks[this.i].tracks || null;
           this.playlistIndex = 0;
           this.play(this.i, this.playlistIndex);
         } else {
-          console.log("THIS PLAY I", this.i)
+          // console.log("THIS PLAY I", this.i)
           // console.log("THIS TRACKS LENGTH IN ELSE", this.tracks.length)
           this.play(this.i);
         }
-        console.log("THIS I PAUSE", this.i)
-        console.log("ROOTSCOPE LENGTH", $rootScope.tracks.length)
+        // console.log("THIS I PAUSE", this.i)
+        // console.log("ROOTSCOPE LENGTH", $rootScope.tracks.length)
       } else if (this.i > $rootScope.tracks.length - 1) {
-        console.log("THIS PAUSE")
+        // console.log("THIS PAUSE")
         // this.i = 0
         this.pause();
         // console.log("THIS PAUSE", this)
@@ -169,7 +159,7 @@ $rootScope.tracks = []
   }, false);
 
   audio.addEventListener('ended', function() {
-    console.log("TRACKS!!!", $rootScope.tracks)
+    // console.log("TRACKS!!!", $rootScope.tracks)
     // console.log("ENDEDENDED")
     // console.log("ended:rootScope:", $rootScope);
     // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
@@ -179,13 +169,13 @@ $rootScope.tracks = []
       // console.log("INCREMENT ROOTSCOPE", $rootScope.index)
       if ($rootScope.$$childHead.songs) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
-        console.log("THIS DATA NEXT", player.data)
-        console.log("SONGS URL", $rootScope.$$childHead.songs[0][0].url)
+        // console.log("THIS DATA NEXT", player.data)
+        // console.log("SONGS URL", $rootScope.$$childHead.songs[0][0].url)
         // delete player.data[$rootScope.$$childHead.songs[0][0].url]
         $rootScope.tracks.shift()
         $rootScope.$$childHead.songs.shift();
         $rootScope.increment -= 1
-        console.log("PLAYER DATA", player.data)
+        // console.log("PLAYER DATA", player.data)
 
         // console.log("this index", player)
         if ($rootScope.$$childHead.songs.length > 0) {
@@ -216,7 +206,7 @@ $rootScope.tracks = []
       // console.log("player next")
       player.next();
     } else {
-      console.log("player pause")
+      // console.log("player pause")
       player.pause();
     }
   }, false);
@@ -238,11 +228,11 @@ $rootScope.tracks = []
         $rootScope.count = 0
         // $rootScope.increment = 0
       }
-      console.log("$rootscope", $rootScope.$$childHead)
+      // console.log("$rootscope", $rootScope.$$childHead)
       if ($rootScope.$$childHead) {
         if ($rootScope.$$childHead.songs.length > 0 && $rootScope.count > 0) {
-          console.log("ROOTSCOPE CHILD SONGS", $rootScope.$$childHead.songs)
-          console.log("ROOTSCOPE COUNT", $rootScope.increment)
+          // console.log("ROOTSCOPE CHILD SONGS", $rootScope.$$childHead.songs)
+          // console.log("ROOTSCOPE COUNT", $rootScope.increment)
           var src = $rootScope.$$childHead.songs[$rootScope.increment][0].url;
           var params = { url: src, client_id: clientID, callback: 'JSON_CALLBACK' }
           $rootScope.increment += 1
@@ -285,7 +275,7 @@ $rootScope.tracks = []
           // var count = 0
           
           $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
-            console.log("INSIDE JSON", data)
+            // console.log("INSIDE JSON", data)
             // if (count === 0) {
             // console.log("COUNT IS", count)
             // count += 1

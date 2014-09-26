@@ -11,7 +11,6 @@ When landing on the page, guests are able to fall in love with the current track
 ### Built with:
 * Node.js
 * Angular.js
-* Socket.io
 * Express
 * Soundcloud API
 * Spotify API
