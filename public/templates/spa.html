@@ -28,10 +28,10 @@
   <div ng-show="sounds.error" class="errormsg">{{sounds.notice}}</div>
   <div class="loading"><img ng-show="sounds.loading" src="rubysound_assets/img/712.GIF" height="100" width="100"></div>
 </div>
-<div class="signupbar col-sm-offset-1 col-sm-3" ng-hide="signup" ng-include="'templates/signup.html'"></div>
-<div ng-show="loginshow" class="loginbar col-sm-offset-1 col-sm-3 animate-show" ng-include="'templates/login.html'"></div>
+<div class="signupbar col-md-offset-1 col-md-3" ng-hide="signup" ng-include="'templates/signup.html'"></div>
+<div ng-show="loginshow" class="loginbar col-md-offset-1 col-md-3 animate-show" ng-include="'templates/login.html'"></div>
 
-<div class="col-sm-4 theplayer">
+<div class="col-md-4 theplayer">
   <div ng-include="'templates/plangular.html'"></div>
   <div class="queuecontainer">
     <div ng-repeat="song in songs">
@@ -51,5 +51,5 @@
     </div>
   </div>
 </div>
-  <div class="col-sm-3 usertile" ng-include="'templates/user.html'">
+  <div class="col-md-3 usertile" ng-include="'templates/user.html'">
 </div>
