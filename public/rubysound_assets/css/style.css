@@ -26,10 +26,7 @@ body {
   width: 343px;
   overflow: scroll;
 }
-.navbarclass {
-  position: fixed;
-  top: 0px;
-}
+
 .nowplaying {
   float: right;
   font-size: 13px;
