@@ -221,6 +221,11 @@ class SoundsCtrl
         @error = false
         @guestuser = false
 
+        if @scope.songs != []
+          for song in @scope.songs
+            for vote in song[1]
+              if vote.uservote == @user.id
+                song[0].voted = true
   
   getLogin: () ->
     # console.log('geti')

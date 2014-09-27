@@ -319,6 +319,7 @@
     SoundsCtrl.prototype.login = function(user) {
       return this.http.post('api/login', user).success((function(_this) {
         return function(data) {
+          var song, vote, _i, _len, _ref, _results;
           if (data.message) {
             _this.error = true;
             return _this.notice = data;
@@ -330,7 +331,29 @@
             _this.scope.logoutbutton = true;
             _this.scope.showsearch = true;
             _this.error = false;
-            return _this.guestuser = false;
+            _this.guestuser = false;
+            if (_this.scope.songs !== []) {
+              _ref = _this.scope.songs;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                song = _ref[_i];
+                _results.push((function() {
+                  var _j, _len1, _ref1, _results1;
+                  _ref1 = song[1];
+                  _results1 = [];
+                  for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                    vote = _ref1[_j];
+                    if (vote.uservote === this.user.id) {
+                      _results1.push(song[0].voted = true);
+                    } else {
+                      _results1.push(void 0);
+                    }
+                  }
+                  return _results1;
+                }).call(_this));
+              }
+              return _results;
+            }
           }
         };
       })(this));
