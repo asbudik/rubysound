@@ -15,6 +15,9 @@ function Queue(sequelize, DataTypes){
     url: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    duration: {
+      type: DataTypes.INTEGER
     }
   },
     {

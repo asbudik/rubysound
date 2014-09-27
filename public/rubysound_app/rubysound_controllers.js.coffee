@@ -3,6 +3,7 @@ SoundsControllers = angular.module("SoundsControllers", [])
 class SoundsCtrl 
   
   constructor: (@scope, @http, @location, @filter, @rootScope) ->
+    @clientID = 'a193506e4d1a399fbb796fd18bfd3a3b'
 
     @scope.popFromQueue = (trackToDelete) =>
       # console.log(trackToDelete)
@@ -152,26 +153,28 @@ class SoundsCtrl
     @scope.clicked = true
     @newQueue = {}
     @newVote = {}
-    @http.post("api/users/#{@user.id}/songs", {title: track.soundcloudtitle, artist: track.artists[0].name, image: track.album.images[0].url, playthrough: false, url: track.streamUrl}).success (data) =>
-      @newQueue = data.queue
-      @newVote = data.vote
+    params = { url: track.streamUrl, client_id: @clientID, callback: 'JSON_CALLBACK' }
+    @http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success (data) =>
+      @http.post("api/users/#{@user.id}/songs", {title: track.soundcloudtitle, artist: track.artists[0].name, image: track.album.images[0].url, playthrough: false, url: data.stream_url, duration: data.duration}).success (data) =>
+        @newQueue = data.queue
+        @newVote = data.vote
 
-      @scope.songs.push([@newQueue, [@newVote]])
-      @scope.noDupeSongs = true
+        @scope.songs.push([@newQueue, [@newVote]])
+        @scope.noDupeSongs = true
 
-      # console.log("THIS IS SCOPE SONGS", @scope.songs)
-      if @scope.songs.length == 1
-        @scope.songs[0][1][0].count = 1000000
-        # console.log("scope votes", @scope.songs[0][1][0])
-        @scope.songs[0][0].playing = true
-        @scope.addVote(@scope.songs[0])
+        # console.log("THIS IS SCOPE SONGS", @scope.songs)
+        if @scope.songs.length == 1
+          @scope.songs[0][1][0].count = 1000000
+          # console.log("scope votes", @scope.songs[0][1][0])
+          @scope.songs[0][0].playing = true
+          @scope.addVote(@scope.songs[0])
 
-        @scope.getVenues(track.artists[0].name)
+          @scope.getVenues(track.artists[0].name)
 
-    for user in @users
-      if user.id == @user.id
-        user.contributions += 1
-        user.image = track.album.images[0].url
+      for user in @users
+        if user.id == @user.id
+          user.contributions += 1
+          user.image = track.album.images[0].url
 
   deleteQueueItem: (queueItem) ->
     @http.delete("api/queues/#{@scope.songs[0].id}").success (data) =>

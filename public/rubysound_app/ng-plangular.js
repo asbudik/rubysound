@@ -36,34 +36,40 @@ $rootScope.tracks = []
     duration: 0,
 
     load: function(track, index) {
+      console.log("IN LOAD")
       // console.log("THIS IS INDEX", index)
       // this.tracks[index] = track;
       track.count = 10
       track.createdAt = Date.now()
       $rootScope.tracks.push(track)
       // console.log("LOADTHIS", this)
+      console.log("ROOTSCOPE TRACKS", $rootScope.tracks)
       if (!this.playing && !this.i && index == 0) {
+        console.log("INSIDE IF STATEMENT")
         $rootScope.$$childHead.songs[0][0].playing = true
         this.currentTrack = $rootScope.tracks[0];
         // console.log("THIS CURRENT TRACK", this.currentTrack)
         this.playing = track;
         this.play();
-        audio.play();
-        player.play();
+        // audio.play();
+        // player.play();
       }
     },
 
     play: function(index, playlistIndex) {
+      console.log("AM I IN PLAY?")
       this.i = index || 0;
       var track = $rootScope.tracks[this.i];
       track.count = 1000000
       if (track.tracks) {
         this.playlistIndex = playlistIndex || 0;
         this.playing = track.tracks[this.playlistIndex];
-        var src = track.tracks[this.playlistIndex].stream_url + '?client_id=' + clientID;
+        var src = track.tracks[this.playlistIndex].url + '?client_id=' + clientID;
+        console.log("IF SRC", src)
       } else {
         this.playing = track;
-        var src = track.stream_url + '?client_id=' + clientID;
+        var src = track.url + '?client_id=' + clientID;
+        console.log("ELSE SRC", src)
       }
       this.currentTrack = this.playing;
       if (src != audio.src) audio.src = src;
@@ -229,16 +235,16 @@ $rootScope.tracks = []
         // $rootScope.increment = 0
       }
       // console.log("$rootscope", $rootScope.$$childHead)
-      if ($rootScope.$$childHead) {
+      // if ($rootScope.$$childHead) {
         if ($rootScope.$$childHead.songs.length > 0 && $rootScope.count > 0) {
-          // console.log("ROOTSCOPE CHILD SONGS", $rootScope.$$childHead.songs)
-          // console.log("ROOTSCOPE COUNT", $rootScope.increment)
+      //     // console.log("ROOTSCOPE CHILD SONGS", $rootScope.$$childHead.songs)
+      //     // console.log("ROOTSCOPE COUNT", $rootScope.increment)
           var src = $rootScope.$$childHead.songs[$rootScope.increment][0].url;
-          var params = { url: src, client_id: clientID, callback: 'JSON_CALLBACK' }
-          $rootScope.increment += 1
+      //     var params = { url: src, client_id: clientID, callback: 'JSON_CALLBACK' }
+      //     $rootScope.increment += 1
         }
       $rootScope.count += 1
-      }
+      // }
 
       scope.player = player;
       scope.audio = audio;
@@ -261,12 +267,12 @@ $rootScope.tracks = []
         // console.log('no source')
         //console.log('no src');
       } 
-      // else if (player.data[src]) {
-      //   console.log("PLAYER DATA", player)
-      //   // console.log("playerdata", player.data)
-      //   scope.track = player.data[src];
-      //   addKeys(scope.track);
-      // } 
+      // // else if (player.data[src]) {
+      // //   console.log("PLAYER DATA", player)
+      // //   // console.log("playerdata", player.data)
+      // //   scope.track = player.data[src];
+      // //   addKeys(scope.track);
+      // // } 
       else {
         // console.log("BEFORE DUPE")
         // if ($rootScope.$$childHead.noDupeSongs === true) {
@@ -274,22 +280,28 @@ $rootScope.tracks = []
           // console.log("WHY")
           // var count = 0
           
-          $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
+          // $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
             // console.log("INSIDE JSON", data)
             // if (count === 0) {
             // console.log("COUNT IS", count)
             // count += 1
-            $rootScope.$$childHead.hideImage = false
-            // console.log("HTTP SOUNDCLOUD")
-            // delete player.data[$rootScope.$$childHead.songs[0][0].url]
-            scope.track = data;
-            addKeys(scope.track);
-            player.data[src] = data;
-            // console.log("SCOPE IN REQUEST", scope)
-            player.load(data, $rootScope.index);
-            $rootScope.$$childHead.noDupeSongs = false
-          });
-        // }
+            if ($rootScope.$$childHead.songs.length > 0 && $rootScope) {
+              $rootScope.$$childHead.hideImage = false
+              // console.log("HTTP SOUNDCLOUD")
+              // delete player.data[$rootScope.$$childHead.songs[0][0].url]
+              console.log("$ROOTSCOPE INCREMENT", $rootScope.increment)
+              console.log("ROOTSCOPE SONGS", $rootScope.$$childHead.songs)
+              scope.track = $rootScope.$$childHead.songs[$rootScope.increment][0];
+              console.log($rootScope.$$childHead.songs[$rootScope.increment][0].duration)
+              addKeys(scope.track);
+              player.data[src] = $rootScope.$$childHead.songs[$rootScope.increment][0];
+              // console.log("SCOPE IN REQUEST", scope)
+              player.load($rootScope.$$childHead.songs[$rootScope.increment][0], $rootScope.index);
+              console.log("PLAYER LOAD?", $rootScope.$$childHead.songs[$rootScope.increment][0])
+              // $rootScope.$$childHead.noDupeSongs = false
+              $rootScope.increment += 1
+          // });
+        }
       }
 
       scope.play = function(playlistIndex) {
