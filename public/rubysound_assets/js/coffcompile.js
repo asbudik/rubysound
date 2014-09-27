@@ -189,13 +189,13 @@
       this.scope.query = {};
       this.tracks = {};
       this.tracks.soundcloud = [];
+      this.error = false;
       return this.http.post('api/soundcloud', {
         query: query.string
       }).success((function(_this) {
         return function(data) {
           var track, _i, _len;
           if (data.length > 0) {
-            _this.error = false;
             for (_i = 0, _len = data.length; _i < _len; _i++) {
               track = data[_i];
               if (track.streamable === true) {

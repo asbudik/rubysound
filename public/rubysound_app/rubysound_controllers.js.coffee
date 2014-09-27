@@ -120,10 +120,10 @@ class SoundsCtrl
     @scope.query = {}
     @tracks = {}
     @tracks.soundcloud = []
+    @error = false
     @http.post('api/soundcloud', {query: query.string}).success (data) =>
       # console.log("DATA", data)
       if data.length > 0
-        @error = false
         for track in data
           if track.streamable == true
             @tracks.soundcloud.push(track)
