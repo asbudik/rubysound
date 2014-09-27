@@ -26,7 +26,10 @@ body {
   width: 343px;
   overflow: scroll;
 }
-
+.navbarclass {
+  position: fixed;
+  top: 0px;
+}
 .nowplaying {
   float: right;
   font-size: 13px;
@@ -52,9 +55,9 @@ body {
    clear: both;
 }
 .searchbar {
+  margin-right: 7px;
   border-radius: 5px;
   border: 2px solid black;
-  margin-right: 10px;
   background-color: white;
   max-height: 498px;
   overflow: scroll;
@@ -259,6 +262,7 @@ progress {
 }
 .theplayer {
   border-radius: 5px 0px 0px 5px;
+  margin-right: 5px;
   border: 2px solid black;
   height: 500px;
   padding: 0;
@@ -274,6 +278,8 @@ progress {
   height: 500px;
   padding: 0;
   margin: 0;
+  margin-right: 5px;
+  margin-left: 5px;
   box-shadow: 1px 1px 2px black;
   background-color: white;
 }
