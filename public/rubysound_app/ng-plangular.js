@@ -57,23 +57,80 @@ $rootScope.tracks = []
     },
 
     play: function(index, playlistIndex) {
-      console.log("AM I IN PLAY?")
+      // console.log("AM I IN PLAY?")
       this.i = index || 0;
       var track = $rootScope.tracks[this.i];
+      // console.log("PLAY TRACK", track)
       track.count = 1000000
       if (track.tracks) {
         this.playlistIndex = playlistIndex || 0;
         this.playing = track.tracks[this.playlistIndex];
         var src = track.tracks[this.playlistIndex].url + '?client_id=' + clientID;
-        console.log("IF SRC", src)
+        // console.log("IF SRC", src)
       } else {
         this.playing = track;
         var src = track.url + '?client_id=' + clientID;
-        console.log("ELSE SRC", src)
+        // console.log("ELSE SRC", src)
       }
       this.currentTrack = this.playing;
       if (src != audio.src) audio.src = src;
+      // console.log("AUDIO PLAY", audio)
       audio.play();
+      // console.log("PLAYER DURATION PLAY", player.duration)
+      setTimeout(function() {
+        console.log("PLAYER DURATION SET TIMEOUT", player.duration)
+        if (player.duration !== NaN && player.duration > 0) {
+          console.log("PLAY TIME")
+        } else {
+          if ($rootScope.$$childHead.songs.length) {
+      // $rootScope.increment -= 1
+      // $rootScope.index += 1
+            // console.log("INCREMENT ROOTSCOPE", $rootScope.index)
+            if ($rootScope.$$childHead.songs.length > 0) {
+              $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
+              // console.log("THIS DATA NEXT", player.data)
+              // console.log("SONGS URL", $rootScope.$$childHead.songs[0][0].url)
+              // delete player.data[$rootScope.$$childHead.songs[0][0].url]
+              // $rootScope.socket.emit("send delete song", {tracks: $rootScope.tracks, songs: $rootScope.$$childHead.songs})
+              $rootScope.tracks.shift()
+              $rootScope.$$childHead.songs.shift();
+              $rootScope.increment -= 1
+              // console.log("PLAYER DATA", player.data)
+
+              // console.log("this index", player)
+              if ($rootScope.$$childHead.songs.length > 0) {
+                $rootScope.$$childHead.songs[0][0].playing = true
+                $rootScope.$$childHead.songs[0][1][0].count = 1000000
+                $rootScope.$$childHead.songs[0][0].playing = true
+                $rootScope.$$childHead.songs[0][0].currentTime = 1
+                $rootScope.$$childHead.songs[0][0].duration = 32334
+
+                // player.tracks.push($rootScope.$$childHead.songs[0][0])
+
+                // $rootScope.$$childHead.getCurrent($rootScope.$$childHead.songs[0][0].id)
+                $rootScope.$$childHead.addVote($rootScope.$$childHead.songs[0])
+
+                $rootScope.$$childHead.getVenues($rootScope.$$childHead.songs[0][0].artist)
+
+                // if ($rootScope.$$childHead.songs.length < 3) {
+                //   $rootScope.$$childHead.getSong(staticTracks[0])
+                //   $rootScope.$$childHead.getSong(staticTracks[1])
+                // }
+              }
+              if ($rootScope.$$childHead.songs.length === 0) {
+                player.pause();
+                $rootScope.$$childHead.hideImage = true
+                return
+              }
+            }
+            // console.log("player next")
+            player.next();
+          } else {
+            // console.log("player pause")
+            player.pause();
+          }
+        }
+      }, 3000)
     },
 
     pause: function() {
@@ -182,6 +239,8 @@ $rootScope.tracks = []
         $rootScope.tracks.shift()
         $rootScope.$$childHead.songs.shift();
         $rootScope.increment -= 1
+        player.currentTime = 0
+        player.duration = 0
         // console.log("PLAYER DATA", player.data)
 
         // console.log("this index", player)
@@ -293,7 +352,7 @@ $rootScope.tracks = []
               console.log("$ROOTSCOPE INCREMENT", $rootScope.increment)
               console.log("ROOTSCOPE SONGS", $rootScope.$$childHead.songs)
               scope.track = $rootScope.$$childHead.songs[$rootScope.increment][0];
-              console.log($rootScope.$$childHead.songs[$rootScope.increment][0].duration)
+              // console.log($rootScope.$$childHead.songs[$rootScope.increment][0].duration)
               addKeys(scope.track);
               player.data[src] = $rootScope.$$childHead.songs[$rootScope.increment][0];
               // console.log("SCOPE IN REQUEST", scope)
@@ -326,8 +385,10 @@ $rootScope.tracks = []
       };
 
       audio.addEventListener('timeupdate', function() {
+        // console.log("TIME DURATION", player.duration)
         if (scope.track == $rootScope.tracks[player.i]){
           scope.$apply(function() {
+            // console.log("PLAYER DURATION", player.duration)
             scope.currentTime = player.currentTime;
             scope.duration = player.duration;
           });  

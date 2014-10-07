@@ -276,6 +276,7 @@
         params: params
       }).success((function(_this) {
         return function(data) {
+          console.log("SONG DATA LIVEBANDS", data);
           return _this.http.post("api/users/" + _this.user.id + "/songs", {
             title: track.soundcloudtitle,
             artist: track.artists[0].name,

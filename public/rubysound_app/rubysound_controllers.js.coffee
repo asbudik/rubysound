@@ -187,6 +187,7 @@ class SoundsCtrl
     @newVote = {}
     params = { url: track.streamUrl, client_id: @clientID, callback: 'JSON_CALLBACK' }
     @http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success (data) =>
+      console.log("SONG DATA LIVEBANDS", data)
       @http.post("api/users/#{@user.id}/songs", {title: track.soundcloudtitle, artist: track.artists[0].name, image: track.album.images[0].url, playthrough: false, url: data.stream_url, duration: data.duration}).success (data) =>
         @newQueue = data.queue
         @newVote = data.vote
