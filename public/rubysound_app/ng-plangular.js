@@ -173,11 +173,12 @@ $rootScope.tracks = []
       // $rootScope.increment -= 1
       // $rootScope.index += 1
       // console.log("INCREMENT ROOTSCOPE", $rootScope.index)
-      if ($rootScope.$$childHead.songs) {
+      if ($rootScope.$$childHead.songs.length > 0) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         // console.log("THIS DATA NEXT", player.data)
         // console.log("SONGS URL", $rootScope.$$childHead.songs[0][0].url)
         // delete player.data[$rootScope.$$childHead.songs[0][0].url]
+        // $rootScope.socket.emit("send delete song", {tracks: $rootScope.tracks, songs: $rootScope.$$childHead.songs})
         $rootScope.tracks.shift()
         $rootScope.$$childHead.songs.shift();
         $rootScope.increment -= 1

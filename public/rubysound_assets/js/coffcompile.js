@@ -29,7 +29,38 @@
       this.location = location;
       this.filter = filter;
       this.rootScope = rootScope;
+      this.rootScope.socket = io.connect('http://localhost:3000');
       this.clientID = 'a193506e4d1a399fbb796fd18bfd3a3b';
+      this.scope.msgs = [];
+      this.scope.sendMsg = (function(_this) {
+        return function() {
+          console.log("scope message", _this.scope.msg.text);
+          _this.rootScope.socket.emit('send msg', _this.scope.msg.text);
+          return _this.scope.msg = {};
+        };
+      })(this);
+      this.rootScope.socket.on('get msg', (function(_this) {
+        return function(data) {
+          _this.scope.msgs.push(data);
+          return _this.scope.$digest();
+        };
+      })(this));
+      this.rootScope.socket.on('get create song', (function(_this) {
+        return function(createSong) {
+          _this.scope.songs.push(createSong);
+          _this.scope.noDupeSongs = true;
+          console.log("SCOPE SONGS", _this.scope.songs);
+          console.log("DATA", createSong);
+          if (_this.scope.songs.length === 1) {
+            _this.scope.songs[0][1][0].count = 1000000;
+            _this.scope.songs[0][0].playing = true;
+            _this.scope.addVote(_this.scope.songs[0]);
+            console.log("CREATESONG", createSong);
+            _this.scope.getVenues(createSong[0].artist);
+            return _this.scope.$digest();
+          }
+        };
+      })(this));
       this.scope.popFromQueue = (function(_this) {
         return function(trackToDelete) {
           return _this.http["delete"]("api/queues/" + trackToDelete[0].id).success(function(data) {});
@@ -232,7 +263,7 @@
     };
 
     SoundsCtrl.prototype.searchLiveBands = function(track) {
-      var params;
+      var params, user, _i, _len, _ref, _results;
       this.scope.clicked = true;
       this.newQueue = {};
       this.newVote = {};
@@ -241,12 +272,11 @@
         client_id: this.clientID,
         callback: 'JSON_CALLBACK'
       };
-      return this.http.jsonp('//api.soundcloud.com/resolve.json', {
+      this.http.jsonp('//api.soundcloud.com/resolve.json', {
         params: params
       }).success((function(_this) {
         return function(data) {
-          var user, _i, _len, _ref, _results;
-          _this.http.post("api/users/" + _this.user.id + "/songs", {
+          return _this.http.post("api/users/" + _this.user.id + "/songs", {
             title: track.soundcloudtitle,
             artist: track.artists[0].name,
             image: track.album.images[0].url,
@@ -256,29 +286,23 @@
           }).success(function(data) {
             _this.newQueue = data.queue;
             _this.newVote = data.vote;
-            _this.scope.songs.push([_this.newQueue, [_this.newVote]]);
-            _this.scope.noDupeSongs = true;
-            if (_this.scope.songs.length === 1) {
-              _this.scope.songs[0][1][0].count = 1000000;
-              _this.scope.songs[0][0].playing = true;
-              _this.scope.addVote(_this.scope.songs[0]);
-              return _this.scope.getVenues(track.artists[0].name);
-            }
+            _this.scope.newSong = [_this.newQueue, [_this.newVote]];
+            return _this.rootScope.socket.emit('send create song', _this.scope.newSong);
           });
-          _ref = _this.users;
-          _results = [];
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            user = _ref[_i];
-            if (user.id === _this.user.id) {
-              user.contributions += 1;
-              _results.push(user.image = track.album.images[0].url);
-            } else {
-              _results.push(void 0);
-            }
-          }
-          return _results;
         };
       })(this));
+      _ref = this.users;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        user = _ref[_i];
+        if (user.id === this.user.id) {
+          user.contributions += 1;
+          _results.push(user.image = track.album.images[0].url);
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     SoundsCtrl.prototype.deleteQueueItem = function(queueItem) {

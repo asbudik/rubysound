@@ -277,7 +277,8 @@ progress {
 }
 .bg {
   position: relative;
-  height: 222px;
+  /*top: 300px;*/
+  height: 180px;
   background-image: url('../img/ewan2.jpg');
   z-index: -20;
   padding: 0;

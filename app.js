@@ -6,18 +6,20 @@ var bodyParser =    require('body-parser');
 var db =            require("./models/index.js");
 var flash =         require("connect-flash");
 var request =       require("request");
-// var io =            require('socket.io')(http);
 var passport =      require("passport");
 var passportLocal = require("passport-local");
 var cookieParser =  require("cookie-parser");
 var cookieSession = require("cookie-session");
 var server =        require('http').createServer(app);
+var io =            require('socket.io').listen(server);
+
 // var io =            require('socket.io')
 var currentUser = undefined
 
 app.set("view engine", "html");
 
 app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname +'/bower_components'))
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -51,16 +53,22 @@ passport.deserializeUser(function(id, done) {
   })
 })
 
+io.sockets.on("connection", function(socket) {
+  socket.on('send msg', function(data) {
+    console.log("DATA APP JS", data)
+    io.sockets.emit('get msg', data)
+  })
 
-// io.sockets.on('connection', function (socket) {
-//     socket.on('echo', function (data) {
-//         socket.emit('echo', data);
-//     });
- 
-//     socket.on('echo-ack', function (data, callback) {
-//         callback(data);
-//     });
-// });
+  socket.on('send create song', function(createSong) {
+    io.sockets.emit('get create song', createSong)
+  })
+
+  socket.on('send delete song', function(deleteSongs) {
+    deleteSongs.tracks.shift()
+    deleteSongs.songs.shift()
+    io.sockets.emit('get delete song', deleteSongs)
+  })
+})
 
 
 
@@ -196,7 +204,11 @@ app.get('/logout', function(req, res) {
 
 app.delete('/api/queues/:id', function(req, res) {
   db.queue.find(req.params.id).success(function(foundQueue) {
-    res.json(foundQueue.destroy())
+    if (foundQueue) {
+      res.json(foundQueue.destroy())
+    } else {
+      res.json('song does not exist')
+    }
   })
 })
 
@@ -210,6 +222,6 @@ app.get('*', function(req, res) {
   res.render('index.ejs', {isAuthenticated: req.isAuthenticated(), user: req.user})
 });
 
-http.listen(process.env.PORT || 3000, function() {
+server.listen(process.env.PORT || 3000, function() {
   console.log("SERVER LISTENING ON 3000")
 })
