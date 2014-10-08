@@ -22,7 +22,7 @@ $rootScope.count = 0
 $rootScope.increment = 0
 
 $rootScope.tracks = []
-$rootScope.socket = io.connect('http://localhost:3000')
+$rootScope.socket = io.connect('http://rubysound.herokuapp.com')
 
 
 
