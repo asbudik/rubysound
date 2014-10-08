@@ -64,9 +64,13 @@ io.sockets.on("connection", function(socket) {
   })
 
   socket.on('send delete song', function(deleteSongs) {
-    deleteSongs.tracks.shift()
-    deleteSongs.songs.shift()
+    // deleteSongs.tracks.shift()
+    // deleteSongs.songs.shift()
     io.sockets.emit('get delete song', deleteSongs)
+  })
+
+  socket.on('send add vote', function(data) {
+    io.sockets.emit('get add vote', data)
   })
 })
 

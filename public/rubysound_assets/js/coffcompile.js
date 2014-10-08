@@ -29,7 +29,7 @@
       this.location = location;
       this.filter = filter;
       this.rootScope = rootScope;
-      this.rootScope.socket = io.connect('http://rubysound.herokuapp.com');
+      this.rootScope.socket = io.connect('http://localhost:3000');
       this.clientID = 'a193506e4d1a399fbb796fd18bfd3a3b';
       this.scope.msgs = [];
       this.scope.sendMsg = (function(_this) {
@@ -59,6 +59,56 @@
             _this.scope.getVenues(createSong[0].artist);
             return _this.scope.$digest();
           }
+        };
+      })(this));
+      this.rootScope.socket.on('get add vote', (function(_this) {
+        return function(data) {
+          data.data.song.voted = true;
+          data.song[1][0].count += 1;
+          data.song[1][0].createdAt = data.data.vote.createdAt;
+          if (_this.scope.songs.length > 1) {
+            _this.scope.songs[data.index][1][0].count += 1;
+            _this.rootScope.tracks[data.index].count += 1;
+            _this.rootScope.tracks.sort(function(a, b) {
+              if (a.count < b.count) {
+                return 1;
+              }
+              if (a.count > b.count) {
+                return -1;
+              }
+              console.log(a);
+              console.log(b);
+              if (a.createdAt < b.createdAt) {
+                return -1;
+              }
+              if (a.createdAt > b.createdAt) {
+                return 1;
+              }
+              return 0;
+            });
+            console.log("@rootscope tracks", _this.rootScope.tracks);
+            _this.scope.songs.sort(function(a, b) {
+              if (a[1][0].count < b[1][0].count) {
+                return 1;
+              }
+              if (a[1][0].count > b[1][0].count) {
+                return -1;
+              }
+              console.log(a);
+              console.log(b);
+              if (a[1][0].createdAt < b[1][0].createdAt) {
+                return -1;
+              }
+              if (a[1][0].createdAt > b[1][0].createdAt) {
+                return 1;
+              }
+              return 0;
+            });
+          }
+          _this.scope.songs[0][0].playing = true;
+          _this.scope.songs[0][0].count = 1000000;
+          console.log(_this.scope.songs);
+          return _this.scope.$digest();
         };
       })(this));
       this.scope.popFromQueue = (function(_this) {
@@ -165,50 +215,11 @@
             song: song,
             user: _this.user.id
           }).success(function(data) {
-            data.song.voted = true;
-            song[1][0].count += 1;
-            song[1][0].createdAt = data.vote.createdAt;
-            if (_this.scope.songs.length > 1) {
-              _this.rootScope.tracks[index].count += 1;
-              _this.rootScope.tracks.sort(function(a, b) {
-                if (a.count < b.count) {
-                  return 1;
-                }
-                if (a.count > b.count) {
-                  return -1;
-                }
-                console.log(a);
-                console.log(b);
-                if (a.createdAt < b.createdAt) {
-                  return -1;
-                }
-                if (a.createdAt > b.createdAt) {
-                  return 1;
-                }
-                return 0;
-              });
-              console.log("@rootscope tracks", _this.rootScope.tracks);
-              _this.scope.songs.sort(function(a, b) {
-                if (a[1][0].count < b[1][0].count) {
-                  return 1;
-                }
-                if (a[1][0].count > b[1][0].count) {
-                  return -1;
-                }
-                console.log(a);
-                console.log(b);
-                if (a[1][0].createdAt < b[1][0].createdAt) {
-                  return -1;
-                }
-                if (a[1][0].createdAt > b[1][0].createdAt) {
-                  return 1;
-                }
-                return 0;
-              });
-            }
-            _this.scope.songs[0][0].playing = true;
-            _this.scope.songs[0][0].count = 1000000;
-            return console.log(_this.scope.songs);
+            return _this.rootScope.socket.emit('send add vote', {
+              song: song,
+              data: data,
+              index: index
+            });
           });
         };
       })(this);

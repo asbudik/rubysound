@@ -22,6 +22,8 @@ $rootScope.count = 0
 $rootScope.increment = 0
 
 $rootScope.tracks = []
+$rootScope.socket = io.connect('http://localhost:3000')
+
 
 
   var player = {
@@ -222,15 +224,20 @@ $rootScope.tracks = []
   }, false);
 
   audio.addEventListener('ended', function() {
-    // console.log("TRACKS!!!", $rootScope.tracks)
-    // console.log("ENDEDENDED")
-    // console.log("ended:rootScope:", $rootScope);
-    // console.log("ended:rootScope:$$childHead", $rootScope.$$childHead)
+    
+    $rootScope.socket.emit('send delete song', $rootScope.tracks)
+
+    
+  }, false);
+
+  console.log("PLANGULAR ROOTSCOPE SOCKET", $rootScope.socket)
+  $rootScope.socket.on('get delete song', function(deleteSongs) {
+    console.log("AFTER SOCKET ON DELETE")
     if ($rootScope.$$childHead.songs.length) {
       // $rootScope.increment -= 1
       // $rootScope.index += 1
       // console.log("INCREMENT ROOTSCOPE", $rootScope.index)
-      if ($rootScope.$$childHead.songs.length > 0) {
+      if ($rootScope.$$childHead.songs.length) {
         $rootScope.$$childHead.popFromQueue($rootScope.$$childHead.songs[0]);
         // console.log("THIS DATA NEXT", player.data)
         // console.log("SONGS URL", $rootScope.$$childHead.songs[0][0].url)
@@ -241,6 +248,8 @@ $rootScope.tracks = []
         $rootScope.increment -= 1
         player.currentTime = 0
         player.duration = 0
+        console.log("PLAYER DURATION", player.duration)
+        console.log("PLAYER CURRENTTIME", player.currentTime)
         // console.log("PLAYER DATA", player.data)
 
         // console.log("this index", player)
@@ -264,18 +273,21 @@ $rootScope.tracks = []
           // }
         }
         if ($rootScope.$$childHead.songs.length === 0) {
+          player.duration = 0
+          player.curentTime = 0
           player.pause();
           $rootScope.$$childHead.hideImage = true
           return
         }
       }
-      // console.log("player next")
-      player.next();
-    } else {
-      // console.log("player pause")
-      player.pause();
-    }
-  }, false);
+  // console.log("player next")
+  player.next();
+  } else {
+  // console.log("player pause")
+  player.pause();
+  }
+})
+
   var count = 0
   if (!$rootScope.index) {
     $rootScope.index = 0

@@ -3,7 +3,7 @@ SoundsControllers = angular.module("SoundsControllers", [])
 class SoundsCtrl 
   
   constructor: (@scope, @http, @location, @filter, @rootScope) ->
-    @rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+    @rootScope.socket = io.connect('http://localhost:3000')
 
     @clientID = 'a193506e4d1a399fbb796fd18bfd3a3b'
     @scope.msgs = []
@@ -35,6 +35,41 @@ class SoundsCtrl
         console.log("CREATESONG", createSong)
         @scope.getVenues(createSong[0].artist)
         @scope.$digest()
+
+    @rootScope.socket.on 'get add vote', (data) =>
+      data.data.song.voted = true
+      data.song[1][0].count += 1
+      data.song[1][0].createdAt = data.data.vote.createdAt
+
+      if @scope.songs.length > 1
+        @scope.songs[data.index][1][0].count += 1
+        @rootScope.tracks[data.index].count += 1
+        # @scope.songs.splice(index,1)
+        # @scope.songs.push([data.song, [data.vote]])
+        @rootScope.tracks.sort (a, b) =>
+          return 1  if a.count < b.count
+          return -1  if a.count > b.count
+          console.log(a)
+          console.log(b)
+          return -1  if a.createdAt < b.createdAt
+          return 1 if a.createdAt > b.createdAt
+          0
+
+        console.log("@rootscope tracks", @rootScope.tracks)
+
+        @scope.songs.sort (a, b) =>
+          return 1  if a[1][0].count < b[1][0].count
+          return -1  if a[1][0].count > b[1][0].count
+          console.log(a)
+          console.log(b)
+          return -1  if a[1][0].createdAt < b[1][0].createdAt
+          return 1 if a[1][0].createdAt > b[1][0].createdAt
+          0
+        
+      @scope.songs[0][0].playing = true
+      @scope.songs[0][0].count = 1000000
+      console.log(@scope.songs)
+      @scope.$digest()
 
 
     @scope.popFromQueue = (trackToDelete) =>
@@ -113,37 +148,7 @@ class SoundsCtrl
 
       index = @scope.songs.indexOf(song)
       @http.post("api/queues/#{song.id}/votes", {song: song, user: @user.id}).success (data) =>
-        data.song.voted = true
-        song[1][0].count += 1
-        song[1][0].createdAt = data.vote.createdAt
-
-        if @scope.songs.length > 1
-          @rootScope.tracks[index].count += 1
-          # @scope.songs.splice(index,1)
-          # @scope.songs.push([data.song, [data.vote]])
-          @rootScope.tracks.sort (a, b) =>
-            return 1  if a.count < b.count
-            return -1  if a.count > b.count
-            console.log(a)
-            console.log(b)
-            return -1  if a.createdAt < b.createdAt
-            return 1 if a.createdAt > b.createdAt
-            0
-
-          console.log("@rootscope tracks", @rootScope.tracks)
-
-          @scope.songs.sort (a, b) =>
-            return 1  if a[1][0].count < b[1][0].count
-            return -1  if a[1][0].count > b[1][0].count
-            console.log(a)
-            console.log(b)
-            return -1  if a[1][0].createdAt < b[1][0].createdAt
-            return 1 if a[1][0].createdAt > b[1][0].createdAt
-            0
-          
-        @scope.songs[0][0].playing = true
-        @scope.songs[0][0].count = 1000000
-        console.log(@scope.songs)
+        @rootScope.socket.emit('send add vote', {song: song, data: data, index: index})
 
 
 
