@@ -51,10 +51,5 @@
     </div>
   </div>
 </div>
-  <div class="col-md-3 usertile" ng-include="'templates/user.html'">
-</div>
-
-<p ng-repeat="msg in msgs">{{msg}} </p>
-<form ng-submit="sendMsg()" action="">
-  <input type="text" ng-model="msg.text">
-</form>
+<div ng-show="tileclick" class="col-md-3 usertile" ng-include="'templates/user.html'"></div>
+<div ng-hide="tileclick" class="col-md-3 chattile" ng-include="'templates/chatroom.html'"></div>

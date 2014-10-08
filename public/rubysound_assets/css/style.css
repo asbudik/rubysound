@@ -105,7 +105,7 @@ body {
 
 .navbarclass {
   background-color: #D63333;
-  width: 105%;
+  width: 100%;
   z-index: 20;
   box-shadow: inset -1px -1px 3px ;
 }
@@ -233,8 +233,12 @@ progress {
   letter-spacing: 1px;
   font-weight: bold;
 }
+.chatbutton {
+  background-image: url('../img/chat.svg');
+}
 .usercontainer {
   margin-top: 5px;
+  height: 91%;
   padding: 5px;
   overflow: scroll;
 }
@@ -264,9 +268,32 @@ progress {
   padding-bottom: 30px;
   box-shadow: 1px 1px 2px black;
   background-color: white;
-  }
-
-.usertile {
+  margin-bottom: 30px;
+}
+.usernamemessage {
+  font-weight: bold;
+  color: brown;
+}
+[scroll-glue] {
+  height: 77%;
+  overflow-y: scroll;
+  padding: 5px;
+}
+.messagelist {
+  padding: 0px;
+  margin: 0px;
+}
+.chatform {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.typebox {
+  border-radius: 3px 3px 0px 0px;
+}
+.chatsend {
+  border-radius: 0px 0px 3px 3px;
+}
+.usertile, .chattile {
   border-radius: 0px 5px 5px 0px;
   border: 2px solid black;
   height: 500px;
@@ -275,6 +302,11 @@ progress {
   box-shadow: 1px 1px 2px black;
   background-color: white;
 }
+.fixbutton {
+  margin-left: 4px;
+  margin-top: 4px;
+  }
+
 .bg {
   position: relative;
   /*top: 300px;*/

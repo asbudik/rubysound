@@ -8,12 +8,14 @@ class SoundsCtrl
     @clientID = 'a193506e4d1a399fbb796fd18bfd3a3b'
     @scope.msgs = []
     # console.log("ROOTSCOPE", @rootScope.socket)
+    @scope.msg = {}
     @scope.sendMsg = () =>
-      console.log("scope message", @scope.msg.text)
-      @rootScope.socket.emit('send msg', @scope.msg.text)
+      message = @scope.msg
       @scope.msg = {}
+      @rootScope.socket.emit('send msg', {user: @rootScope.socket[@user.id], msg: message.text})
 
     @rootScope.socket.on 'get msg', (data) =>
+      console.log("DATA", data)
       @scope.msgs.push(data)
       @scope.$digest()
 
@@ -89,6 +91,7 @@ class SoundsCtrl
           @venues = data
         # console.log(data)
 
+    @scope.tileclick = false
     @scope.hideImage = false
     @scope.noDupeSongs = true
     @user = ""
@@ -104,6 +107,8 @@ class SoundsCtrl
       @scope.songs = @usersData.queue
       if @usersData.session
         @user = @usersData.session
+        console.log("USER", @user)
+        @rootScope.socket[@user.id] = @user.username
         for user in @users
           if user.id == @user.id
             user.auth = true
@@ -153,6 +158,7 @@ class SoundsCtrl
 
 
   searchSongs: (query) ->
+    console.log("SCOPE QUERY", @scope.query)
     @loading = true
     thisQuery = query
     @scope.query = {}
@@ -227,6 +233,7 @@ class SoundsCtrl
           @users.push(data.user)
           @error = false
           @guestuser = false
+          @rootScope.socket[@user.id] = @user.username
 
       else
         @error = true
@@ -248,6 +255,7 @@ class SoundsCtrl
         @scope.showsearch = true
         @error = false
         @guestuser = false
+        @rootScope.socket[@user.id] = @user.username
 
         if @scope.songs != []
           for song in @scope.songs
@@ -265,6 +273,12 @@ class SoundsCtrl
     @scope.loginshow = false
     @scope.signup = false
     @error = false
+
+  usertileclick: () ->
+    @scope.tileclick = true
+
+  chattileclick: () ->
+    @scope.tileclick = false
 
 
 SoundsControllers.controller("SoundsCtrl", ["$scope", "$http", "$location", "$filter", "$rootScope", SoundsCtrl])

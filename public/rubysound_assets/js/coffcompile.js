@@ -32,15 +32,21 @@
       this.rootScope.socket = io.connect('http://localhost:3000');
       this.clientID = 'a193506e4d1a399fbb796fd18bfd3a3b';
       this.scope.msgs = [];
+      this.scope.msg = {};
       this.scope.sendMsg = (function(_this) {
         return function() {
-          console.log("scope message", _this.scope.msg.text);
-          _this.rootScope.socket.emit('send msg', _this.scope.msg.text);
-          return _this.scope.msg = {};
+          var message;
+          message = _this.scope.msg;
+          _this.scope.msg = {};
+          return _this.rootScope.socket.emit('send msg', {
+            user: _this.rootScope.socket[_this.user.id],
+            msg: message.text
+          });
         };
       })(this);
       this.rootScope.socket.on('get msg', (function(_this) {
         return function(data) {
+          console.log("DATA", data);
           _this.scope.msgs.push(data);
           return _this.scope.$digest();
         };
@@ -130,6 +136,7 @@
           }
         };
       })(this);
+      this.scope.tileclick = false;
       this.scope.hideImage = false;
       this.scope.noDupeSongs = true;
       this.user = "";
@@ -145,6 +152,8 @@
           _this.scope.songs = _this.usersData.queue;
           if (_this.usersData.session) {
             _this.user = _this.usersData.session;
+            console.log("USER", _this.user);
+            _this.rootScope.socket[_this.user.id] = _this.user.username;
             _ref = _this.users;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               user = _ref[_i];
@@ -227,6 +236,7 @@
 
     SoundsCtrl.prototype.searchSongs = function(query) {
       var thisQuery;
+      console.log("SCOPE QUERY", this.scope.query);
       this.loading = true;
       thisQuery = query;
       this.scope.query = {};
@@ -342,7 +352,8 @@
               _this.scope.showsearch = true;
               _this.users.push(data.user);
               _this.error = false;
-              return _this.guestuser = false;
+              _this.guestuser = false;
+              return _this.rootScope.socket[_this.user.id] = _this.user.username;
             });
           } else {
             _this.error = true;
@@ -368,6 +379,7 @@
             _this.scope.showsearch = true;
             _this.error = false;
             _this.guestuser = false;
+            _this.rootScope.socket[_this.user.id] = _this.user.username;
             if (_this.scope.songs !== []) {
               _ref = _this.scope.songs;
               _results = [];
@@ -405,6 +417,14 @@
       this.scope.loginshow = false;
       this.scope.signup = false;
       return this.error = false;
+    };
+
+    SoundsCtrl.prototype.usertileclick = function() {
+      return this.scope.tileclick = true;
+    };
+
+    SoundsCtrl.prototype.chattileclick = function() {
+      return this.scope.tileclick = false;
     };
 
     return SoundsCtrl;
