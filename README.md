@@ -17,6 +17,7 @@ When landing on the page, guests are able to fall in love with the current track
 * BandsInTown API
 * PostgreSQL
 * Sequelize
+* Socket.io
 
 ### This application can be found here:
 [http://rubysound.herokuapp.com
