@@ -22,8 +22,8 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   $rootScope.increment = 0
 
   $rootScope.tracks = []
-  // $rootScope.socket = io.connect('http://rubysound.herokuapp.com')
-  $rootScope.socket = io.connect('http://localhost:3000')
+  $rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+  // $rootScope.socket = io.connect('http://localhost:3000')
 
 
 
