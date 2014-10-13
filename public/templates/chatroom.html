@@ -1,11 +1,19 @@
 <div class="fixbutton"><a ng-click="sounds.chattileclick()" class="chatbutton btn btn-default btn-sm" href><img src="rubysound_assets/img/chat.svg" height="20" width="20"></a> <a ng-click="sounds.usertileclick()" class="chatbutton btn btn-default btn-sm" href><img src="rubysound_assets/img/users.png" height="20" width="20"></a></div>
 
-<div scroll-glue="glued">
-    <p ng-repeat="msg in msgs track by $index" class="messagelist"><span class="usernamemessage">{{msg.user}}:</span> <span class="messagemessage">{{msg.msg}}</span></p>
+<div scroll-glue>
+    <p ng-repeat="msg in msgs track by $index" class="messagelist"><span class="usernamemessage">{{msg.user}}</span> <span class="messagemessage">{{msg.msg}}</span></p>
 </div>
 
 
+<div ng-show="sounds.guestchat">
+  <form class="chatform" ng-submit="sendMsg()">
+    <input class="form-control typebox" type="text" ng-model="msg.text" required disabled>
+    <button disabled class="chatsend btn btn-default form-control">Send</button>
+  </form>
+</div>
+<div ng-hide="sounds.guestchat">
 <form class="chatform" ng-submit="sendMsg()">
   <input class="form-control typebox" type="text" ng-model="msg.text" required>
   <button class="chatsend btn btn-default form-control">Send</button>
 </form>
+</div>

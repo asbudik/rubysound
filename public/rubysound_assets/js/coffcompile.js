@@ -1,7 +1,7 @@
 (function() {
   var SoundsApp;
 
-  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "plangular", "mediaPlayer"]);
+  SoundsApp = angular.module("SoundsApp", ["ngRoute", "SoundsControllers", "plangular", "mediaPlayer", "luegg.directives"]);
 
   SoundsApp.config([
     "$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
@@ -29,24 +29,27 @@
       this.location = location;
       this.filter = filter;
       this.rootScope = rootScope;
-      this.rootScope.socket = io.connect('http://rubysound.herokuapp.com');
+      this.rootScope.socket = io.connect('http://localhost:3000');
       this.clientID = 'a193506e4d1a399fbb796fd18bfd3a3b';
       this.scope.msgs = [];
       this.scope.msg = {};
+      this.scope.msgs.push({
+        msg: "welcome to RubySound chat"
+      });
       this.scope.sendMsg = (function(_this) {
         return function() {
           var message;
           message = _this.scope.msg;
           _this.scope.msg = {};
           return _this.rootScope.socket.emit('send msg', {
-            user: _this.rootScope.socket[_this.user.id],
+            user: "" + _this.rootScope.socket[_this.user.id] + ":",
             msg: message.text
           });
         };
       })(this);
       this.rootScope.socket.on('get msg', (function(_this) {
         return function(data) {
-          console.log("DATA", data);
+          _this.scope.glued = true;
           _this.scope.msgs.push(data);
           return _this.scope.$digest();
         };
@@ -55,13 +58,10 @@
         return function(createSong) {
           _this.scope.songs.push(createSong);
           _this.scope.noDupeSongs = true;
-          console.log("SCOPE SONGS", _this.scope.songs);
-          console.log("DATA", createSong);
           if (_this.scope.songs.length === 1) {
             _this.scope.songs[0][1][0].count = 1000000;
             _this.scope.songs[0][0].playing = true;
             _this.scope.addVote(_this.scope.songs[0]);
-            console.log("CREATESONG", createSong);
             _this.scope.getVenues(createSong[0].artist);
             return _this.scope.$digest();
           }
@@ -92,7 +92,6 @@
               }
               return 0;
             });
-            console.log("@rootscope tracks", _this.rootScope.tracks);
             _this.scope.songs.sort(function(a, b) {
               if (a[1][0].count < b[1][0].count) {
                 return 1;
@@ -110,11 +109,15 @@
               }
               return 0;
             });
+            _this.scope.songs[0][0].playing = true;
+            _this.scope.songs[0][0].count = 1000000;
+            console.log(_this.scope.songs);
+            return _this.scope.$digest();
+          } else {
+            _this.scope.songs[0][0].playing = true;
+            _this.scope.songs[0][0].count = 1000000;
+            return _this.scope.$digest();
           }
-          _this.scope.songs[0][0].playing = true;
-          _this.scope.songs[0][0].count = 1000000;
-          console.log(_this.scope.songs);
-          return _this.scope.$digest();
         };
       })(this));
       this.scope.popFromQueue = (function(_this) {
@@ -152,7 +155,6 @@
           _this.scope.songs = _this.usersData.queue;
           if (_this.usersData.session) {
             _this.user = _this.usersData.session;
-            console.log("USER", _this.user);
             _this.rootScope.socket[_this.user.id] = _this.user.username;
             _ref = _this.users;
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -182,6 +184,7 @@
             }
           } else {
             _this.guestuser = true;
+            _this.guestchat = true;
             _this.scope.showsearch = false;
           }
           _this.scope.songs.sort(function(a, b) {
@@ -236,7 +239,6 @@
 
     SoundsCtrl.prototype.searchSongs = function(query) {
       var thisQuery;
-      console.log("SCOPE QUERY", this.scope.query);
       this.loading = true;
       thisQuery = query;
       this.scope.query = {};
@@ -297,7 +299,6 @@
         params: params
       }).success((function(_this) {
         return function(data) {
-          console.log("SONG DATA LIVEBANDS", data);
           return _this.http.post("api/users/" + _this.user.id + "/songs", {
             title: track.soundcloudtitle,
             artist: track.artists[0].name,
@@ -346,6 +347,7 @@
             return _this.http.post('/api/login', user).success(function(data) {
               _this.user = data.user;
               _this.user.auth = true;
+              _this.guestchat = false;
               _this.scope.signup = true;
               _this.scope.loginshow = false;
               _this.scope.logoutbutton = true;
@@ -373,6 +375,7 @@
           } else {
             _this.user = data.user;
             _this.user.auth = true;
+            _this.guestchat = false;
             _this.scope.signup = true;
             _this.scope.loginshow = false;
             _this.scope.logoutbutton = true;

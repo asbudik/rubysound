@@ -3,19 +3,20 @@ SoundsControllers = angular.module("SoundsControllers", [])
 class SoundsCtrl 
   
   constructor: (@scope, @http, @location, @filter, @rootScope) ->
-    @rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+    # @rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+    @rootScope.socket = io.connect('http://localhost:3000')
 
     @clientID = 'a193506e4d1a399fbb796fd18bfd3a3b'
     @scope.msgs = []
-    # console.log("ROOTSCOPE", @rootScope.socket)
     @scope.msg = {}
+    @scope.msgs.push(msg: "welcome to RubySound chat")
     @scope.sendMsg = () =>
       message = @scope.msg
       @scope.msg = {}
-      @rootScope.socket.emit('send msg', {user: @rootScope.socket[@user.id], msg: message.text})
+      @rootScope.socket.emit('send msg', {user: "#{@rootScope.socket[@user.id]}:", msg: message.text})
 
     @rootScope.socket.on 'get msg', (data) =>
-      console.log("DATA", data)
+      @scope.glued = true
       @scope.msgs.push(data)
       @scope.$digest()
 
@@ -24,8 +25,6 @@ class SoundsCtrl
       # @rootScope.$digest()
       # @scope.$digest()
       @scope.noDupeSongs = true
-      console.log("SCOPE SONGS", @scope.songs)
-      console.log("DATA", createSong)
 
       # console.log("THIS IS SCOPE SONGS", @scope.songs)
       if @scope.songs.length == 1
@@ -34,7 +33,6 @@ class SoundsCtrl
         @scope.songs[0][0].playing = true
         @scope.addVote(@scope.songs[0])
 
-        console.log("CREATESONG", createSong)
         @scope.getVenues(createSong[0].artist)
         @scope.$digest()
 
@@ -57,7 +55,6 @@ class SoundsCtrl
           return 1 if a.createdAt > b.createdAt
           0
 
-        console.log("@rootscope tracks", @rootScope.tracks)
 
         @scope.songs.sort (a, b) =>
           return 1  if a[1][0].count < b[1][0].count
@@ -68,10 +65,15 @@ class SoundsCtrl
           return 1 if a[1][0].createdAt > b[1][0].createdAt
           0
         
-      @scope.songs[0][0].playing = true
-      @scope.songs[0][0].count = 1000000
-      console.log(@scope.songs)
-      @scope.$digest()
+        @scope.songs[0][0].playing = true
+        @scope.songs[0][0].count = 1000000
+        console.log(@scope.songs)
+        @scope.$digest()
+
+      else
+        @scope.songs[0][0].playing = true
+        @scope.songs[0][0].count = 1000000
+        @scope.$digest()
 
 
     @scope.popFromQueue = (trackToDelete) =>
@@ -107,7 +109,6 @@ class SoundsCtrl
       @scope.songs = @usersData.queue
       if @usersData.session
         @user = @usersData.session
-        console.log("USER", @user)
         @rootScope.socket[@user.id] = @user.username
         for user in @users
           if user.id == @user.id
@@ -127,6 +128,7 @@ class SoundsCtrl
 
       else
         @guestuser = true
+        @guestchat = true
         @scope.showsearch = false
       
       @scope.songs.sort (a, b) =>
@@ -158,7 +160,6 @@ class SoundsCtrl
 
 
   searchSongs: (query) ->
-    console.log("SCOPE QUERY", @scope.query)
     @loading = true
     thisQuery = query
     @scope.query = {}
@@ -198,7 +199,6 @@ class SoundsCtrl
     @newVote = {}
     params = { url: track.streamUrl, client_id: @clientID, callback: 'JSON_CALLBACK' }
     @http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success (data) =>
-      console.log("SONG DATA LIVEBANDS", data)
       @http.post("api/users/#{@user.id}/songs", {title: track.soundcloudtitle, artist: track.artists[0].name, image: track.album.images[0].url, playthrough: false, url: data.stream_url, duration: data.duration}).success (data) =>
         @newQueue = data.queue
         @newVote = data.vote
@@ -226,6 +226,7 @@ class SoundsCtrl
           # console.log("data", data)
           @user = data.user
           @user.auth = true
+          @guestchat = false
           @scope.signup = true
           @scope.loginshow = false
           @scope.logoutbutton = true
@@ -249,6 +250,7 @@ class SoundsCtrl
       else
         @user = data.user
         @user.auth = true
+        @guestchat = false
         @scope.signup = true
         @scope.loginshow = false
         @scope.logoutbutton = true

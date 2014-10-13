@@ -18,11 +18,12 @@ var plangular = angular.module('plangular', []),
 
 plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootScope) {
   var audio = document.createElement('audio');
-$rootScope.count = 0
-$rootScope.increment = 0
+  $rootScope.count = 0
+  $rootScope.increment = 0
 
-$rootScope.tracks = []
-$rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+  $rootScope.tracks = []
+  // $rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+  $rootScope.socket = io.connect('http://localhost:3000')
 
 
 
@@ -230,9 +231,7 @@ $rootScope.socket = io.connect('http://rubysound.herokuapp.com')
     
   }, false);
 
-  console.log("PLANGULAR ROOTSCOPE SOCKET", $rootScope.socket)
   $rootScope.socket.on('get delete song', function(deleteSongs) {
-    console.log("AFTER SOCKET ON DELETE")
     if ($rootScope.$$childHead.songs.length) {
       // $rootScope.increment -= 1
       // $rootScope.index += 1
@@ -248,8 +247,6 @@ $rootScope.socket = io.connect('http://rubysound.herokuapp.com')
         $rootScope.increment -= 1
         player.currentTime = 0
         player.duration = 0
-        console.log("PLAYER DURATION", player.duration)
-        console.log("PLAYER CURRENTTIME", player.currentTime)
         // console.log("PLAYER DATA", player.data)
 
         // console.log("this index", player)
