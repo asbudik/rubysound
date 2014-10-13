@@ -3,8 +3,8 @@ SoundsControllers = angular.module("SoundsControllers", [])
 class SoundsCtrl 
   
   constructor: (@scope, @http, @location, @filter, @rootScope) ->
-    @rootScope.socket = io.connect('http://rubysound.herokuapp.com')
-    # @rootScope.socket = io.connect('http://localhost:3000')
+    # @rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+    @rootScope.socket = io.connect('http://localhost:3000')
 
     @clientID = 'a193506e4d1a399fbb796fd18bfd3a3b'
     @scope.msgs = []
@@ -86,11 +86,15 @@ class SoundsCtrl
 
     @venues = {}
     @scope.getVenues = (queueSong) =>
+      @noVenues = false
       @venues = {}
       # console.log('am i being called')
       if queueSong
         @http.post('api/searchlivebands', {track: queueSong}).success (data) =>
+          console.log("VENUES", data)
           @venues = data
+          if @venues.length < 1
+            @noVenues = "No upcoming shows found"
         # console.log(data)
 
     @scope.tileclick = false
@@ -144,7 +148,9 @@ class SoundsCtrl
         @http.post('api/searchlivebands', {track: @scope.songs[0][0].artist}).success (data) =>
           count = 0
           @venues = data
-          # console.log("venues", @venues)
+          if @venues.length < 1
+            @noVenues = "No upcoming shows found"
+            # console.log("venues", @venues)
 
       else
         @scope.hideImage = true

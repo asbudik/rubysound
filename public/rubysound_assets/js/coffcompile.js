@@ -29,7 +29,7 @@
       this.location = location;
       this.filter = filter;
       this.rootScope = rootScope;
-      this.rootScope.socket = io.connect('http://rubysound.herokuapp.com');
+      this.rootScope.socket = io.connect('http://localhost:3000');
       this.clientID = 'a193506e4d1a399fbb796fd18bfd3a3b';
       this.scope.msgs = [];
       this.scope.msg = {};
@@ -129,12 +129,17 @@
       this.venues = {};
       this.scope.getVenues = (function(_this) {
         return function(queueSong) {
+          _this.noVenues = false;
           _this.venues = {};
           if (queueSong) {
             return _this.http.post('api/searchlivebands', {
               track: queueSong
             }).success(function(data) {
-              return _this.venues = data;
+              console.log("VENUES", data);
+              _this.venues = data;
+              if (_this.venues.length < 1) {
+                return _this.noVenues = "No upcoming shows found";
+              }
             });
           }
         };
@@ -211,7 +216,10 @@
             }).success(function(data) {
               var count;
               count = 0;
-              return _this.venues = data;
+              _this.venues = data;
+              if (_this.venues.length < 1) {
+                return _this.noVenues = "No upcoming shows found";
+              }
             });
           } else {
             return _this.scope.hideImage = true;

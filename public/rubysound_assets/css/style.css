@@ -21,6 +21,11 @@ body {
   overflow: scroll;
   max-height: 400px;
 }
+.novenues {
+  color: grey;
+  font-weight: bolder;
+  letter-spacing: .8px;
+}
 .messagecontainer {
   height: 395px;
   width: 343px;
