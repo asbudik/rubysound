@@ -1,9 +1,9 @@
 SoundsControllers = angular.module("SoundsControllers", [])
 
-class SoundsCtrl 
-  
+class SoundsCtrl
+
   constructor: (@scope, @http, @location, @filter, @rootScope) ->
-    @rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+    @rootScope.socket = io.connect('https://rubysound.herokuapp.com')
     # @rootScope.socket = io.connect('http://localhost:3000')
 
     @clientID = 'a193506e4d1a399fbb796fd18bfd3a3b'
@@ -64,7 +64,7 @@ class SoundsCtrl
           return -1  if a[1][0].createdAt < b[1][0].createdAt
           return 1 if a[1][0].createdAt > b[1][0].createdAt
           0
-        
+
         @scope.songs[0][0].playing = true
         @scope.songs[0][0].count = 1000000
         console.log(@scope.songs)
@@ -134,7 +134,7 @@ class SoundsCtrl
         @guestuser = true
         @guestchat = true
         @scope.showsearch = false
-      
+
       @scope.songs.sort (a, b) =>
         return 1  if a[1][0].count < b[1][0].count
         return -1  if a[1][0].count > b[1][0].count
@@ -270,7 +270,7 @@ class SoundsCtrl
             for vote in song[1]
               if vote.uservote == @user.id
                 song[0].voted = true
-  
+
   getLogin: () ->
     # console.log('geti')
     @scope.loginshow = true

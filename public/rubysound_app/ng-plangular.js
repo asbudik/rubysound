@@ -22,13 +22,13 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   $rootScope.increment = 0
 
   $rootScope.tracks = []
-  $rootScope.socket = io.connect('http://rubysound.herokuapp.com')
+  $rootScope.socket = io.connect('https://rubysound.herokuapp.com')
   // $rootScope.socket = io.connect('http://localhost:3000')
 
 
 
   var player = {
- 
+
     currentTrack: false,
     playing: false,
     // tracks: [],
@@ -225,10 +225,10 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
   }, false);
 
   audio.addEventListener('ended', function() {
-    
+
     $rootScope.socket.emit('send delete song', $rootScope.tracks)
 
-    
+
   }, false);
 
   $rootScope.socket.on('get delete song', function(deleteSongs) {
@@ -329,26 +329,26 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
           scope[key] = track[key];
         }
       }
-    
+
       if (!src) {
         console.log("NO SOURCE")
         // console.log("!src")
         // console.log('no source')
         //console.log('no src');
-      } 
+      }
       // // else if (player.data[src]) {
       // //   console.log("PLAYER DATA", player)
       // //   // console.log("playerdata", player.data)
       // //   scope.track = player.data[src];
       // //   addKeys(scope.track);
-      // // } 
+      // // }
       else {
         // console.log("BEFORE DUPE")
         // if ($rootScope.$$childHead.noDupeSongs === true) {
           // console.log("AFTER DUPE")
           // console.log("WHY")
           // var count = 0
-          
+
           // $http.jsonp('//api.soundcloud.com/resolve.json', { params: params }).success(function(data){
             // console.log("INSIDE JSON", data)
             // if (count === 0) {
@@ -400,7 +400,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
             // console.log("PLAYER DURATION", player.duration)
             scope.currentTime = player.currentTime;
             scope.duration = player.duration;
-          });  
+          });
         };
       }, false);
 
@@ -408,7 +408,7 @@ plangular.directive('plangular', ['$http', '$rootScope', function ($http, $rootS
         // console.log("ended:link:this", this);
         // console.log("ended:link:scope", scope)
       }, false);
-      
+
       scope.seek = function(e){
         if ($rootScope.tracks[player.i] == scope.track) {
           player.seek(e);
@@ -466,7 +466,7 @@ plangular.directive('plangularIcon', function() {
       el.setAttribute('fill', 'currentColor');
       path.setAttribute('d', sprite[id]);
       el.appendChild(path);
- 
+
     }
 
   }
@@ -484,9 +484,9 @@ plangular.filter('prettyTime', function() {
         secs = secs.substr(secs.length - 2);
     if(!isNaN(secs)){
       if (hours){
-        return hours+':'+mins+':'+secs;  
+        return hours+':'+mins+':'+secs;
       } else {
-        return mins+':'+secs;  
+        return mins+':'+secs;
       };
     } else {
       return '00:00';
@@ -496,4 +496,3 @@ plangular.filter('prettyTime', function() {
 
 
 })();
-

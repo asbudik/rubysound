@@ -29,7 +29,7 @@
       this.location = location;
       this.filter = filter;
       this.rootScope = rootScope;
-      this.rootScope.socket = io.connect('http://rubysound.herokuapp.com');
+      this.rootScope.socket = io.connect('https://rubysound.herokuapp.com');
       this.clientID = 'a193506e4d1a399fbb796fd18bfd3a3b';
       this.scope.msgs = [];
       this.scope.msg = {};

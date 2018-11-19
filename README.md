@@ -20,5 +20,5 @@ When landing on the page, guests are able to fall in love with the current track
 * Socket.io
 
 ### This application can be found here:
-[http://rubysound.herokuapp.com
-](http://rubysound.herokuapp.com)
+[https://rubysound.herokuapp.com
+](https://rubysound.herokuapp.com)
