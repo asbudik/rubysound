@@ -89,9 +89,9 @@ app.post('/api/spotify', function(req, res) {
 })
 
 app.post('/api/searchlivebands', function(req, res) {
-  var bandsInTownURL = 'http://api.bandsintown.com/artists/' 
+  var bandsInTownURL = 'http://api.bandsintown.com/artists/'
   + req.body.track + '/events.json?api_version=2.0&app_id=RUBYSOUND'
-  
+
   request(bandsInTownURL, function(error, response, body) {
     if(body) {
       var bandData = JSON.parse(body)
@@ -105,7 +105,7 @@ app.post('/api/searchlivebands', function(req, res) {
  app.post('/api/soundcloud', function(req, res) {
   var searchURL = 'http://api.soundcloud.com/tracks.json?client_id='
   + process.env.SOUNDCLOUD_ID + '&q=' + req.body.query + '&limit=10'
- 
+
    request(searchURL, function(error, response, body) {
      if(!error) {
        var bodyData = JSON.parse(body);
@@ -131,18 +131,20 @@ app.get('/api/users', function(req, res) {
 })
 
 app.post('/api/users', function(req, res) {
-  db.user.createNewUser(req.body,
-  function(err) {
-    res.json({message: err.message})
-  },
-  function(success) {
-    passport.serializeUser(function(user, done) {
-      console.log("Initial serialize");
-      done(null, success.user.id)
-    })
-    res.json({user: success.user, isAuthenticated: req.isAuthenticated(),
-    message: success.message})
-  });
+  db.user.createNewUser(
+    req.body,
+    function(err) {
+      res.json({message: err.message})
+    },
+    function(success) {
+      passport.serializeUser(function(user, done) {
+        console.log("Initial serialize");
+        done(null, success.user.id)
+      })
+      res.json({user: success.user, isAuthenticated: req.isAuthenticated(),
+      message: success.message})
+    }
+  );
 });
 
 

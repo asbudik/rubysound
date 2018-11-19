@@ -32,8 +32,8 @@
     "passport-local": "^1.0.0",
     "pg": "6.4.2",
     "request": "^2.44.0",
-    "sequelize": "^1.7.10",
-    "sequelize-cli": "^0.2.5",
+    "sequelize": "4.41.2",
+    "sequelize-cli": "5.3.0",
     "socket.io": "^0.9.x"
   }
 }
