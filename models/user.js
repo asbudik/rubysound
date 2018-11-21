@@ -7,6 +7,7 @@ var passportLocal = require('passport-local');
 var Sequelize = require('sequelize');
 
 module.exports = function (sequelize, Sequelize) {
+
   var User = sequelize.define('User', {
     username: {
       type: Sequelize.STRING,
@@ -40,6 +41,7 @@ module.exports = function (sequelize, Sequelize) {
       comparePass: function(userpass, dbpass) {
         return bcrypt.compareSync(userpass, dbpass);
       },
+      // TODO: return to this later
       createNewUser: function(params, err, success) {
         existinguser = User.find({where: {username: params.username}})
         if (params.password.length < 6) {
@@ -70,25 +72,37 @@ module.exports = function (sequelize, Sequelize) {
       passwordField: 'password',
       passReqToCallback: true
     },
-    function(req, username, password, done) {
-      User.find({
-        where: {
-          username: username
+    (req, username, password, done) => {
+      User.findOne({
+        where: { username: username }
+      }).then(user => {
+        if (user === null) {
+          return done(
+            null,
+            false,
+            req.flash('loginMessage', 'Username does not exist')
+          );
         }
-      })
-    .done(function(error, user) {
-      if(error) {
-        console.log(error)
-        return done(err, req.flash('loginMessage', 'Ooops! Something went wrong'))
-      }
-      if (user === null) {
-        return done(null, false, req.flash('loginMessage', 'Username does not exist'))
-      }
-      if ((User.comparePass(password, user.password)) !== true) {
-        return done(null, false, req.flash('loginMessage', 'Invalid password'))
-      }
-      done(null, user)
-    });
-  }));
+
+        // NOTE: don't store passwords in plaintext to db - correct this later
+        if (password !== user.password) {
+          return done(
+            null,
+            false,
+            req.flash('loginMessage', 'Invalid password')
+          );
+        }
+        done(null, user);
+
+      }).catch(err => {
+        console.log('error finding user: ' + err);
+        return done(
+          err,
+          req.flash('loginMessage', 'Ooops! Something went wrong')
+        );
+      });
+    }
+  ));
+
   return User;
 };

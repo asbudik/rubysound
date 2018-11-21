@@ -30,7 +30,7 @@ app.use(morgan('dev'));
 app.use(cookieSession({
   secret: process.env.COOKIE_SECRET,
   name: process.env.COOKIE_NAME,
-  maxage: 300000000
+  maxAge: 300000000
 }));
 
 app.use(passport.initialize());
@@ -148,25 +148,22 @@ app.get('/api/users', (req, res) => {
 })
 
 app.post('/api/users', (req, res) => {
-  db.User.create(
-    req.body,
-    err => {
-      res.json({
-        message: err.message
-      });
-    },
-    success => {
-      passport.serializeUser((user, done) => {
-        console.log('Initial serialize');
-        return done(null, success.user.id);
-      });
-      res.json({
-        user: success.user,
-        isAuthenticated: req.isAuthenticated(),
-        message: success.message
-      });
-    }
-  );
+  db.User.create(req.body).then(success => {
+    passport.serializeUser((user, done) => {
+      console.log('Initial serialize');
+      return done(null, success.user.id);
+    });
+    res.json({
+      user: success.user,
+      isAuthenticated: req.isAuthenticated(),
+      message: success.message
+    });
+  }).catch(err => {
+    console.log('Creating new user failed: ', err);
+    res.json({
+      message: err.message
+    });
+  });
 });
 
 app.post('/api/login', (req, res, next) => {
