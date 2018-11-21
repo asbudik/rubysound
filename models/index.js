@@ -16,13 +16,10 @@ var sequelize;
 var sequelizeDefaultOptions = {
   dialect: 'postgres'
 };
+
 if (env == PRODUCTION_NODE_ENV) {
-  sequelize = new Sequelize(
-    process.env.DATABASE_URL,
-    null,
-    null,
-    sequelizeDefaultOptions
-  );
+  var databaseURL = process.env.DATABASE_URL;
+  sequelize = new Sequelize(databaseURL, sequelizeDefaultOptions);
 
 } else {
   sequelize = new Sequelize(
