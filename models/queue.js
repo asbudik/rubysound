@@ -31,6 +31,4 @@ function Queue(sequelize, DataTypes){
   return Queue;
 };
 
-
-
 module.exports = Queue;
