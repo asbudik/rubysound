@@ -3,8 +3,8 @@ SoundsControllers = angular.module("SoundsControllers", [])
 class SoundsCtrl
 
   constructor: (@scope, @http, @location, @filter, @rootScope) ->
-    @rootScope.socket = io.connect('https://rubysound.herokuapp.com')
-    # @rootScope.socket = io.connect('http://localhost:3000')
+    # @rootScope.socket = io.connect('https://rubysound.herokuapp.com')
+    @rootScope.socket = io.connect('http://localhost:3000')
 
     @clientID = 'a193506e4d1a399fbb796fd18bfd3a3b'
     @scope.msgs = []

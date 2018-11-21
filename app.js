@@ -89,12 +89,12 @@ app.post('/api/spotify', (req, res) => {
 })
 
 app.post('/api/searchlivebands', (req, res) => {
-  var bandsInTownURL = 'http://api.bandsintown.com/artists/' +
+  var bandsInTownURL = 'https://api.bandsintown.com/artists/' +
     req.body.track +
     '/events.json?api_version=2.0&app_id=RUBYSOUND';
 
   request(bandsInTownURL, (error, response, body) => {
-    if(body) {
+    if (body) {
       var bandData = JSON.parse(body);
       res.json(bandData);
     } else {
@@ -106,13 +106,21 @@ app.post('/api/searchlivebands', (req, res) => {
 })
 
 app.post('/api/soundcloud', (req, res) => {
-  var searchURL = 'http://api.soundcloud.com/tracks.json?client_id=' +
+  // TODO: remove logging
+  console.log('SOUNDCLOUD_ID: ', process.env.SOUNDCLOUD_ID);
+  process.env.SOUNDCLOUD_ID
+
+  var searchURL = 'https://api.soundcloud.com/tracks.json?client_id=' +
     process.env.SOUNDCLOUD_ID +
     '&q=' +
     req.body.query +
     '&limit=10';
 
    request(searchURL, (err, response, body) => {
+     console.log('/api/soundcloud error: ', JSON.stringify(err));
+     console.log('/api/soundcloud response.toJSON(): ', response.toJSON());
+     console.log('/api/soundcloud body: ', body);
+
      if (!err) {
        var bodyData = JSON.parse(body);
        res.json(bodyData);
