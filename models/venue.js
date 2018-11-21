@@ -1,21 +1,19 @@
-function Venue(sequelize, DataTypes){
-  /* sequelize.define(modelName, attributes, options); */
+var Sequelize = require('sequelize');
 
-  var Venue = sequelize.define('venue', {
-    venuename: DataTypes.STRING,
-    venuedate: DataTypes.STRING,
-    rsvp: DataTypes.STRING
-  },
-    {
-      classMethods: {
-        associate: function(db) {
-          Venue.belongsTo(db.song);
-        }
+function Venue(sequelize, Sequelize) {
+  var Venue = sequelize.define('Venue', {
+    venuename: Sequelize.STRING,
+    venuedate: Sequelize.STRING,
+    rsvp: Sequelize.STRING
+  }, {
+    classMethods: {
+      associate: function(db) {
+        Venue.belongsTo(db.song);
       }
-    });
+    }
+  });
+
   return Venue;
 };
-
-
 
 module.exports = Venue;

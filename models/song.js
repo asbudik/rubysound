@@ -1,32 +1,30 @@
-function Song(sequelize, DataTypes){
-  /* sequelize.define(modelName, attributes, options); */
+var Sequelize = require('sequelize');
 
-  var Song = sequelize.define('song', {
+function Song(sequelize, Sequelize){
+  var Song = sequelize.define('Song', {
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false
     },
     artist: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false
     },
-    image: DataTypes.STRING,
-    playthrough: DataTypes.BOOLEAN,
+    image: Sequelize.STRING,
+    playthrough: Sequelize.BOOLEAN,
     url: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false
     }
-  },
-    {
-      classMethods: {
-        associate: function(db) {
-          Song.belongsTo(db.user);
-        }
+  }, {
+    classMethods: {
+      associate: function(db) {
+        Song.belongsTo(db.user);
       }
-    });
+    }
+  });
+
   return Song;
 };
-
-
 
 module.exports = Song;

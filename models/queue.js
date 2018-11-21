@@ -1,33 +1,33 @@
-function Queue(sequelize, DataTypes){
-  /* sequelize.define(modelName, attributes, options); */
+var Sequelize = require('sequelize');
 
-  var Queue = sequelize.define('queue', {
+function Queue(sequelize, Sequelize) {
+  var Queue = sequelize.define('Queue', {
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false
     },
     artist: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false
     },
-    image: DataTypes.STRING,
-    playthrough: DataTypes.BOOLEAN,
+    image: Sequelize.STRING,
+    playthrough: Sequelize.BOOLEAN,
     url: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false
     },
     duration: {
-      type: DataTypes.INTEGER
+      type: Sequelize.INTEGER
     }
-  },
-    {
-      classMethods: {
-        associate: function(db) {
-          Queue.hasMany(db.vote);
-          Queue.hasMany(db.venue);
-        }
+  }, {
+    classMethods: {
+      associate: function(db) {
+        Queue.hasMany(db.vote);
+        Queue.hasMany(db.venue);
       }
-    });
+    }
+  });
+
   return Queue;
 };
 

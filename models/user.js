@@ -1,12 +1,15 @@
-var bcrypt = require("bcrypt");
+var bcrypt = require('bcrypt');
 var salt = bcrypt.genSaltSync(Number(process.env.SOUNDSALT));
-var passport = require("passport");
-var passportLocal = require("passport-local");
 
-module.exports = function (sequelize, DataTypes) {
-  var User = sequelize.define('user', {
+var passport = require('passport');
+var passportLocal = require('passport-local');
+
+var Sequelize = require('sequelize');
+
+module.exports = function (sequelize, Sequelize) {
+  var User = sequelize.define('User', {
     username: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       unique: true,
       validate: {
@@ -14,20 +17,18 @@ module.exports = function (sequelize, DataTypes) {
       }
     },
     password: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       validate: {
         notEmpty: true
       }
     },
     contributions: {
-      type: DataTypes.INTEGER
+      type: Sequelize.INTEGER
     },
     image: {
-      type: DataTypes.STRING
+      type: Sequelize.STRING
     }
-  },
-
-  {
+  }, {
     classMethods: {
       associate: function(db) {
         User.hasMany(db.song);
@@ -59,7 +60,7 @@ module.exports = function (sequelize, DataTypes) {
             success({message: 'Welcome to the community!', user: user})
           });
           }
-        },
+        }
       }
     }
   );

@@ -1,20 +1,18 @@
-function Vote(sequelize, DataTypes){
-  /* sequelize.define(modelName, attributes, options); */
+var Sequelize = require('sequelize');
 
-  var Vote = sequelize.define('vote', {
-    count: DataTypes.INTEGER,
-    uservote: DataTypes.INTEGER
-  },
-    {
-      classMethods: {
-        associate: function(db) {
-          Vote.belongsTo(db.song);
-        }
+function Vote(sequelize, Sequelize) {
+  var Vote = sequelize.define('Vote', {
+    count: Sequelize.INTEGER,
+    uservote: Sequelize.INTEGER
+  }, {
+    classMethods: {
+      associate: function(db) {
+        Vote.belongsTo(db.song);
       }
-    });
+    }
+  });
+
   return Vote;
 };
-
-
 
 module.exports = Vote;

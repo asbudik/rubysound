@@ -8,10 +8,9 @@ var PRODUCTION_NODE_ENV = 'production';
 
 var env = process.env.NODE_ENV || DEFAULT_NODE_ENV;
 
-var config = require(__dirname + '/../config/config.json')[env];
+var config = require(__dirname + '/../config/config.json')[env] || {};
 
 // initialize postgres connection pool and connect to postgres
-
 var sequelize;
 var sequelizeDefaultOptions = {
   dialect: 'postgres'
