@@ -148,7 +148,7 @@ app.get('/api/users', (req, res) => {
 })
 
 app.post('/api/users', (req, res) => {
-  db.User.createNewUser(
+  db.User.create(
     req.body,
     err => {
       res.json({
