@@ -16,6 +16,16 @@ var sequelize = new Sequelize(
   config
 );
 
+// test sequelize db connection and message out if connection not made
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connected successfully to database!');
+  })
+  .catch(err => {
+    console.error('Unable to connect to database:', err);
+  });
+
 var db = {};
 
 fs

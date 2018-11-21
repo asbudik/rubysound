@@ -1,33 +1,31 @@
+var Sequelize = require('sequelize');
+
 module.exports = {
-  up: function(migration, DataTypes, done) {
-    // add altering commands here, calling 'done' when finished
-    migration.createTable('users',
-      {id: {
-        type: DataTypes.INTEGER,
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Users', {
+      id: {
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      createdAt: Sequelize.DATE,
+      updatedAt: Sequelize.DATE,
       username: {
-        type: DataTypes.STRING,
-          unique: true, 
+        type: Sequelize.STRING,
+          unique: true,
           allowNull: false,
         },
       password: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false
       },
       contributions: {
-        type: DataTypes.INTEGER
+        type: Sequelize.INTEGER
       }
-    })
-    .complete(done);
+    });
   },
-  down: function(migration, DataTypes, done) {
-    // add reverting commands here, calling 'done' when finished
 
-    migration.dropTable('users')
-      .complete(done);
+  down: (queryInterface, Sequelize) => {
+    return migration.dropTable('Users');
   }
 };

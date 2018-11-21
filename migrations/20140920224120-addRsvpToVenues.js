@@ -1,16 +1,18 @@
-module.exports = {
-  up: function(migration, DataTypes, done) {
-    // add altering commands here, calling 'done' when finished
-    migration.addColumn(
-      'venues',
-      'rsvp',
-      DataTypes.STRING
-    )
-    done()
-  },
-  down: function(migration, DataTypes, done) {
-    // add reverting commands here, calling 'done' when finished
-    done()
-  }
-}
+var Sequelize = require('sequelize');
 
+module.exports = {
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.addColumn(
+      'Venues',
+      'rsvp',
+      Sequelize.STRING
+    );
+  },
+
+  down: (queryInterface, Sequelize) => {
+      return queryInterface.removeColumn(
+        'Venues',
+        'rsvp'
+      );
+  }
+};

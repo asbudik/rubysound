@@ -1,33 +1,31 @@
+var Sequelize = require('sequelize');
+
 module.exports = {
-  up: function(migration, DataTypes, done) {
-    // add altering commands here, calling 'done' when finished
-    migration.createTable('venues',
-      {id: {
-        type: DataTypes.INTEGER,
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.createTable('Venues', {
+      id: {
+        type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      createdAt: Sequelize.DATE,
+      updatedAt: Sequelize.DATE,
       venuename: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false
       },
       venuedate: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false
       },
       songId: {
-        type: DataTypes.INTEGER,
+        type: Sequelize.INTEGER,
         foreignKey: true
       }
-    })
-    .complete(done);
+    });
   },
-  down: function(migration, DataTypes, done) {
-    // add reverting commands here, calling 'done' when finished
 
-    migration.dropTable('venues')
-      .complete(done);
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('Venues');
   }
 };

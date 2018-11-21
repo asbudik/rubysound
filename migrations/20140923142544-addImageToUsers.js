@@ -1,15 +1,18 @@
+var Sequelize = require('sequelize');
+
 module.exports = {
-  up: function(migration, DataTypes, done) {
-    // add altering commands here, calling 'done' when finished
-    migration.addColumn(
-      'users',
+  up: (queryInterface, Sequelize) => {
+    return queryInterface.addColumn(
+      'Users',
       'image',
-      DataTypes.STRING
-    )
-    done()
+      Sequelize.STRING
+    );
   },
-  down: function(migration, DataTypes, done) {
-    // add reverting commands here, calling 'done' when finished
-    done()
+
+  down: (queryInterface, Sequelize) => {
+    return queryInterface.removeColumn(
+      'Users',
+      'image'
+    );
   }
-}
+};
