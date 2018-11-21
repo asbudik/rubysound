@@ -4,19 +4,35 @@ var Sequelize = require('sequelize');
 var _ = require('lodash');
 
 var DEFAULT_NODE_ENV = 'development';
+var PRODUCTION_NODE_ENV = 'production';
 
 var env = process.env.NODE_ENV || DEFAULT_NODE_ENV;
 
 var config = require(__dirname + '/../config/config.json')[env];
 
-var sequelize = new Sequelize(
-  process.env.DATABASE_URL || config.database,
-  process.env.DATABASE_USER || config.username,
-  process.env.DATABASE_PASSWORD || config.password,
-  config
-);
+// initialize postgres connection pool and connect to postgres
 
-// test sequelize db connection and message out if connection not made
+var sequelize;
+var sequelizeDefaultOptions = {
+  dialect: 'postgres'
+};
+if (env == PRODUCTION_NODE_ENV) {
+  sequelize = new Sequelize(
+    process.env.DATABASE_URL,
+    null,
+    null,
+    sequelizeDefaultOptions
+  );
+
+} else {
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    sequelizeDefaultOptions
+  );
+}
+
 sequelize
   .authenticate()
   .then(() => {
