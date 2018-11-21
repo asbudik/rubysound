@@ -1,29 +1,40 @@
-var fs        = require('fs')
-  , path      = require('path')
-  , Sequelize = require('sequelize')
-  , lodash    = require('lodash')
-  , env       = process.env.NODE_ENV || 'development'
-  , config    = require(__dirname + '/../config/config.json')[env]
-  , sequelize = new Sequelize(config.database, config.username, config.password, config)
-  , db        = {}
+var fs = require('fs');
+var path = require('path');
+var Sequelize = require('sequelize');
+var _ = require('lodash');
+
+var DEFAULT_NODE_ENV = 'development';
+
+var env = process.env.NODE_ENV || DEFAULT_NODE_ENV;
+
+var config = require(__dirname + '/../config/config.json')[env];
+
+var sequelize = new Sequelize(
+  process.env.DATABASE_URL || config.database,
+  process.env.DATABASE_USER || config.username,
+  process.env.DATABASE_PASSWORD || config.password,
+  config
+);
+
+var db = {};
 
 fs
   .readdirSync(__dirname)
-  .filter(function(file) {
-    return (file.indexOf('.') !== 0) && (file !== 'index.js')
+  .filter(function findModelFiles(file) {
+    return (file.indexOf('.') !== 0) && (file !== 'index.js');
   })
-  .forEach(function(file) {
-    var model = sequelize.import(path.join(__dirname, file))
-    db[model.name] = model
-  })
+  .forEach(function importModel(file) {
+    var model = sequelize.import(path.join(__dirname, file));
+    db[model.name] = model;
+  });
 
 Object.keys(db).forEach(function(modelName) {
   if ('associate' in db[modelName]) {
-    db[modelName].associate(db)
+    db[modelName].associate(db);
   }
-})
+});
 
-module.exports = lodash.extend({
+module.exports = _.extend({
   sequelize: sequelize,
   Sequelize: Sequelize
-}, db)
+}, db);

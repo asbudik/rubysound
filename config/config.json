@@ -10,11 +10,6 @@
     "dialect": "postgres"
   },
   "production": {
-    "dialect": "postgres",
-    "username": "aixuzthwtspomp",
-    "password": "NK6e_McfJEVVbLFwCZT1Yyo4Qh",
-    "host": "ec2-54-83-204-85.compute-1.amazonaws.com",
-    "port": "5432",
-    "database": "dfb9o70vloqiu7"
+    "dialect": "postgres"
   }
 }
