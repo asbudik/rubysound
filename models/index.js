@@ -16,6 +16,7 @@ var sequelizeDefaultOptions = {
   dialect: 'postgres'
 };
 
+// NOTE: this branch may not be necessary w/ 'use_env_variable' config directive
 if (env == PRODUCTION_NODE_ENV) {
   var databaseURL = process.env.DATABASE_URL;
   sequelize = new Sequelize(databaseURL, sequelizeDefaultOptions);
